@@ -16,5 +16,26 @@ namespace SwiftX.Controllers
         {
             return View();
         }
+        public IActionResult Orders()
+        {
+            return View();
+        }
+        public IActionResult Rider()
+        {
+            return View();
+        }
+        public IActionResult RiderApplications()
+        {
+            return View();
+        }
+        public IActionResult Merchant()
+        {
+            return View();
+        }
+        public IActionResult MerchantApplications()
+        {
+            return View();
+        }
+
     }
 }
