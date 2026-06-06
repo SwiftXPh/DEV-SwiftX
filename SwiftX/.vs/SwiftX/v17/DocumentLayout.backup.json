@@ -1,0 +1,97 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\migue\\Documents\\Sources\\SwiftX\\SwiftX\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{3786D134-5AED-49C1-B700-71A5C0CA93EE}|SwiftX.csproj|c:\\users\\migue\\documents\\sources\\swiftx\\swiftx\\views\\signup\\rider.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{3786D134-5AED-49C1-B700-71A5C0CA93EE}|SwiftX.csproj|solutionrelative:views\\signup\\rider.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3786D134-5AED-49C1-B700-71A5C0CA93EE}|SwiftX.csproj|c:\\users\\migue\\documents\\sources\\swiftx\\swiftx\\controllers\\signupcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3786D134-5AED-49C1-B700-71A5C0CA93EE}|SwiftX.csproj|solutionrelative:controllers\\signupcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3786D134-5AED-49C1-B700-71A5C0CA93EE}|SwiftX.csproj|c:\\users\\migue\\documents\\sources\\swiftx\\swiftx\\models\\ridermodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3786D134-5AED-49C1-B700-71A5C0CA93EE}|SwiftX.csproj|solutionrelative:models\\ridermodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3786D134-5AED-49C1-B700-71A5C0CA93EE}|SwiftX.csproj|c:\\users\\migue\\documents\\sources\\swiftx\\swiftx\\models\\usermodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3786D134-5AED-49C1-B700-71A5C0CA93EE}|SwiftX.csproj|solutionrelative:models\\usermodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 4,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "RiderModel.cs",
+              "DocumentMoniker": "C:\\Users\\migue\\Documents\\Sources\\SwiftX\\SwiftX\\Models\\RiderModel.cs",
+              "RelativeDocumentMoniker": "Models\\RiderModel.cs",
+              "ToolTip": "C:\\Users\\migue\\Documents\\Sources\\SwiftX\\SwiftX\\Models\\RiderModel.cs",
+              "RelativeToolTip": "Models\\RiderModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-26T07:01:05.533Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "UserModel.cs",
+              "DocumentMoniker": "C:\\Users\\migue\\Documents\\Sources\\SwiftX\\SwiftX\\Models\\UserModel.cs",
+              "RelativeDocumentMoniker": "Models\\UserModel.cs",
+              "ToolTip": "C:\\Users\\migue\\Documents\\Sources\\SwiftX\\SwiftX\\Models\\UserModel.cs",
+              "RelativeToolTip": "Models\\UserModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-26T05:32:14.663Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Rider.cshtml",
+              "DocumentMoniker": "C:\\Users\\migue\\Documents\\Sources\\SwiftX\\SwiftX\\Views\\SignUp\\Rider.cshtml",
+              "RelativeDocumentMoniker": "Views\\SignUp\\Rider.cshtml",
+              "ToolTip": "C:\\Users\\migue\\Documents\\Sources\\SwiftX\\SwiftX\\Views\\SignUp\\Rider.cshtml",
+              "RelativeToolTip": "Views\\SignUp\\Rider.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-03-26T05:36:37.767Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "SignUpController.cs",
+              "DocumentMoniker": "C:\\Users\\migue\\Documents\\Sources\\SwiftX\\SwiftX\\Controllers\\SignUpController.cs",
+              "RelativeDocumentMoniker": "Controllers\\SignUpController.cs",
+              "ToolTip": "C:\\Users\\migue\\Documents\\Sources\\SwiftX\\SwiftX\\Controllers\\SignUpController.cs*",
+              "RelativeToolTip": "Controllers\\SignUpController.cs*",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAABIAAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-22T10:01:05.679Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
