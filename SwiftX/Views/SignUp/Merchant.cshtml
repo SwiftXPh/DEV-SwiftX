@@ -1,7 +1,9 @@
-﻿@{
+@{
     ViewData["Title"] = "Sign Up";
     Layout = "~/Views/Shared/_LayoutUser.cshtml";
 }
+
+@model SwiftX.Models.MerchantModel
 <section class="px-4 py-10 md:py-16 bg-[var(--dark-bg-color)] text-[var(--light-text-color)]">
     <form method="post"
           asp-action="SignUpMerchant"
@@ -58,7 +60,7 @@
                         <label class="__label block mb-1.5">*Business Name</label>
                         <div class="input-icon-wrap">
                             <input type="text" class="signup-input" id="inp-businessname"
-                                   name="BusinessName" placeholder="Business name" autocomplete="organization" />
+                                   asp-for="BusinessName" placeholder="Business name" autocomplete="organization" />
                             <span class="input-icon"><i class="ph ph-storefront"></i></span>
                         </div>
                         <span class="field-error" id="err-businessname"></span>
@@ -69,7 +71,7 @@
                         <label class="__label block mb-1.5">*Owner First Name</label>
                         <div class="input-icon-wrap">
                             <input type="text" class="signup-input" id="inp-ownerfirst"
-                                   name="OwnerFirstName" placeholder="First name" autocomplete="given-name" />
+                                   asp-for="OwnerFirstName" placeholder="First name" autocomplete="given-name" />
                             <span class="input-icon"><i class="ph ph-user"></i></span>
                         </div>
                         <span class="field-error" id="err-ownerfirst"></span>
@@ -80,7 +82,7 @@
                         <label class="__label block mb-1.5">*Owner Last Name</label>
                         <div class="input-icon-wrap">
                             <input type="text" class="signup-input" id="inp-ownerlast"
-                                   name="OwnerLastName" placeholder="Last name" autocomplete="family-name" />
+                                   asp-for="OwnerLastName" placeholder="Last name" autocomplete="family-name" />
                             <span class="input-icon"><i class="ph ph-user"></i></span>
                         </div>
                         <span class="field-error" id="err-ownerlast"></span>
@@ -91,7 +93,7 @@
                         <label class="__label block mb-1.5">*Business Address</label>
                         <div class="input-icon-wrap">
                             <input type="text" class="signup-input" id="inp-bizaddress"
-                                   name="BusinessAddress" placeholder="Complete business address" autocomplete="street-address" />
+                                   asp-for="BusinessAddress" placeholder="Complete business address" autocomplete="street-address" />
                             <span class="input-icon"><i class="ph ph-map-pin"></i></span>
                         </div>
                         <span class="field-error" id="err-bizaddress"></span>
@@ -102,7 +104,7 @@
                         <label class="__label block mb-1.5">*Business Contact No.</label>
                         <div class="input-icon-wrap">
                             <input type="tel" class="signup-input" id="inp-bizcontact"
-                                   name="BusinessContact" placeholder="09XX XXX XXXX" autocomplete="tel" />
+                                   asp-for="BusinessContact" placeholder="09XX XXX XXXX" autocomplete="tel" />
                             <span class="input-icon"><i class="ph ph-phone"></i></span>
                         </div>
                         <span class="field-error" id="err-bizcontact"></span>
@@ -113,7 +115,7 @@
                         <label class="__label block mb-1.5">*Business Email Address</label>
                         <div class="input-icon-wrap">
                             <input type="email" class="signup-input" id="inp-bizemail"
-                                   name="BusinessEmail" placeholder="business@email.com" autocomplete="email" />
+                                   asp-for="BusinessEmail" placeholder="business@email.com" autocomplete="email" />
                             <span class="input-icon"><i class="ph ph-envelope-simple"></i></span>
                         </div>
                         <span class="field-error" id="err-bizemail"></span>
@@ -143,7 +145,7 @@
                                 <p class="upload-card__hint">Certificate of Registration</p>
                             </div>
                             <div class="su-file-upload" id="fu-bir">
-                                <input type="file" id="inp-bir" name="BIRForm"
+                                <input type="file" id="inp-bir" asp-for="BIRForm"
                                        accept=".jpg,.jpeg,.png,.pdf" class="su-file-input" />
                                 <div class="su-file-label" aria-hidden="true">
                                     <i class="ph ph-upload-simple"></i>
@@ -161,7 +163,7 @@
                                 <p class="upload-card__hint">Recommended but not required</p>
                             </div>
                             <div class="su-file-upload" id="fu-dti">
-                                <input type="file" id="inp-dti" name="DTICertificate"
+                                <input type="file" id="inp-dti" asp-for="DTICertificate"
                                        accept=".jpg,.jpeg,.png,.pdf" class="su-file-input" />
                                 <div class="su-file-label" aria-hidden="true">
                                     <i class="ph ph-upload-simple"></i>
@@ -179,7 +181,7 @@
                                 <p class="upload-card__hint">For small / home-based businesses</p>
                             </div>
                             <div class="su-file-upload" id="fu-barangay">
-                                <input type="file" id="inp-barangay" name="BarangayClearance"
+                                <input type="file" id="inp-barangay" asp-for="BarangayClearance"
                                        accept=".jpg,.jpeg,.png,.pdf" class="su-file-input" />
                                 <div class="su-file-label" aria-hidden="true">
                                     <i class="ph ph-upload-simple"></i>
@@ -196,7 +198,7 @@
                         <label class="__label block mb-1.5">*GCash Number</label>
                         <div class="input-icon-wrap">
                             <input type="tel" class="signup-input" id="inp-gcash"
-                                   name="GCContact" placeholder="09XX XXX XXXX" />
+                                   asp-for="GCContact" placeholder="09XX XXX XXXX" />
                             <span class="input-icon"><i class="ph ph-wallet"></i></span>
                         </div>
                         <span class="field-error" id="err-gcash"></span>
@@ -221,7 +223,7 @@
                         <label class="__label block mb-1.5">*Username</label>
                         <div class="input-icon-wrap">
                             <input type="text" class="signup-input" id="inp-username"
-                                   name="Username" placeholder="Username" autocomplete="username" />
+                                   asp-for="User.Username" placeholder="Username" autocomplete="username" />
                             <span class="input-icon"><i class="ph ph-at"></i></span>
                         </div>
                         <span class="field-error" id="err-username"></span>
@@ -232,7 +234,7 @@
                         <label class="__label block mb-1.5">*Email Address</label>
                         <div class="input-icon-wrap">
                             <input type="email" class="signup-input" id="inp-email"
-                                   name="Email" placeholder="Email address" autocomplete="email" />
+                                   asp-for="User.Email" placeholder="Email address" autocomplete="email" />
                             <span class="input-icon"><i class="ph ph-envelope-simple"></i></span>
                         </div>
                         <span class="field-error" id="err-email"></span>
@@ -243,7 +245,7 @@
                         <label class="__label block mb-1.5">*Password</label>
                         <div class="password-wrapper input-icon-wrap">
                             <input type="password" class="signup-input" id="inp-password"
-                                   name="Password" placeholder="Password" autocomplete="new-password" />
+                                   asp-for="User.Password" placeholder="Password" autocomplete="new-password" />
                             <span class="input-icon"><i class="ph ph-lock-simple"></i></span>
                             <button type="button" class="password-toggle" data-toggle-pw>
                                 <svg class="w-5 h-5 eye-open" fill="none" stroke="currentColor" viewBox="0 0 24 24">
