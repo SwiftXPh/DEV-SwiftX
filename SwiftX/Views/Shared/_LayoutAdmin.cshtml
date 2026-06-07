@@ -1,4 +1,4 @@
-﻿@*
+@*
    ADMIN LAYOUT
 *@
 @{
@@ -136,8 +136,7 @@
             <div class="flex flex-col md:flex-row items-center justify-center gap-4 text-sm opacity-80">
                 <span class="text-[var(--primary-color)]">2026 © SwiftX All Rights Reserved</span>
                 
-                @* ALERT MODAL EXAMPLE, DELETE AFTER TESTING *@
-                <button class="text-[var(--primary-color)] hover:underline" onclick="onclickAlertModal()">Alert Modal</button>
+
             </div>
         </div>
     </footer>
@@ -174,30 +173,7 @@
     *@
 
 
-    <script>
-        window.onload = function() {
-            AlertModal.show({
-                    type: 'info',
-                    title: 'Title Here',
-                    message: 'Debug Here',
-                    buttons: [
-                        { label: 'Okay',   variant: 'ghost' },
-                    ]
-                })
-        };
 
-        function onclickAlertModal(){
-            AlertModal.show({
-                    type: 'info',
-                    title: 'Title Here',
-                    message: 'Error',
-                    buttons: [
-                        { label: 'Cancel',   variant: 'ghost' },
-                        { label: 'Okay',   variant: 'danger' },
-                    ]
-                })
-        }
-    </script>
     @await RenderSectionAsync("Scripts", required: false)
 
 </body>
