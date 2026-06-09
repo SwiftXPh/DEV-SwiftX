@@ -5,8 +5,9 @@ namespace SwiftX.Models
         public int Id { get; set; }
         public int UserId { get; set; }
         public UserModel User { get; set; }
-        public string Status { get; set; } = "Active"; // Active, Inactive
+        public string Status { get; set; } = "Pending"; // Pending, Active, Inactive, Rejected
         public string? PlateNumber { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public string LicensePath { get; set; }
         public string IDPath { get; set; }
         public string ORCRPath { get; set; }

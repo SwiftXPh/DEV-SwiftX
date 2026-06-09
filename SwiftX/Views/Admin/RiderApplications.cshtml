@@ -1,33 +1,35 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+@model List<SwiftX.Models.Rider>
 @{
     ViewData["Title"] = "Riders Application";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+
+    var totalApplications = Model.Count;
+    var pendingCount = Model.Count(r => r.Status == "Pending");
+    var approvedCount = Model.Count(r => r.Status == "Active");
+    var rejectedCount = Model.Count(r => r.Status == "Rejected");
 }
 
- <div class="admin-stat-grid" style="margin-bottom:22px;">
+<div class="admin-stat-grid" style="margin-bottom:22px;">
     <div class="admin-stat-card">
         <div class="admin-stat-header">
             <div class="admin-stat-icon"><i class="ph ph-clock"></i></div>
-            <span class="admin-stat-badge admin-stat-badge--up"><i class="ph ph-arrow-up"></i> 6</span>
         </div>
-        <p class="admin-stat-value">24</p>
+        <p class="admin-stat-value">@pendingCount</p>
         <p class="admin-stat-label">Pending Review</p>
     </div>
     <div class="admin-stat-card">
         <div class="admin-stat-header"><div class="admin-stat-icon"><i class="ph ph-check-circle"></i></div></div>
-        <p class="admin-stat-value">86</p>
+        <p class="admin-stat-value">@approvedCount</p>
         <p class="admin-stat-label">Accepted</p>
     </div>
     <div class="admin-stat-card">
         <div class="admin-stat-header"><div class="admin-stat-icon"><i class="ph ph-x-circle"></i></div></div>
-        <p class="admin-stat-value">12</p>
+        <p class="admin-stat-value">@rejectedCount</p>
         <p class="admin-stat-label">Rejected</p>
     </div>
     <div class="admin-stat-card">
         <div class="admin-stat-header"><div class="admin-stat-icon"><i class="ph ph-users"></i></div></div>
-        <p class="admin-stat-value">122</p>
+        <p class="admin-stat-value">@totalApplications</p>
         <p class="admin-stat-label">Total Applications</p>
     </div>
 </div>
@@ -38,13 +40,12 @@
         <div>
             <h2 class="admin-table-title">All Rider Applications</h2>
             <p style="font-size:11px;color:rgba(255,255,255,0.3);margin-top:3px;">
-                122 total &middot; 24 pending &middot; 86 accepted &middot; 12 rejected
+                @totalApplications total &middot; @pendingCount pending &middot; @approvedCount accepted &middot; @rejectedCount rejected
             </p>
         </div>
         <div class="admin-table-actions">
             <div class="admin-search">
                 <i class="ph ph-magnifying-glass"></i>
-
                 <input type="text" id="apps-search" placeholder="Search applicants..." />
             </div>
             <div class="admin-filter-bar" id="apps-filter-bar">
@@ -57,121 +58,75 @@
     </div>
 
     <div class="admin-table-wrap">
-
         <table class="admin-table" id="apps_table">
             <thead>
                 <tr>
                     <th>Applicant</th>
-                    <th>Vehicle</th>
-                    <th>License #</th>
+                    <th>Contact</th>
+                    <th>GCash</th>
                     <th>Applied</th>
                     <th>Status</th>
                     <th style="width:120px;">Actions</th>
                 </tr>
             </thead>
             <tbody>
+                @foreach (var rider in Model)
+                {
+                    var fullName = $"{rider.User.FirstName} {rider.User.LastName}";
+                    var isPending = rider.Status == "Pending";
+                    var isApproved = rider.Status == "Active";
+                    var isRejected = rider.Status == "Rejected";
 
-                @* PENDING *@
-                <tr>
-                    <td>
-                        <div class="td-person">
-                            <div class="td-person__avatar"><i class="ph ph-user"></i></div>
-                            <div>
-                                <p class="td-person__name">Carlo Mendoza</p>
-                                <p class="td-person__sub"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="ff9c9e8d9390bf9a929e9693d19c9092">[email&#160;protected]</a> &middot; 0917-123-4567</p>
+                    var badgeClass = isPending ? "admin-badge--pending" :
+                                     isApproved ? "admin-badge--active" :
+                                     "admin-badge--rejected";
+                    var badgeLabel = isPending ? "Pending" :
+                                     isApproved ? "Approved" :
+                                     "Rejected";
+                    var rowMuted = isRejected ? " td-person--muted" : "";
+                    var avatarMuted = isRejected ? " td-person__avatar--muted" : "";
+
+                    <tr>
+                        <td>
+                            <div class="td-person@(rowMuted)">
+                                <div class="td-person__avatar@(avatarMuted)"><i class="ph ph-user"></i></div>
+                                <div>
+                                    <p class="td-person__name">@fullName</p>
+                                    <p class="td-person__sub">@rider.User.Email</p>
+                                </div>
                             </div>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="td-vehicle">
-                            <i class="ph ph-motorcycle"></i>
-                            <span class="td-vehicle__label">Motorcycle — Honda Click</span>
-                        </div>
-                    </td>
-                    <td><span class="td-license td-license--ok">DL-0012345</span></td>
-                    <td style="font-size:var(--fs-small);color:rgba(255,255,255,0.55);">Feb 24, 2026</td>
-                    <td><span class="admin-badge admin-badge--pending"><span class="admin-badge-dot"></span>Pending</span></td>
-                    <td>
-                        <div class="admin-actions-cell">
-                            <button class="admin-action-btn" title="View Application"
-                                    onclick="openModal('rider-application-modal')">
-                                <i class="ph ph-eye"></i>
-                            </button>
-                            <button class="admin-action-btn admin-action-btn--approve" title="Quick Accept">
-                                <i class="ph ph-check"></i>
-                            </button>
-                            <button class="admin-action-btn admin-action-btn--reject" title="Quick Reject">
-                                <i class="ph ph-x"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-
-
-                @* ACCEPTED/ APPROVED *@
-                <tr>
-                    <td>
-                        <div class="td-person">
-                            <div class="td-person__avatar"><i class="ph ph-user"></i></div>
-                            <div>
-                                <p class="td-person__name">James Ocampo</p>
-                                <p class="td-person__sub"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="97fdf6faf2e4d7f2faf6fefbb9f4f8fa">[email&#160;protected]</a> &middot; 0921-567-8901</p>
+                        </td>
+                        <td style="font-size:var(--fs-small);">@rider.User.Contact</td>
+                        <td style="font-size:var(--fs-small);">@rider.GCContact</td>
+                        <td style="font-size:var(--fs-small);color:rgba(255,255,255,0.55);">@rider.CreatedAt.ToString("MMM dd, yyyy")</td>
+                        <td><span class="admin-badge @badgeClass"><span class="admin-badge-dot"></span>@badgeLabel</span></td>
+                        <td>
+                            <div class="admin-actions-cell">
+                                <button class="admin-action-btn" title="View Application"
+                                        onclick="openModal('rider-application-modal')">
+                                    <i class="ph ph-eye"></i>
+                                </button>
+                                @if (isPending)
+                                {
+                                    <form asp-controller="Admin" asp-action="ApproveRider" method="post" style="display:inline;">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@rider.Id" />
+                                        <button type="submit" class="admin-action-btn admin-action-btn--approve" title="Quick Accept">
+                                            <i class="ph ph-check"></i>
+                                        </button>
+                                    </form>
+                                    <form asp-controller="Admin" asp-action="RejectRider" method="post" style="display:inline;">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@rider.Id" />
+                                        <button type="submit" class="admin-action-btn admin-action-btn--reject" title="Quick Reject">
+                                            <i class="ph ph-x"></i>
+                                        </button>
+                                    </form>
+                                }
                             </div>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="td-vehicle">
-                            <i class="ph ph-motorcycle"></i>
-                            <span class="td-vehicle__label">Motorcycle — Suzuki Raider</span>
-                        </div>
-                    </td>
-                    <td><span class="td-license td-license--ok">DL-0011223</span></td>
-                    <td style="font-size:var(--fs-small);color:rgba(255,255,255,0.55);">Jan 12, 2026</td>
-                    <td><span class="admin-badge admin-badge--active"><span class="admin-badge-dot"></span>Approved</span></td>
-                    <td>
-                        <div class="admin-actions-cell">
-                            <button class="admin-action-btn" title="View Application"
-                                    onclick="openModal('rider-application-modal')">
-                                <i class="ph ph-eye"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-
-                @* REJECTED *@
-                <tr>
-                    <td>
-                        <div class="td-person td-person--muted">
-                            <div class="td-person__avatar td-person__avatar--muted"><i class="ph ph-user"></i></div>
-                            <div>
-                                <p class="td-person__name">Dennis Ramos</p>
-                                <p class="td-person__sub"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="bbdfded5d5d2c8fbded6dad2d795d8d4d6">[email&#160;protected]</a> &middot; 0923-789-0123</p>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="td-vehicle" style="opacity:.45;">
-                            <i class="ph ph-motorcycle"></i>
-                            <span class="td-vehicle__label">Motorcycle — Honda XRM</span>
-                        </div>
-                    </td>
-                    <td>
-                        <span class="td-license td-license--expired">
-                            <i class="ph ph-warning-circle"></i> Expired
-                        </span>
-                    </td>
-                    <td style="font-size:var(--fs-small);color:rgba(255,255,255,0.3);">Jan 28, 2026</td>
-                    <td><span class="admin-badge admin-badge--rejected"><span class="admin-badge-dot"></span>Rejected</span></td>
-                    <td>
-                        <div class="admin-actions-cell">
-                            <button class="admin-action-btn" title="View Application"
-                                    onclick="openModal('rider-application-modal')">
-                                <i class="ph ph-eye"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-
+                        </td>
+                    </tr>
+                }
             </tbody>
         </table>
     </div>
@@ -198,7 +153,8 @@
                         previous: '<i class="ph ph-caret-left"></i>',
                         next:     '<i class="ph ph-caret-right"></i>'
                     },
-                    info: 'Showing _START_–_END_ of _TOTAL_ applicants'
+                    info: 'Showing _START_–_END_ of _TOTAL_ applicants',
+                    emptyTable: '<div style="text-align:center;padding:2rem;opacity:0.5;"><i class="ph ph-file-text" style="font-size:2rem;"></i><p style="margin-top:0.5rem;">No rider applications found.</p></div>'
                 },
                 drawCallback: function () {
                     $(this.api().table().container())
@@ -216,7 +172,9 @@
                 $('#apps-filter-bar .admin-filter-btn').removeClass('active');
                 $(this).addClass('active');
                 var f = $(this).data('filter');
-                var term = f === 'all' ? '' : '^' + f.charAt(0).toUpperCase() + f.slice(1) + '$';
+                var term = '';
+                if (f === 'approved') term = '^Approved$';
+                else if (f !== 'all') term = '^' + f.charAt(0).toUpperCase() + f.slice(1) + '$';
                 appsTable.column(4).search(term, true, false).draw();
             });
         });
