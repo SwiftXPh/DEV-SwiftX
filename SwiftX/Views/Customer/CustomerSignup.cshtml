@@ -1,0 +1,464 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_LayoutUserLogin.cshtml";
+
+}
+
+<div class="modal-container">
+    <div class="registration-card">
+        <button class="close-btn">&times;</button>
+
+        <h1>Customer Registration</h1>
+
+        <form id="registrationForm">
+            <div class="input-group">
+                <input type="text" id="username" placeholder="Username" required>
+            </div>
+
+            <div class="input-group">
+                <input type="text" id="fullName" placeholder="Full Name" required>
+            </div>
+
+            <div class="input-group phone-group">
+                <span class="country-code">+63</span>
+                <input type="tel" id="phoneNumber" placeholder="9123456789" required pattern="[0-9]{10}">
+            </div>
+
+            <div class="input-group">
+                <input type="email" id="email" placeholder="Email Address" required>
+            </div>
+
+            <div class="row">
+                <div class="input-group">
+                    <select id="gender" required>
+                        <option value="" disabled selected>Gender</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <input type="text" id="birthdate" placeholder="Birthdate" onfocus="(this.type='date')" onblur="(this.type='text')">
+                </div>
+            </div>
+
+            <div class="input-group password-wrapper">
+                <input type="password" id="password" placeholder="Password" required>
+                <i class="fa-solid fa-eye-slash toggle-password" onclick="togglePassword('password', this)"></i>
+            </div>
+
+            <div class="input-group password-wrapper">
+                <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+                <i class="fa-solid fa-eye-slash toggle-password" onclick="togglePassword('confirmPassword', this)"></i>
+            </div>
+
+            <p class="terms-text">
+                BY CLICKING THE "I AGREE" BUTTON OR BY ACCESSING OR USING THE SWIFTX PLATFORM, YOU ACKNOWLEDGE THAT YOU HAVE READ, UNDERSTOOD, AND AGREE TO BE BOUND BY THIS AGREEMENT.
+            </p>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="terms" required>
+                <label for="terms">I have read and agree to the <a href="javascript:void(0)" id="openTermsLink">Terms and Conditions</a></label>
+            </div>
+
+            <button type="submit" class="register-btn">Register</button>
+        </form>
+    </div>
+</div>
+
+<div id="termsModal" class="modal">
+    <div class="modal-content">
+        <span class="close-button" id="closeTermsBtn">&times;</span>
+
+        <div class="terms-text-container">
+            <h1>INTRODUCTION</h1>
+            <p>Welcome to SwiftX. These Customer Terms & Conditions ("Terms") and </p>
+            <p>the accompanying Customer Data Privacy Policy ("Privacy Policy") govern your use of </p>
+            <p>the SwiftX mobile and web applications and related services (collectively, the </p>
+            <p>"Platform"). By registering, placing an order, or otherwise using the Platform you </p>
+            <p>acknowledge that you have read, understood, and agree to be bound by these Terms </p>
+            <p>and the Privacy Policy. Where defined terms are used, they apply equally to both </p>
+            <p>documents unless otherwise stated.</p>
+
+            <h1>PART I — CUSTOMER TERMS & CONDITIONS</h1>
+
+            <h2>1. NATURE OF THE PLATFORM</h2>
+            <p>• SwiftX is a digital technology platform and marketplace connecting customers, </p>
+            <p>registered merchants, and independent delivery contractors.</p>
+            <p>• SwiftX is NOT a restaurant, food handler, or food service business. SwiftX does </p>
+            <p>not prepare, cook, handle, store, or modify the physical food or goods offered by </p>
+            <p>merchants.</p>
+            <p>• Responsibility for the physical product (including food safety, quality, labeling, </p>
+            <p>allergen information, and tamper-evident packaging) lies solely with the </p>
+            <p>merchant that prepares or supplies the product, as further described in the SwiftX </p>
+            <p>Merchant Agreement.</p>
+
+            <h2>1. ACCOUNT ELIGIBILITY & SECURITY</h2>
+            <p>• Eligibility: You must be at least 18 years old and legally competent to enter into </p>
+            <p>contracts under Philippine law to register and use the Platform. By creating an </p>
+            <p>account you represent and warrant that you meet these eligibility requirements.</p>
+            <p>• Registration Information: You must provide accurate, complete, and current </p>
+            <p>registration and account information (name, valid contact number, delivery </p>
+            <p>address, payment details and other information requested). You agree to </p>
+            <p>promptly update any information that becomes inaccurate or outdated.</p>
+            <p>• Account Security: You are responsible for maintaining the confidentiality of your </p>
+            <p>account credentials (username, password, one-time codes) and are fully </p>
+            <p>responsible for all activities that occur under your account. Notify SwiftX </p>
+            <p>immediately of any unauthorized use or security breach by contacting support.</p>
+            <p>• Consequences of Misuse: SwiftX may suspend or terminate accounts for fraud, </p>
+            <p>repeated violations of these Terms, unlawful activity, or other abuses at SwiftX’s </p>
+            <p>discretion.</p>
+
+            <h2>1. ORDERING & PRICING</h2>
+            <p>• Merchant Acceptance: Placing an item in your cart and submitting payment does </p>
+            <p>not constitute a binding agreement until the merchant confirms acceptance of </p>
+            <p>the order and prepares it for dispatch. Orders are subject to merchant </p>
+            <p>confirmation.</p>
+            <p>• Prices & Fees: Prices shown in the Platform include the merchant’s stated price </p>
+            <p>for goods. Delivery fees, service fees, taxes, surcharges, dynamic pricing, and </p>
+            <p>other charges may apply and will be shown at checkout. Final payable amounts </p>
+            <p>are displayed prior to order confirmation.</p>
+            <p>• Payment Processing: Payments may be processed by third-party payment </p>
+            <p>processors. By providing payment information you authorize SwiftX and its </p>
+            <p>payment processors to charge the applicable payment method for the amount of </p>
+            <p>the order and any additional fees permitted hereunder.</p>
+            <p>• Order Modifications: Requests to change items, delivery address, or delivery </p>
+            <p>instructions must be made promptly through the Platform. SwiftX does not </p>
+            <p>guarantee that changes can be implemented after the merchant has accepted or </p>
+            <p>prepared the order.</p>
+
+            <h2>1. CANCELLATIONS & REFUNDS</h2>
+            <p>• Customer-Initiated Cancellation:</p>
+            <p>• Orders may be modified or canceled via the Platform prior to merchant </p>
+            <p>confirmation or preparation. If a cancellation request is made after the </p>
+            <p>merchant has accepted/prepared the order, SwiftX may be unable to </p>
+            <p>cancel.</p>
+            <p>• If a cancellation is permitted after merchant acceptance, fees (including </p>
+            <p>merchant charges and applicable delivery or processing fees) may still </p>
+            <p>apply. Refund eligibility and timing are subject to the Refunds section </p>
+            <p>below.</p>
+            <p>• Merchant-Attributable Errors:</p>
+            <p>• Refunds may be granted where merchant error is established, including:</p>
+            <p>• Non-delivery of the order;</p>
+            <p>• Wrong item(s) delivered;</p>
+            <p>• Missing item(s) from an otherwise delivered order (subject to </p>
+            <p>verification).</p>
+            <p>• In such cases SwiftX will work with the merchant and delivery partner to </p>
+            <p>verify the claim and, where appropriate, provide a refund, partial refund, </p>
+            <p>replacement, or credit in accordance with merchant policies and these </p>
+            <p>Terms.</p>
+            <p>• Refund Process & Timing:</p>
+            <p>• All refund requests are subject to review and verification. Refunds, if </p>
+            <p>approved, will be issued using the original payment method where </p>
+            <p>possible or as credit to your SwiftX account, at SwiftX’s discretion.</p>
+            <p>• Refund timelines depend on payment processor and banking partners; </p>
+            <p>SwiftX is not responsible for processor or bank delays in posting funds to </p>
+            <p>your account.</p>
+            <p>• No-Refund Situations:</p>
+            <p>• SwiftX is not responsible for merchant food quality (taste, temperature, </p>
+            <p>doneness, or other subjective qualities) unless such issue is tied to a </p>
+            <p>merchant’s failure to comply with applicable food safety or packaging </p>
+            <p>obligations and is verifiable under our review process.</p>
+            <p>• Orders cancelled by customers after merchant preparation or dispatch are </p>
+            <p>generally not eligible for full refunds except where the merchant or </p>
+            <p>delivery partner agrees.</p>
+
+            <h2>1. DELIVERY & TIMING</h2>
+            <p>• Independent Delivery Contractors: Delivery services are provided by independent </p>
+            <p>delivery contractors or third-party logistics partners engaged by SwiftX or the </p>
+            <p>merchant. These parties are not employees of SwiftX.</p>
+            <p>• Delivery Estimates: Delivery times are estimates only and may be impacted by </p>
+            <p>traffic, weather, government orders, or other events beyond SwiftX’s control.</p>
+            <p>• Delivery Instructions & Risks: You are responsible for providing accurate delivery </p>
+            <p>instructions and accessible delivery locations. SwiftX and delivery partners are not </p>
+            <p>liable for failure to deliver where instructions are inaccurate or where delivery is </p>
+            <p>impossible due to access restrictions.</p>
+
+            <h2>1. LIMITATION OF LIABILITY</h2>
+            <p>• Merchant Responsibility:</p>
+            <p>• Merchants are exclusively responsible for the quality, safety, packaging, </p>
+            <p>labeling, and lawful sale of the products they offer on the Platform, </p>
+            <p>including compliance with the Food Safety Act of 2013 (RA 10611) and </p>
+            <p>related regulations.</p>
+            <p>• SwiftX will, on request and where applicable, cooperate with regulatory </p>
+            <p>authorities and merchants in relation to food safety concerns.</p>
+            <p>• Platform Liability:</p>
+            <p>• To the fullest extent permitted by law, SwiftX shall not be liable for:</p>
+            <p>• Food quality issues, contamination, allergens, or other defects in </p>
+            <p>products prepared or sold by merchants;</p>
+            <p>• Delays, losses, or damages caused by independent delivery </p>
+            <p>contractors or third-party service providers (including traffic, </p>
+            <p>weather, force majeure, or third-party actions);</p>
+            <p>• Indirect, incidental, special, punitive, or consequential damages </p>
+            <p>(including lost profits).</p>
+            <p>• The maximum aggregate liability of SwiftX for any claim arising out of or </p>
+            <p>related to these Terms shall not exceed the total monetary amount </p>
+            <p>actually paid by you for the specific order giving rise to the claim.</p>
+            <p>• Exceptions:</p>
+            <p>• Nothing in these Terms purports to exclude or limit liability for death or </p>
+            <p>personal injury resulting from SwiftX’s proven gross negligence or willful </p>
+            <p>misconduct, or any other liability which cannot be excluded under </p>
+            <p>applicable Philippine law.</p>
+
+            <h2>1. PROHIBITED CONDUCT You agree not to, directly or indirectly:</h2>
+            <p>• Use or attempt to use fake, false, or misappropriated accounts or identities;</p>
+            <p>• Place fraudulent orders, manipulate promotions, or abuse referral/discount </p>
+            <p>mechanisms;</p>
+            <p>• Harass, threaten, intimidate, or otherwise abuse merchants, riders, SwiftX staff, or </p>
+            <p>other users;</p>
+            <p>• Interfere with, disrupt, or attempt to gain unauthorized access to the Platform or </p>
+            <p>SwiftX systems;</p>
+            <p>• Post or transmit content that is unlawful, libelous, obscene, or otherwise </p>
+            <p>objectionable;</p>
+            <p>• Use the Platform for unauthorized commercial resale or to undermine merchant </p>
+            <p>pricing or service terms. Violation of this section may result in account </p>
+            <p>suspension, termination, criminal referral, and/or civil liability.</p>
+
+            <h2>1. INTELLECTUAL PROPERTY</h2>
+            <p>• All intellectual property rights in the Platform, including trademarks, logos, </p>
+            <p>software, text, images, and documentation, are owned or licensed by SwiftX. You </p>
+            <p>are granted a limited, non-exclusive, non-transferable license to access and use </p>
+            <p>the Platform for personal, non-commercial purposes, subject to these Terms.</p>
+
+            <h2>1. DATA & NOTIFICATIONS</h2>
+            <p>• By using the Platform you consent to receive transactional messages, push </p>
+            <p>notifications, SMS, and emails related to your orders, account, promotions (where </p>
+            <p>you consent), and Platform updates. You may opt out of promotional </p>
+            <p>communications but cannot opt out of transactional messages necessary to </p>
+            <p>provide the service.</p>
+
+            <h2>1. CHANGES TO THESE TERMS</h2>
+            <p>• SwiftX may modify these Terms and the Privacy Policy from time to time. Material </p>
+            <p>changes will be posted and notified through the Platform. Continued use after </p>
+            <p>posting constitutes acceptance of revised Terms.</p>
+
+            <h2>1. GOVERNING LAW & DISPUTE RESOLUTION</h2>
+            <p>• Governing Law: These Terms are governed by the laws of the Republic of the </p>
+            <p>Philippines, including applicable provisions of RA 10173 (Data Privacy Act) and RA </p>
+            <p>10611 (Food Safety Act) as may be relevant.</p>
+            <p>• Jurisdiction & Venue: Any dispute, claim or controversy arising out of or in </p>
+            <p>connection with these Terms shall be exclusively brought in the courts of </p>
+            <p>competent jurisdiction in Don Carlos, Bukidnon. You and SwiftX submit to the </p>
+            <p>personal jurisdiction of such courts.</p>
+            <p>• Injunctive Relief: Nothing in this clause prevents SwiftX from seeking injunctive or </p>
+            <p>other interim relief in any court of competent jurisdiction where necessary to </p>
+            <p>protect SwiftX’s rights.</p>
+
+            <h2>1. MISCELLANEOUS</h2>
+            <p>• Entire Agreement: These Terms, together with any additional policies posted on </p>
+            <p>the Platform (including the Privacy Policy), constitute the entire agreement </p>
+            <p>between you and SwiftX regarding the Platform.</p>
+            <p>• Severability: If any provision is held invalid or unenforceable, the remaining </p>
+            <p>provisions will remain in full force.</p>
+            <p>• Assignment: SwiftX may assign or transfer these Terms to any successor entity. </p>
+            <p>You may not transfer or assign your account or these Terms without SwiftX’s prior </p>
+            <p>written consent.</p>
+
+            <h1>PART II — CUSTOMER DATA PRIVACY POLICY</h1>
+
+            <h2>Introduction</h2>
+            <p>This Privacy Policy explains how SwiftX (operated by Josh Carlou C. Ycaro) </p>
+            <p>collects, uses, stores, shares, and protects personal data of customers/end-users in </p>
+            <p>accordance with the Data Privacy Act of 2012 (RA 10173), its implementing rules and </p>
+            <p>regulations, and other applicable laws.</p>
+
+            <h2>1. DATA CONTROLLER & CONTACT</h2>
+            <p>• Data Controller: SwiftX (operated by Josh Carlou C. Ycaro), Don Carlos, Bukidnon, </p>
+            <p>Philippines.</p>
+            <p>• Data Protection Officer (DPO) / Privacy Contact: swiftxph@gmail.com. Use this </p>
+            <p>address for privacy inquiries, requests to exercise data subject rights, or </p>
+            <p>complaints.</p>
+
+            <h2>2. PERSONAL DATA WE COLLECT</h2>
+            <p>We collect the following categories of personal </p>
+            <p>and sensitive personal information (as applicable and with consent where </p>
+            <p>required):</p>
+            <p>• Identity & Contact:</p>
+            <p>• Full name, mobile number, email address, profile photo (optional).</p>
+            <p>• Location & Delivery:</p>
+            <p>• Delivery address, geolocation or GPS data (when location services are </p>
+            <p>enabled), directions, and delivery-specific notes.</p>
+            <p>• Transaction & Service Data:</p>
+            <p>• Order history, items ordered, delivery time, payment amounts, discounts, </p>
+            <p>merchant identification for each order.</p>
+            <p>• Payment & Billing:</p>
+            <p>• Payment instrument tokenized identifiers (we do not store full card </p>
+            <p>numbers except as allowed by third-party payment processors), billing </p>
+            <p>address, transaction identifiers.</p>
+            <p>• Device & Technical:</p>
+            <p>• Device identifiers, operating system, browser type, IP address, app version, </p>
+            <p>crash logs, usage analytics, cookies and similar technologies.</p>
+            <p>• Communications:</p>
+            <p>• Records of customer service interactions (chat logs, emails, call recordings </p>
+            <p>where permitted), ratings and reviews provided by you.</p>
+            <p>• Lawful basis: collection is necessary for contract performance, compliance with </p>
+            <p>legal obligations, and/or based on your consent or SwiftX’s legitimate </p>
+            <p>interests where applicable.</p>
+            <p>• Sensitive Personal Information: We do not generally collect sensitive personal </p>
+            <p>information. If sensitive data is provided (e.g., health or allergy disclosure </p>
+            <p>necessary for an order), we will process it only with explicit consent and only as </p>
+            <p>necessary to fulfill the order or comply with safety obligations.</p>
+
+            <h2>3. PURPOSES OF PROCESSING</h2>
+            <p>We process personal data for the following specific </p>
+            <p>purposes:</p>
+            <p>• Order Fulfillment: to process, confirm, fulfill, deliver your orders and provide </p>
+            <p>related customer support.</p>
+            <p>• Payment Processing: to bill and receive payment through authorized payment </p>
+            <p>processors.</p>
+            <p>• Merchant & Delivery Coordination: to securely share necessary order and contact </p>
+            <p>details with merchants and delivery partners strictly to execute the order.</p>
+            <p>• Account Management: to create, maintain, and secure your account, verify </p>
+            <p>identity, and authenticate access.</p>
+            <p>• Fraud Prevention & Security: to detect and prevent fraud, misuse, bots, and other </p>
+            <p>unlawful activity.</p>
+            <p>• Customer Service: to respond to inquiries, complaints, refunds, and disputes.</p>
+            <p>• Platform Operation & Improvement: to analyze usage, improve features, </p>
+            <p>personalize user experience, and ensure operational integrity.</p>
+            <p>• Legal Compliance: to comply with legal obligations (tax, regulatory, law </p>
+            <p>enforcement requests) and to enforce SwiftX’s rights.</p>
+            <p>• Marketing (Optional): with your explicit consent where required, to send </p>
+            <p>promotional offers, newsletters, and targeted advertisements. You may opt out at </p>
+            <p>any time.</p>
+
+            <h2>4. LEGAL BASES FOR PROCESSING (RA 10173 ALIGNMENT)</h2>
+            <p>• Contractual Necessity: Processing necessary to perform the contract between you </p>
+            <p>and SwiftX (order processing, delivery coordination, payment).</p>
+            <p>• Legal Obligation: Processing necessary to comply with legal obligations (tax </p>
+            <p>reporting, regulatory compliance, law enforcement).</p>
+            <p>• Legitimate Interests: Processing necessary for SwiftX’s legitimate interests (fraud </p>
+            <p>prevention, platform security, service improvement), balanced against your rights.</p>
+            <p>• Consent: Where required under law (e.g., for promotional communications or </p>
+            <p>processing sensitive personal information), we will obtain your explicit consent.</p>
+
+            <h2>5. DATA SHARING & RECIPIENTS</h2>
+            <p>We strictly limit sharing of your personal data to </p>
+            <p>the minimum necessary to fulfill the purposes above:</p>
+            <p>• Merchants: We share customer name, delivery address, contact number, order </p>
+            <p>details, and any delivery notes strictly to allow the merchant to prepare, package, </p>
+            <p>label, and hand over the order.</p>
+            <p>• Delivery Partners / Independent Contractors: We share name, delivery address, </p>
+            <p>contact number, order details, and GPS data as necessary for pickup and delivery.</p>
+            <p>• Payment Processors & Financial Institutions: We share payment-related </p>
+            <p>information with third-party payment processors to complete transactions (card </p>
+            <p>details are tokenized by processors).</p>
+            <p>• Service Providers & Processors: We may share data with hosting providers, </p>
+            <p>analytics providers, customer support platforms, legal advisors, and other </p>
+            <p>contracted processors bound by written data processing agreements requiring </p>
+            <p>confidentiality and compliance with RA 10173.</p>
+            <p>• Regulators & Law Enforcement: We may disclose personal data where required </p>
+            <p>by law, court order, or to comply with regulatory or investigative requests.</p>
+            <p>• Aggregated & Anonymized Data: We may use or disclose anonymized or de </p>
+            <p>identified data for analytics, research, or business purposes; such data does not </p>
+            <p>identify individuals.</p>
+            <p>• No Unrestricted Sale: We do not sell personal data for third-party marketing </p>
+            <p>purposes. Any sharing for marketing is only with your explicit consent.</p>
+
+            <h2>6. CROSS-BORDER TRANSFERS</h2>
+            <p>• If personal data is transferred outside the Philippines, SwiftX will ensure </p>
+            <p>appropriate safeguards (e.g., data processing agreements, security measures) are </p>
+            <p>in place and that transfers comply with RA 10173 and applicable regulations.</p>
+
+            <h2>7. DATA RETENTION</h2>
+            <p>• Order & Transaction Data: Customer order records, transaction history, and </p>
+            <p>related personal data are retained for a period of two (2) years from the date of </p>
+            <p>the last transaction, unless a longer retention period is required by law or </p>
+            <p>necessary to resolve disputes or enforce legal rights.</p>
+            <p>• Account & Security Data: Certain technical, access, and security logs may be </p>
+            <p>retained for a reasonable period as necessary for security, fraud prevention, and </p>
+            <p>compliance.</p>
+            <p>• Deletion & Anonymization: After retention periods expire we will securely delete, </p>
+            <p>destroy or anonymize personal data in accordance with our retention schedule </p>
+            <p>and applicable law.</p>
+
+            <h2>8. DATA SECURITY</h2>
+            <p>• Security Measures: We maintain reasonable administrative, physical, and technical </p>
+            <p>safeguards to protect personal data against unauthorized access, alteration, </p>
+            <p>disclosure, or destruction. Measures include access controls, encryption where </p>
+            <p>appropriate, secure development practices, periodic security assessments, and </p>
+            <p>contractual protections with service providers.</p>
+            <p>• No Absolute Guarantee: While we take industry-standard measures to protect </p>
+            <p>data, no security system is impenetrable. In the event of a verified data breach we </p>
+            <p>will notify affected individuals and the National Privacy Commission as required </p>
+            <p>by law.</p>
+
+            <h2>9. DATA SUBJECT RIGHTS (under RA 10173)</h2>
+            <p>As a data subject, you may exercise the </p>
+            <p>following rights in accordance with RA 10173 and implementing rules:</p>
+            <p>• Right to Access: Request confirmation and access to personal data processed by </p>
+            <p>SwiftX.</p>
+            <p>• Right to Rectification: Request correction of inaccurate or incomplete personal </p>
+            <p>data.</p>
+            <p>• Right to Erasure or Blocking: Request deletion or blocking of personal data where </p>
+            <p>permitted (subject to retention obligations and exceptions under law).</p>
+            <p>• Right to Object: Object to processing based on legitimate interests or for direct </p>
+            <p>marketing.</p>
+            <p>• Right to Data Portability: Request a copy of your personal data in a structured, </p>
+            <p>commonly used, and machine-readable format where technically feasible and </p>
+            <p>applicable.</p>
+            <p>• Right to Restrict Processing: Request restriction of processing where accuracy is </p>
+            <p>contested or processing is unlawful.</p>
+            <p>• Right to Withdraw Consent: Withdraw consent where processing is based on </p>
+            <p>consent (withdrawal does not affect processing carried out prior to withdrawal).</p>
+            <p>• How to Exercise Rights: Submit requests to swiftxph@gmail.com with sufficient </p>
+            <p>details and identification to verify your identity. We will respond within the </p>
+            <p>timeframes required by RA 10173 (generally within 30 days, with possible </p>
+            <p>extension under the law). We may request additional information to verify your </p>
+            <p>identity and the scope of the request.</p>
+            <p>• Fees: We will provide one (1) copy of the requested data free of charge. </p>
+            <p>Reasonable fees may apply for subsequent requests as allowed by law.</p>
+
+            <h2>10. COOKIES & SIMILAR TECHNOLOGIES</h2>
+            <p>• Use: The Platform uses cookies, web beacons, and similar technologies to </p>
+            <p>provide, secure, and improve our services, for analytics, and to personalize user </p>
+            <p>experience.</p>
+            <p>• Management: You may manage cookie preferences via your browser or device </p>
+            <p>settings, though disabling certain cookies may impair functionality.</p>
+
+            <h2>11. CHILDREN’S PRIVACY</h2>
+            <p>• The Platform is not directed to persons under 18. We do not knowingly collect </p>
+            <p>personal data from minors. If a parent or guardian believes their child has </p>
+            <p>provided personal data without consent, contact us at swiftxph@gmail.com to </p>
+            <p>request deletion.</p>
+
+            <h2>12. COMPLAINTS & ENFORCEMENT</h2>
+            <p>• Complaints to SwiftX: For privacy concerns or complaints, contact the DPO </p>
+            <p>at swiftxph@gmail.com. We will investigate and respond in accordance with RA </p>
+            <p>10173.</p>
+            <p>• National Privacy Commission: You may also file complaints with the National </p>
+            <p>Privacy Commission (NPC) if you believe your data protection rights under RA </p>
+            <p>10173 have been violated.</p>
+
+            <h2>13. CHANGES TO THE PRIVACY POLICY</h2>
+            <p>• SwiftX may update this Privacy Policy to reflect changes in law, our services, or </p>
+            <p>data practices. Material changes will be posted on the Platform with an updated </p>
+            <p>effective date. Continued use after changes constitutes acceptance of the revised </p>
+            <p>policy.</p>
+
+            <h1>IMPLEMENTATION NOTES (FOR INTERNAL ALIGNMENT)</h1>
+            <p>• Consistency with Merchant Agreement: These Terms and Privacy Policy explicitly </p>
+            <p>reflect the SwiftX Merchant Agreement provisions: (1) SwiftX’s role as a </p>
+            <p>technology platform only; (2) merchant responsibility for food safety, quality, and </p>
+            <p>tamper-evident packaging; and (3) governing law and exclusive jurisdiction in </p>
+            <p>Don Carlos, Bukidnon, Philippines.</p>
+            <p>• Food Safety References: Merchants are required to comply with the Food Safety </p>
+            <p>Act of 2013 (RA 10611). Customers should direct any claims relating to foodborne </p>
+            <p>illness, contamination, or other food safety issues to the merchant and may notify </p>
+            <p>SwiftX to facilitate communication and regulatory reporting.</p>
+
+            <h1>CONTACT & CUSTOMER SUPPORT</h1>
+            <p>For general support, disputes, or policy questions:</p>
+            <p>• Email: swiftxph@gmail.com (for privacy matters, contact the DPO at this address)</p>
+            <p>• Operator: SwiftX (operated by Josh Carlou C. Ycaro), Don Carlos, Bukidnon, </p>
+            <p>Philippines</p>
+
+            <h1>ACKNOWLEDGEMENT</h1>
+            <p>By using the Platform you confirm that you have read and </p>
+            <p>understood these Terms and the Privacy Policy, that you consent to the collection and </p>
+            <p>processing of your personal data as described, and that you agree to be legally bound </p>
+            <p>by these Terms.</p>
+        </div>
+    </div>
+</div>
