@@ -50,7 +50,8 @@ namespace SwiftX.Controllers
                 AgreementPath = await SaveFile(rider.Agreement, uploadsFolder),
                 FrontVehiclePath = await SaveFile(rider.Front_Vehicle, uploadsFolder),
                 SideVehiclePath = await SaveFile(rider.Side_Vehicle, uploadsFolder),
-                GCContact = rider.GCContact
+                GCContact = rider.GCContact,
+                PlateNumber = rider.PlateNumber
             };
 
             // 4. Save rider entity to database

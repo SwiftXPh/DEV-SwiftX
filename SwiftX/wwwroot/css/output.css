@@ -1441,10 +1441,6 @@ video {
   transition-duration: 300ms;
 }
 
-.hover\:underline:hover {
-  text-decoration-line: underline;
-}
-
 .hover\:opacity-100:hover {
   opacity: 1;
 }
