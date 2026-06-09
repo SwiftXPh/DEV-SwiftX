@@ -68,6 +68,11 @@ namespace SwiftX.Controllers
 
             // 1. Save the user first to get the UserId
             var user = merchant.User;
+            // Populate User fields from merchant form data (form doesn't bind these directly)
+            user.FirstName = merchant.OwnerFirstName;
+            user.LastName = merchant.OwnerLastName;
+            user.Contact = merchant.BusinessContact;
+            user.Address = merchant.BusinessAddress;
             _db.Users.Add(user);
             await _db.SaveChangesAsync();
 
