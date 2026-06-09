@@ -10,6 +10,7 @@ namespace SwiftX.Models
         public IFormFile Agreement { get; set; }
         public IFormFile Front_Vehicle { get; set; }
         public IFormFile Side_Vehicle { get; set; }
+        public string PlateNumber { get; set; }
         public string GCContact { get; set; }
     }
 }

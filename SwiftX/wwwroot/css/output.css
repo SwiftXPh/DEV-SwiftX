@@ -1338,6 +1338,10 @@ video {
   font-weight: 600;
 }
 
+.uppercase {
+  text-transform: uppercase;
+}
+
 .leading-relaxed {
   line-height: 1.625;
 }
@@ -1435,6 +1439,10 @@ video {
 
 .duration-300 {
   transition-duration: 300ms;
+}
+
+.hover\:underline:hover {
+  text-decoration-line: underline;
 }
 
 .hover\:opacity-100:hover {

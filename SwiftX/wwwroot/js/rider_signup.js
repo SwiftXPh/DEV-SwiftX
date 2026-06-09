@@ -31,7 +31,9 @@
         agreement: document.getElementById('inp-agreement'),
         front: document.getElementById('inp-front'),
         side: document.getElementById('inp-side'),
+        plate: document.getElementById('inp-plate'),
         gcash: document.getElementById('inp-gcash'),
+
 
         // Section 3
         username: document.getElementById('inp-username'),
@@ -234,7 +236,8 @@
             fileOk(el.license) && fileOk(el.id) &&
             fileOk(el.orcr) && fileOk(el.agreement) &&
             fileOk(el.front) && fileOk(el.side) &&
-            /^09\d{9}$/.test((el.gcash.value || '').replace(/\s+/g, ''))
+            /^09\d{9}$/.test((el.gcash.value || '').replace(/\s+/g, '')) &&
+            el.plate.value.trim()
         );
     }
 
@@ -309,6 +312,7 @@
         if (!chkFile(el.front, 'front', 'Front vehicle photo')) ok = false;
         if (!chkFile(el.side, 'side', 'Side vehicle photo')) ok = false;
         if (!chkPhone(el.gcash, 'gcash', 'GCash number')) ok = false;
+        if (!chkRequired(el.plate, 'plate', 'Plate number')) ok = false;
 
         // Section 3
         if (!chkRequired(el.username, 'username', 'Username')) ok = false;
@@ -371,6 +375,11 @@
     [el.contact, el.gcash].forEach(function (inp) {
         if (!inp) return;
         inp.addEventListener('input', function () { setBorder(inp, false); refreshIndicator(); });
+    });
+    el.plate.addEventListener('input', function () {
+        this.value = this.value.toUpperCase(); // force uppercase as they type
+        setBorder(el.plate, false);
+        refreshIndicator();
     });
 
     [el.dobMonth, el.dobDate, el.dobYear].forEach(function (inp) {
