@@ -69,11 +69,42 @@ namespace SwiftX.Controllers
 
         public IActionResult Merchant()
         {
-            return View();
+            var merchants = _db.Merchants
+                .Include(m => m.User)
+                .Where(m => m.Status == "Active" || m.Status == "Inactive")
+                .ToList();
+            return View(merchants);
         }
         public IActionResult MerchantApplications()
         {
-            return View();
+            var merchants = _db.Merchants.Include(m => m.User).ToList();
+            return View(merchants);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult ApproveMerchant(int id)
+        {
+            var merchant = _db.Merchants.Find(id);
+            if (merchant != null)
+            {
+                merchant.Status = "Active";
+                _db.SaveChanges();
+            }
+            return RedirectToAction("MerchantApplications");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult RejectMerchant(int id)
+        {
+            var merchant = _db.Merchants.Find(id);
+            if (merchant != null)
+            {
+                merchant.Status = "Rejected";
+                _db.SaveChanges();
+            }
+            return RedirectToAction("MerchantApplications");
         }
 
     }

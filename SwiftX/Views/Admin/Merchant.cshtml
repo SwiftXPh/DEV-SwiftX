@@ -1,9 +1,11 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+@model List<SwiftX.Models.Merchant>
 @{
     ViewData["Title"] = "Merchant";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+
+    var totalMerchants = Model.Count;
+    var activeMerchants = Model.Count(m => m.Status == "Active");
+    var inactiveMerchants = Model.Count(m => m.Status == "Inactive");
 }
 
 <!-- STAT CARDS -->
@@ -11,14 +13,13 @@
     <div class="admin-stat-card">
         <div class="admin-stat-header">
             <div class="admin-stat-icon"><i class="ph ph-check-circle"></i></div>
-            <span class="admin-stat-badge admin-stat-badge--up"><i class="ph ph-arrow-up"></i> 3%</span>
         </div>
-        <p class="admin-stat-value">54</p>
+        <p class="admin-stat-value">@activeMerchants</p>
         <p class="admin-stat-label">Active Merchants</p>
     </div>
     <div class="admin-stat-card">
         <div class="admin-stat-header"><div class="admin-stat-icon"><i class="ph ph-storefront"></i></div></div>
-        <p class="admin-stat-value">71</p>
+        <p class="admin-stat-value">@totalMerchants</p>
         <p class="admin-stat-label">Total Merchants</p>
     </div>
     <div class="admin-stat-card">
@@ -47,7 +48,7 @@
         <div class="admin-table-header">
             <div>
                 <h2 class="admin-table-title">Merchant Management</h2>
-                <p style="font-size:11px;color:rgba(255,255,255,0.3);margin-top:3px;">71 total &middot; 54 active &middot; 6 pending</p>
+                <p style="font-size:11px;color:rgba(255,255,255,0.3);margin-top:3px;">@totalMerchants total &middot; @activeMerchants active &middot; @inactiveMerchants inactive</p>
             </div>
             <div class="admin-table-actions">
                 <div class="admin-search">
@@ -75,53 +76,54 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @foreach (var merchant in Model)
+                    {
+                        var isActive = merchant.Status == "Active";
+                        var badgeClass = isActive ? "admin-badge--active" : "admin-badge--inactive";
+                        var avatarDim = isActive ? "" : " td-merchant__avatar--dim";
+                        var nameDim = isActive ? "" : " style=\"color:rgba(255,255,255,0.35);\"";
+                        var phoneDim = isActive ? "" : " style=\"opacity:.4;\"";
+                        var catDim = isActive ? "" : " td-category--dim";
 
-                    @* ACTIVE MERCHANT *@
-                    <tr>
-                        <td>
-                            <div class="td-merchant">
-                                <div class="td-merchant__avatar"><i class="ph ph-storefront"></i></div>
-                                <div>
-                                    <p class="td-merchant__name">Jollibee Malaybalay</p>
-                                    <p class="td-merchant__id">MER-001</p>
+                        <tr>
+                            <td>
+                                <div class="td-merchant">
+                                    <div class="td-merchant__avatar@(avatarDim)"><i class="ph ph-storefront"></i></div>
+                                    <div>
+                                        <p class="td-merchant__name" @Html.Raw(nameDim)>@merchant.BusinessName</p>
+                                        <p class="td-merchant__id">MER-@merchant.Id.ToString("D3")</p>
+                                    </div>
                                 </div>
-                            </div>
-                        </td>
-                        <td><span class="admin-badge admin-badge--active"><span class="admin-badge-dot"></span>Active</span></td>
-                        <td>08821234567</td>
-                        <td><span class="td-category">Fast Food</span></td>
-                        <td><span class="td-orders td-orders--live"><i class="ph ph-package"></i> 5</span></td>
-                        <td>
-                            <div class="td-actions">
-                                <button class="admin-action-btn" title="View Merchant" onclick="openModal('merchant-detail-modal')"><i class="ph ph-eye"></i></button>
-                                <button class="admin-action-btn" title="Edit Merchant" onclick="openModal('merchant-edit-modal')"><i class="ph ph-pencil-simple"></i></button>
-                                <button class="admin-action-btn admin-action-btn--danger-soft" title="Deactivate"><i class="ph ph-prohibit"></i></button>
-                            </div>
-                        </td>
-                    </tr>
-
-                    @* INACTIVE EMRCHANT *@
-                    <tr>
-                        <td>
-                            <div class="td-merchant">
-                                <div class="td-merchant__avatar td-merchant__avatar--dim"><i class="ph ph-storefront"></i></div>
-                                <div>
-                                    <p class="td-merchant__name" style="color:rgba(255,255,255,0.35);">Brew & Bites Cafe</p>
-                                    <p class="td-merchant__id">MER-003</p>
+                            </td>
+                            <td><span class="admin-badge @badgeClass"><span class="admin-badge-dot"></span>@merchant.Status</span></td>
+                            <td @Html.Raw(phoneDim)>@merchant.BusinessContact</td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(merchant.Category))
+                                {
+                                    <span class="td-category@(catDim)">@merchant.Category</span>
+                                }
+                                else
+                                {
+                                    <span class="td-orders td-orders--zero">—</span>
+                                }
+                            </td>
+                            <td><span class="td-orders td-orders--zero">—</span></td>
+                            <td>
+                                <div class="td-actions">
+                                    <button class="admin-action-btn" title="View Merchant" onclick="openModal('merchant-detail-modal')"><i class="ph ph-eye"></i></button>
+                                    @if (isActive)
+                                    {
+                                        <button class="admin-action-btn" title="Edit Merchant" onclick="openModal('merchant-edit-modal')"><i class="ph ph-pencil-simple"></i></button>
+                                        <button class="admin-action-btn admin-action-btn--danger-soft" title="Deactivate"><i class="ph ph-prohibit"></i></button>
+                                    }
+                                    else
+                                    {
+                                        <button class="admin-action-btn admin-action-btn--success" title="Reactivate"><i class="ph ph-arrow-counter-clockwise"></i></button>
+                                    }
                                 </div>
-                            </div>
-                        </td>
-                        <td><span class="admin-badge admin-badge--inactive"><span class="admin-badge-dot"></span>Inactive</span></td>
-                        <td style="opacity:.4;">08824561234</td>
-                        <td><span class="td-category td-category--dim">Cafe</span></td>
-                        <td><span class="td-orders td-orders--zero">—</span></td>
-                        <td>
-                            <div class="td-actions">
-                                <button class="admin-action-btn" title="View Merchant" onclick="openModal('merchant-detail-modal')"><i class="ph ph-eye"></i></button>
-                                <button class="admin-action-btn admin-action-btn--success" title="Reactivate"><i class="ph ph-arrow-counter-clockwise"></i></button>
-                            </div>
-                        </td>
-                    </tr>
+                            </td>
+                        </tr>
+                    }
                 </tbody>
             </table>
         </div>
@@ -135,44 +137,14 @@
             <div class="ops-panel__body">
                 <a asp-controller="Admin" asp-action="MerchantApplications" class="ops-btn">
                     <div class="ops-btn__icon"><i class="ph ph-clipboard-text"></i></div>
-                    <div><p class="ops-btn__label">Review Applications</p><p class="ops-btn__meta">6 pending review</p></div>
+                    <div><p class="ops-btn__label">Review Applications</p><p class="ops-btn__meta">View all applications</p></div>
                     <i class="ph ph-arrow-right ops-btn__arrow"></i>
                 </a>
                 <button class="ops-btn" onclick="openModal('settlement-modal')">
                     <div class="ops-btn__icon"><i class="ph ph-currency-circle-dollar"></i></div>
-                    <div><p class="ops-btn__label">Process Settlements</p><p class="ops-btn__meta">8 merchants pending</p></div>
+                    <div><p class="ops-btn__label">Process Settlements</p><p class="ops-btn__meta">Manage payouts</p></div>
                     <i class="ph ph-arrow-right ops-btn__arrow"></i>
                 </button>
-            </div>
-        </div>
-
-        <div class="ops-panel">
-            <div class="ops-panel__head">Pending Applicants</div>
-            <div class="ops-panel__body" style="padding:8px;">
-                <div class="ops-applicant" onclick="openModal('merchant-application-modal')">
-                    <div class="ops-applicant__av"><i class="ph ph-storefront"></i></div>
-                    <div style="flex:1;min-width:0;">
-                        <p class="ops-applicant__name">Kusina ni Lola</p>
-                        <p class="ops-applicant__date">Applied Feb 19, 2026</p>
-                    </div>
-                    <span class="admin-badge admin-badge--pending"><span class="admin-badge-dot"></span>Pending</span>
-                </div>
-                <div class="ops-applicant" onclick="openModal('merchant-application-modal')">
-                    <div class="ops-applicant__av"><i class="ph ph-storefront"></i></div>
-                    <div style="flex:1;min-width:0;">
-                        <p class="ops-applicant__name">Dimsum Diner</p>
-                        <p class="ops-applicant__date">Applied Feb 20, 2026</p>
-                    </div>
-                    <span class="admin-badge admin-badge--pending"><span class="admin-badge-dot"></span>Pending</span>
-                </div>
-                <div class="ops-applicant" onclick="openModal('merchant-application-modal')">
-                    <div class="ops-applicant__av"><i class="ph ph-storefront"></i></div>
-                    <div style="flex:1;min-width:0;">
-                        <p class="ops-applicant__name">Pinoy Lutong Bahay</p>
-                        <p class="ops-applicant__date">Applied Feb 21, 2026</p>
-                    </div>
-                    <span class="admin-badge admin-badge--pending"><span class="admin-badge-dot"></span>Pending</span>
-                </div>
             </div>
         </div>
     </div>
@@ -196,7 +168,8 @@
                         previous: '<i class="ph ph-caret-left"></i>',
                         next:     '<i class="ph ph-caret-right"></i>'
                     },
-                    info: 'Showing _START_–_END_ of _TOTAL_ merchants'
+                    info: 'Showing _START_–_END_ of _TOTAL_ merchants',
+                    emptyTable: '<div style="text-align:center;padding:2rem;opacity:0.5;"><i class="ph ph-storefront" style="font-size:2rem;"></i><p style="margin-top:0.5rem;">No merchants found in the database.</p></div>'
                 },
                 drawCallback: function () {
                     $(this.api().table().container())
@@ -224,8 +197,3 @@
 @await Html.PartialAsync("_ModalMerchantApplication")
 @await Html.PartialAsync("_ModalMerchantDetail")
 @await Html.PartialAsync("_ModalMerchantEdit")
-@*
-    @await Html.PartialAsync("_ModalMerchantSettlement")
-
-*@
-

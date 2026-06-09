@@ -1,33 +1,35 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+@model List<SwiftX.Models.Merchant>
 @{
     ViewData["Title"] = "Merchants Application";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+
+    var totalApplications = Model.Count;
+    var pendingCount = Model.Count(m => m.Status == "Pending");
+    var approvedCount = Model.Count(m => m.Status == "Active");
+    var rejectedCount = Model.Count(m => m.Status == "Rejected");
 }
 
 <div class="admin-stat-grid" style="margin-bottom:22px;">
     <div class="admin-stat-card">
         <div class="admin-stat-header">
             <div class="admin-stat-icon"><i class="ph ph-clock"></i></div>
-            <span class="admin-stat-badge admin-stat-badge--up"><i class="ph ph-arrow-up"></i> 4</span>
         </div>
-        <p class="admin-stat-value">18</p>
+        <p class="admin-stat-value">@pendingCount</p>
         <p class="admin-stat-label">Pending Review</p>
     </div>
     <div class="admin-stat-card">
         <div class="admin-stat-header"><div class="admin-stat-icon"><i class="ph ph-check-circle"></i></div></div>
-        <p class="admin-stat-value">54</p>
+        <p class="admin-stat-value">@approvedCount</p>
         <p class="admin-stat-label">Accepted</p>
     </div>
     <div class="admin-stat-card">
         <div class="admin-stat-header"><div class="admin-stat-icon"><i class="ph ph-x-circle"></i></div></div>
-        <p class="admin-stat-value">9</p>
+        <p class="admin-stat-value">@rejectedCount</p>
         <p class="admin-stat-label">Rejected</p>
     </div>
     <div class="admin-stat-card">
         <div class="admin-stat-header"><div class="admin-stat-icon"><i class="ph ph-storefront"></i></div></div>
-        <p class="admin-stat-value">81</p>
+        <p class="admin-stat-value">@totalApplications</p>
         <p class="admin-stat-label">Total Applications</p>
     </div>
 </div>
@@ -38,7 +40,7 @@
         <div>
             <h2 class="admin-table-title">All Merchant Applications</h2>
             <p style="font-size:11px;color:rgba(255,255,255,0.3);margin-top:3px;">
-                81 total &middot; 18 pending &middot; 54 accepted &middot; 9 rejected
+                @totalApplications total &middot; @pendingCount pending &middot; @approvedCount accepted &middot; @rejectedCount rejected
             </p>
         </div>
         <div class="admin-table-actions">
@@ -59,117 +61,72 @@
         <table class="admin-table" id="merchant_apps_table">
             <thead>
                 <tr>
-                    <th>Applicant</th>
-                    <th>Business Type</th>
-                    <th>DTI / BIR #</th>
+                    <th>Business</th>
+                    <th>Owner</th>
+                    <th>Contact</th>
                     <th>Applied</th>
                     <th>Status</th>
                     <th style="width:120px;">Actions</th>
                 </tr>
             </thead>
             <tbody>
+                @foreach (var merchant in Model)
+                {
+                    var isPending = merchant.Status == "Pending";
+                    var isApproved = merchant.Status == "Active";
+                    var isRejected = merchant.Status == "Rejected";
 
-                @* PENDING *@
-                <tr>
-                    <td>
-                        <div class="td-person">
-                            <div class="td-person__avatar"><i class="ph ph-user"></i></div>
-                            <div>
-                                <p class="td-person__name">Maria Santos</p>
-                                <p class="td-person__sub">maria@kusinalola.ph &middot; 0917-123-4567</p>
+                    var badgeClass = isPending ? "admin-badge--pending" :
+                                     isApproved ? "admin-badge--active" :
+                                     "admin-badge--rejected";
+                    var badgeLabel = isPending ? "Pending" :
+                                     isApproved ? "Approved" :
+                                     "Rejected";
+                    var rowMuted = isRejected ? " td-person--muted" : "";
+                    var avatarMuted = isRejected ? " td-person__avatar--muted" : "";
+                    var ownerName = $"{merchant.OwnerFirstName} {merchant.OwnerLastName}";
+
+                    <tr>
+                        <td>
+                            <div class="td-person@(rowMuted)">
+                                <div class="td-person__avatar@(avatarMuted)"><i class="ph ph-storefront"></i></div>
+                                <div>
+                                    <p class="td-person__name">@merchant.BusinessName</p>
+                                    <p class="td-person__sub">@merchant.BusinessEmail</p>
+                                </div>
                             </div>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="td-biztype">
-                            <i class="ph ph-fork-knife"></i>
-                            <span class="td-biztype__label">Restaurant — Filipino</span>
-                        </div>
-                    </td>
-                    <td><span class="td-biz td-biz--ok">DTI-2024-00123</span></td>
-                    <td class="td-date">Feb 19, 2026</td>
-                    <td><span class="admin-badge admin-badge--pending"><span class="admin-badge-dot"></span>Pending</span></td>
-                    <td>
-                        <div class="admin-actions-cell">
-                            <button class="admin-action-btn" title="View Application"
-                                    onclick="openModal('merchant-application-modal')">
-                                <i class="ph ph-eye"></i>
-                            </button>
-                            <button class="admin-action-btn admin-action-btn--approve" title="Quick Accept">
-                                <i class="ph ph-check"></i>
-                            </button>
-                            <button class="admin-action-btn admin-action-btn--reject" title="Quick Reject">
-                                <i class="ph ph-x"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-
-                @* ACCEPTED OR APPROVED*@
-                <tr>
-                    <td>
-                        <div class="td-person">
-                            <div class="td-person__avatar"><i class="ph ph-user"></i></div>
-                            <div>
-                                <p class="td-person__name">Ana Reyes</p>
-                                <p class="td-person__sub">ana@brewhaven.ph &middot; 0932-789-0123</p>
+                        </td>
+                        <td style="font-size:var(--fs-small);">@ownerName</td>
+                        <td style="font-size:var(--fs-small);">@merchant.BusinessContact</td>
+                        <td style="font-size:var(--fs-small);color:rgba(255,255,255,0.55);">@merchant.CreatedAt.ToString("MMM dd, yyyy")</td>
+                        <td><span class="admin-badge @badgeClass"><span class="admin-badge-dot"></span>@badgeLabel</span></td>
+                        <td>
+                            <div class="admin-actions-cell">
+                                <button class="admin-action-btn" title="View Application"
+                                        onclick="openModal('merchant-application-modal')">
+                                    <i class="ph ph-eye"></i>
+                                </button>
+                                @if (isPending)
+                                {
+                                    <form asp-controller="Admin" asp-action="ApproveMerchant" method="post" style="display:inline;">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@merchant.Id" />
+                                        <button type="submit" class="admin-action-btn admin-action-btn--approve" title="Quick Accept">
+                                            <i class="ph ph-check"></i>
+                                        </button>
+                                    </form>
+                                    <form asp-controller="Admin" asp-action="RejectMerchant" method="post" style="display:inline;">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@merchant.Id" />
+                                        <button type="submit" class="admin-action-btn admin-action-btn--reject" title="Quick Reject">
+                                            <i class="ph ph-x"></i>
+                                        </button>
+                                    </form>
+                                }
                             </div>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="td-biztype">
-                            <i class="ph ph-coffee"></i>
-                            <span class="td-biztype__label">Cafe — Coffee & Pastries</span>
-                        </div>
-                    </td>
-                    <td><span class="td-biz td-biz--ok">BIR-2023-55821</span></td>
-                    <td class="td-date">Jan 15, 2026</td>
-                    <td><span class="admin-badge admin-badge--active"><span class="admin-badge-dot"></span>Approved</span></td>
-                    <td>
-                        <div class="admin-actions-cell">
-                            <button class="admin-action-btn" title="View Application"
-                                    onclick="openModal('merchant-application-modal')">
-                                <i class="ph ph-eye"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-
-                @* REJECTED *@
-                <tr>
-                    <td>
-                        <div class="td-person td-person--muted">
-                            <div class="td-person__avatar td-person__avatar--muted"><i class="ph ph-user"></i></div>
-                            <div>
-                                <p class="td-person__name">Ramon Cruz</p>
-                                <p class="td-person__sub">ramon@cruzfoods.ph &middot; 0945-321-6789</p>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="td-biztype td-biztype--dim">
-                            <i class="ph ph-fork-knife"></i>
-                            <span class="td-biztype__label">Restaurant — Seafood</span>
-                        </div>
-                    </td>
-                    <td>
-                        <span class="td-biz td-biz--expired">
-                            <i class="ph ph-warning-circle"></i> Expired
-                        </span>
-                    </td>
-                    <td class="td-date td-date--muted">Jan 22, 2026</td>
-                    <td><span class="admin-badge admin-badge--rejected"><span class="admin-badge-dot"></span>Rejected</span></td>
-                    <td>
-                        <div class="admin-actions-cell">
-                            <button class="admin-action-btn" title="View Application"
-                                    onclick="openModal('merchant-application-modal')">
-                                <i class="ph ph-eye"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-
-
+                        </td>
+                    </tr>
+                }
             </tbody>
         </table>
     </div>
@@ -196,7 +153,8 @@
                         previous: '<i class="ph ph-caret-left"></i>',
                         next:     '<i class="ph ph-caret-right"></i>'
                     },
-                    info: 'Showing _START_–_END_ of _TOTAL_ applications'
+                    info: 'Showing _START_–_END_ of _TOTAL_ applications',
+                    emptyTable: '<div style="text-align:center;padding:2rem;opacity:0.5;"><i class="ph ph-storefront" style="font-size:2rem;"></i><p style="margin-top:0.5rem;">No merchant applications found.</p></div>'
                 },
                 drawCallback: function () {
                     $(this.api().table().container())
@@ -214,7 +172,10 @@
                 $('#merchant-apps-filter-bar .admin-filter-btn').removeClass('active');
                 $(this).addClass('active');
                 var f = $(this).data('filter');
-                merchantAppsTable.column(4).search(f === 'all' ? '' : '^' + f.charAt(0).toUpperCase() + f.slice(1) + '$', true, false).draw();
+                var term = '';
+                if (f === 'approved') term = '^Approved$';
+                else if (f !== 'all') term = '^' + f.charAt(0).toUpperCase() + f.slice(1) + '$';
+                merchantAppsTable.column(4).search(term, true, false).draw();
             });
         });
     </script>

@@ -5,6 +5,9 @@ namespace SwiftX.Models
         public int Id { get; set; }
         public int UserId { get; set; }
         public UserModel User { get; set; }
+        public string Status { get; set; } = "Pending"; // Pending, Active, Inactive, Rejected
+        public string? Category { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public string BusinessName { get; set; }
         public string OwnerFirstName { get; set; }
         public string OwnerLastName { get; set; }
