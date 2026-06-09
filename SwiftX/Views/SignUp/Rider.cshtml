@@ -228,7 +228,7 @@
 
                     </div><!-- /upload-group -->
                     <!-- Vehicle Photos -->
-                    <div class="upload-divider"><span>Vehicle Photos</span></div>
+                    <div class="upload-divider"><span>Vehicle Information</span></div>
                     <p class="__micro opacity-50 mb-4">Clear photos of your vehicle — front and side views.</p>
 
                     <div class="grid grid-cols-2 gap-3 mb-5">
@@ -254,6 +254,20 @@
                             </div>
                             <span class="field-error mt-1" id="err-side"></span>
                         </div>
+                    </div>
+
+                    <!-- Plate Number -->
+                    <div class="mb-4">
+                        <label class="__label block mb-1.5">*Plate Number</label>
+                        <div class="input-icon-wrap">
+                            <input type="text" class="signup-input" id="inp-plate"
+                                   asp-for="PlateNumber" placeholder="e.g. ABC 1234"
+                                   autocomplete="off"
+                                   onkeydown="if(event.key === ' ' && this.value.indexOf(' ') !== -1) return false;"
+                                   style="text-transform: uppercase;" />
+                            <span class="input-icon"><i class="ph ph-car"></i></span>
+                        </div>
+                        <span class="field-error" id="err-plate"></span>
                     </div>
 
                     <!-- Payment Info -->
@@ -286,7 +300,7 @@
                         <label class="__label block mb-1.5">*Username</label>
                         <div class="input-icon-wrap">
                             <input type="text" class="signup-input" id="inp-username"
-                                   asp-for="User.Username" placeholder="Username" autocomplete="username" />
+                                   asp-for="User.Username" placeholder="Username" autocomplete="username" onkeydown="if(event.key === ' ') return false;" />
                             <span class="input-icon"><i class="ph ph-at"></i></span>
                         </div>
                         <span class="field-error" id="err-username"></span>
@@ -296,7 +310,7 @@
                         <label class="__label block mb-1.5">*Email Address</label>
                         <div class="input-icon-wrap">
                             <input type="email" class="signup-input" id="inp-email"
-                                   asp-for="User.Email" placeholder="Email address" autocomplete="email" />
+                                   asp-for="User.Email" placeholder="Email address" autocomplete="email" onkeydown="if(event.key === ' ') return false;"  />
                             <span class="input-icon"><i class="ph ph-envelope-simple"></i></span>
                         </div>
                         <span class="field-error" id="err-email"></span>
@@ -306,7 +320,7 @@
                         <label class="__label block mb-1.5">*Password</label>
                         <div class="password-wrapper input-icon-wrap">
                             <input type="password" class="signup-input" id="inp-password"
-                                   asp-for="User.Password" placeholder="Password" autocomplete="new-password" />
+                                   asp-for="User.Password" placeholder="Password" autocomplete="new-password" onkeydown="if(event.key === ' ') return false;" />
                             <span class="input-icon"><i class="ph ph-lock-simple"></i></span>
                             <button type="button" class="password-toggle" data-toggle-pw>
                                 <svg class="w-5 h-5 eye-open" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -325,7 +339,7 @@
                         <label class="__label block mb-1.5">*Confirm Password</label>
                         <div class="password-wrapper input-icon-wrap">
                             <input type="password" class="signup-input" id="inp-confirm"
-                                   placeholder="Confirm password" autocomplete="new-password" />
+                                   placeholder="Confirm password" autocomplete="new-password" onkeydown="if(event.key === ' ') return false;"  />
                             <span class="input-icon"><i class="ph ph-lock-simple"></i></span>
                             <button type="button" class="password-toggle" data-toggle-pw>
                                 <svg class="w-5 h-5 eye-open" fill="none" stroke="currentColor" viewBox="0 0 24 24">
