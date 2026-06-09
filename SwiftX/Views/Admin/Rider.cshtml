@@ -115,12 +115,12 @@
                                 <td>
                                     <div class="td-actions">
                                         <button class="admin-action-btn" title="View Rider"
-                                                onclick="openModal('rider-detail-modal')">
+                                                onclick="viewRiderDetail(@rider.Id)">
                                             <i class="ph ph-eye"></i>
                                         </button>
                                         @if (isActive)
                                         {
-                                            <button class="admin-action-btn" title="Edit Rider" onclick="openModal('rider-edit-modal')">
+                                            <button class="admin-action-btn" title="Edit Rider" onclick="editRiderDetail(@rider.Id)">
                                                 <i class="ph ph-pencil-simple"></i>
                                             </button>
                                             <button class="admin-action-btn admin-action-btn--danger-soft" title="Deactivate">
@@ -249,29 +249,8 @@
                 var f = $(this).data('filter');
                 ridersTable.column(1).search(f === 'all' ? '' : '^' + f.charAt(0).toUpperCase() + f.slice(1) + '$', true, false).draw();
             });
-
-
-            $('#rider-activity-table').DataTable({
-                pageLength: 5,
-                lengthChange: false,
-                searching: false,
-                ordering: true,
-                info: false,
-                dom: 't<"admin-pagination"<"admin-pagination-btns"p>>',
-                language: {
-                    paginate: {
-                        previous: '<i class="ph ph-caret-left"></i>',
-                        next:     '<i class="ph ph-caret-right"></i>'
-                    }
-                },
-                drawCallback: function () {
-                    $(this.api().table().container())
-                        .find('.dataTables_paginate .paginate_button')
-                        .addClass('admin-page-btn')
-                        .filter('.current').addClass('active');
-                }
-            });
         });
+
 
     </script>
 }

@@ -107,5 +107,56 @@ namespace SwiftX.Controllers
             return RedirectToAction("MerchantApplications");
         }
 
+        [HttpGet]
+        public IActionResult GetRiderJson(int id)
+        {
+            var rider = _db.Riders.Include(r => r.User).FirstOrDefault(r => r.Id == id);
+            if (rider == null) return NotFound();
+
+            return Json(new
+            {
+                id = rider.Id,
+                riderId = $"Rider-{rider.Id:D3}",
+                fullName = $"{rider.User.FirstName} {rider.User.LastName}",
+                status = rider.Status,
+                phone = rider.User.Contact,
+                email = rider.User.Email,
+                address = rider.User.Address,
+                plateNumber = rider.PlateNumber ?? "—",
+                gcContact = rider.GCContact,
+                createdAt = rider.CreatedAt.ToString("MMMM dd, yyyy"),
+                licensePath = rider.LicensePath,
+                idPath = rider.IDPath,
+                orcrPath = rider.ORCRPath,
+                agreementPath = rider.AgreementPath,
+                frontVehiclePath = rider.FrontVehiclePath,
+                sideVehiclePath = rider.SideVehiclePath
+            });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult UpdateRider(int Id, string FirstName, string LastName, string Phone, string Email, string Address, string PlateNumber, string GCContact, string Status)
+        {
+            var rider = _db.Riders.Include(r => r.User).FirstOrDefault(r => r.Id == Id);
+            if (rider != null)
+            {
+                // Update user fields
+                rider.User.FirstName = FirstName;
+                rider.User.LastName = LastName;
+                rider.User.Contact = Phone;
+                rider.User.Email = Email;
+                rider.User.Address = Address;
+
+                // Update rider fields
+                rider.PlateNumber = PlateNumber;
+                rider.GCContact = GCContact;
+                rider.Status = Status;
+
+                _db.SaveChanges();
+            }
+            return RedirectToAction("Rider");
+        }
+
     }
 }

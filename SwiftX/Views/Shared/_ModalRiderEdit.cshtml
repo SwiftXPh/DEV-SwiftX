@@ -17,107 +17,129 @@
             <!-- ── Hero ── -->
             <div class="rmod-hero">
                 <div class="rmod-hero__av-wrap">
-                    <img class="rmod-hero__av-img"
-                         src="~/Assets/images/profile.jpg"
-                         alt="James Ocampo"
-                         onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
-                    <div class="rmod-hero__av-fallback" style="display:none;">
+                    <div class="rmod-hero__av-fallback" style="display:flex;">
                         <i class="ph ph-user"></i>
                     </div>
-                    <span class="rmod-hero__av-dot rmod-hero__av-dot--active"></span>
+                    <span class="rmod-hero__av-dot rmod-hero__av-dot--active" id="redit-status-dot"></span>
                 </div>
                 <div>
-                    <p class="rmod-hero__name">James Ocampo</p>
+                    <p class="rmod-hero__name" id="redit-hero-name">—</p>
                     <div class="rmod-hero__meta">
-                        <span class="rmod-hero__id">Rider-001</span>
-                        <span class="admin-badge admin-badge--active">
-                            <span class="admin-badge-dot"></span>Active
+                        <span class="rmod-hero__id" id="redit-hero-id">Rider-000</span>
+                        <span class="admin-badge admin-badge--active" id="redit-hero-badge">
+                            <span class="admin-badge-dot"></span><span id="redit-hero-status">Active</span>
                         </span>
                     </div>
                 </div>
-                <div class="rmod-hero__btns">
-                    <button class="admin-modal-btn admin-modal-btn--ghost">
-                        <i class="ph ph-camera"></i> Change Photo
+            </div>
+
+            <form id="rider-edit-form" method="post" asp-controller="Admin" asp-action="UpdateRider">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="Id" id="redit-id" />
+
+                <!-- ── Personal Information ── -->
+                <p class="emod-section-title">
+                    <i class="ph ph-identification-card"></i> Personal Information
+                </p>
+                <div class="emod-grid">
+                    <div class="emod-field">
+                        <span class="emod-field__label">First Name</span>
+                        <input class="admin-modal-input" type="text" name="FirstName" id="redit-firstname" placeholder="First name" />
+                    </div>
+                    <div class="emod-field">
+                        <span class="emod-field__label">Last Name</span>
+                        <input class="admin-modal-input" type="text" name="LastName" id="redit-lastname" placeholder="Last name" />
+                    </div>
+                    <div class="emod-field">
+                        <span class="emod-field__label">Phone</span>
+                        <input class="admin-modal-input" type="text" name="Phone" id="redit-phone" placeholder="Phone number" />
+                    </div>
+                    <div class="emod-field">
+                        <span class="emod-field__label">Email</span>
+                        <input class="admin-modal-input" type="email" name="Email" id="redit-email" placeholder="Email address" />
+                    </div>
+                    <div class="emod-field emod-field--full">
+                        <span class="emod-field__label">Address</span>
+                        <input class="admin-modal-input" type="text" name="Address" id="redit-address" placeholder="Full address" />
+                    </div>
+                </div>
+
+                <!-- ── Vehicle Information ── -->
+                <p class="emod-section-title">
+                    <i class="ph ph-motorcycle"></i> Vehicle Information
+                </p>
+                <div class="emod-grid">
+                    <div class="emod-field">
+                        <span class="emod-field__label">Plate Number</span>
+                        <input class="admin-modal-input" type="text" name="PlateNumber" id="redit-plate" placeholder="Plate number" />
+                    </div>
+                </div>
+
+                <!-- ── Payment Information ── -->
+                <p class="emod-section-title">
+                    <i class="ph ph-wallet"></i> Payment Information
+                </p>
+                <div class="emod-grid">
+                    <div class="emod-field">
+                        <span class="emod-field__label">GCash Number</span>
+                        <input class="admin-modal-input" type="text" name="GCContact" id="redit-gcash" placeholder="GCash number" />
+                    </div>
+                </div>
+
+                <!-- ── Status ── -->
+                <p class="emod-section-title">
+                    <i class="ph ph-toggle-left"></i> Status
+                </p>
+                <div class="emod-grid">
+                    <div class="emod-field">
+                        <span class="emod-field__label">Rider Status</span>
+                        <select class="admin-modal-input" name="Status" id="redit-status">
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- ── Footer ── -->
+                <div class="emod-footer">
+                    <button type="button" class="admin-modal-btn admin-modal-btn--ghost"
+                            onclick="closeModal('rider-edit-modal')">
+                        Cancel
+                    </button>
+                    <button type="submit" class="admin-modal-btn admin-modal-btn--approve">
+                        <i class="ph ph-floppy-disk"></i> Save Changes
                     </button>
                 </div>
-            </div>
-
-            <!-- ── Personal Information ── -->
-            <p class="emod-section-title">
-                <i class="ph ph-identification-card"></i> Personal Information
-            </p>
-            <div class="emod-grid">
-                <div class="emod-field">
-                    <span class="emod-field__label">Full Name</span>
-                    <input class="admin-modal-input" type="text" value="James Ocampo" placeholder="Full name" />
-                </div>
-                <div class="emod-field">
-                    <span class="emod-field__label">Date of Birth</span>
-                    <input class="admin-modal-input" type="date" value="2000-03-15" />
-                </div>
-                <div class="emod-field">
-                    <span class="emod-field__label">Phone</span>
-                    <input class="admin-modal-input" type="text" value="09292-096-887" placeholder="Phone number" />
-                </div>
-                <div class="emod-field">
-                    <span class="emod-field__label">Email</span>
-                    <input class="admin-modal-input" type="email" value="james@email.com" placeholder="Email address" />
-                </div>
-                <div class="emod-field emod-field--full">
-                    <span class="emod-field__label">Address</span>
-                    <input class="admin-modal-input" type="text" value="Purok 2, Brgy. Cawayan, Valencia City" placeholder="Full address" />
-                </div>
-            </div>
-
-            <!-- ── Vehicle Information ── -->
-            <p class="emod-section-title">
-                <i class="ph ph-motorcycle"></i> Vehicle Information
-            </p>
-            <div class="emod-grid">
-                <div class="emod-field">
-                    <span class="emod-field__label">Vehicle Type</span>
-                    <input class="admin-modal-input" type="text" value="Motorcycle" placeholder="e.g. Motorcycle" />
-                </div>
-                <div class="emod-field">
-                    <span class="emod-field__label">Vehicle Model</span>
-                    <input class="admin-modal-input" type="text" value="Honda Click 125i" placeholder="Brand & model" />
-                </div>
-                <div class="emod-field">
-                    <span class="emod-field__label">Plate Number</span>
-                    <input class="admin-modal-input" type="text" value="ABC-123" placeholder="Plate number" />
-                </div>
-                <div class="emod-field">
-                    <span class="emod-field__label">License Number</span>
-                    <input class="admin-modal-input" type="text" value="DL-0011223" placeholder="License number" />
-                </div>
-            </div>
-
-            <!-- ── Payment Information ── -->
-            <p class="emod-section-title">
-                <i class="ph ph-wallet"></i> Payment Information
-            </p>
-            <div class="emod-grid">
-                <div class="emod-field">
-                    <span class="emod-field__label">Payment Method</span>
-                    <input class="admin-modal-input" type="text" value="GCash" placeholder="e.g. GCash, Bank" />
-                </div>
-                <div class="emod-field">
-                    <span class="emod-field__label">Account Number</span>
-                    <input class="admin-modal-input" type="text" value="09292-096-887" placeholder="Account / number" />
-                </div>
-            </div>
-
-            <!-- ── Footer ── -->
-            <div class="emod-footer">
-                <button class="admin-modal-btn admin-modal-btn--ghost"
-                        onclick="closeModal('rider-edit-modal')">
-                    Cancel
-                </button>
-                <button class="admin-modal-btn admin-modal-btn--approve">
-                    <i class="ph ph-floppy-disk"></i> Save Changes
-                </button>
-            </div>
+            </form>
 
         </div>
     </div>
 </div>
+
+<script>
+    function editRiderDetail(riderId) {
+        fetch('/Admin/GetRiderJson?id=' + riderId)
+            .then(function (res) { return res.json(); })
+            .then(function (r) {
+                // Hero
+                document.getElementById('redit-hero-name').textContent = r.fullName;
+                document.getElementById('redit-hero-id').textContent = r.riderId;
+                document.getElementById('redit-hero-status').textContent = r.status;
+                document.getElementById('redit-hero-badge').className = 'admin-badge admin-badge--' + r.status.toLowerCase();
+                document.getElementById('redit-status-dot').className = 'rmod-hero__av-dot rmod-hero__av-dot--' + r.status.toLowerCase();
+
+                // Form fields
+                document.getElementById('redit-id').value = r.id;
+                document.getElementById('redit-firstname').value = r.fullName.split(' ')[0] || '';
+                document.getElementById('redit-lastname').value = r.fullName.split(' ').slice(1).join(' ') || '';
+                document.getElementById('redit-phone').value = r.phone || '';
+                document.getElementById('redit-email').value = r.email || '';
+                document.getElementById('redit-address').value = r.address || '';
+                document.getElementById('redit-plate').value = (r.plateNumber === '—') ? '' : r.plateNumber;
+                document.getElementById('redit-gcash').value = r.gcContact || '';
+                document.getElementById('redit-status').value = r.status;
+
+                openModal('rider-edit-modal');
+            });
+    }
+</script>

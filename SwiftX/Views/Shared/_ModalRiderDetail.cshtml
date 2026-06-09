@@ -1,4 +1,4 @@
-﻿@{
+@{
 
 }
 
@@ -17,26 +17,22 @@
             <!-- ── Hero ── -->
             <div class="rmod-hero">
                 <div class="rmod-hero__av-wrap">
-                    <img class="rmod-hero__av-img"
-                         src="~/Assets/images/profile.jpg"
-                         alt="James Ocampo"
-                         onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
-                    <div class="rmod-hero__av-fallback" style="display:none;">
+                    <div class="rmod-hero__av-fallback" style="display:flex;">
                         <i class="ph ph-user"></i>
                     </div>
-                    <span class="rmod-hero__av-dot rmod-hero__av-dot--active"></span>
+                    <span class="rmod-hero__av-dot rmod-hero__av-dot--active" id="rmod-status-dot"></span>
                 </div>
                 <div>
-                    <p class="rmod-hero__name">James Ocampo</p>
+                    <p class="rmod-hero__name" id="rmod-hero-name">—</p>
                     <div class="rmod-hero__meta">
-                        <span class="rmod-hero__id">Rider-001</span>
-                        <span class="admin-badge admin-badge--active">
-                            <span class="admin-badge-dot"></span>Active
+                        <span class="rmod-hero__id" id="rmod-hero-id">Rider-000</span>
+                        <span class="admin-badge admin-badge--active" id="rmod-hero-badge">
+                            <span class="admin-badge-dot"></span><span id="rmod-hero-status">Active</span>
                         </span>
                     </div>
                 </div>
                 <div class="rmod-hero__btns">
-                    <button class="admin-modal-btn admin-modal-btn--ghost" onclick="openModal('rider-edit-modal')">
+                    <button class="admin-modal-btn admin-modal-btn--ghost" onclick="editRiderDetail(_currentRiderId)">
                         <i class="ph ph-pencil-simple"></i> Edit
                     </button>
                     <button class="admin-modal-btn admin-modal-btn--danger">
@@ -60,52 +56,34 @@
 
             <!-- ── TAB: Information ── -->
             <div class="rmod-panel active" id="rmod-info">
-                <div class="rmod-earnings">
-                    <div class="rmod-earn">
-                        <p class="rmod-earn__val">&#8369;3,250</p>
-                        <p class="rmod-earn__lbl">This Week</p>
-                    </div>
-                    <div class="rmod-earn">
-                        <p class="rmod-earn__val">&#8369;12,800</p>
-                        <p class="rmod-earn__lbl">This Month</p>
-                    </div>
-                    <div class="rmod-earn">
-                        <p class="rmod-earn__val">&#8369;85,400</p>
-                        <p class="rmod-earn__lbl">All Time</p>
-                    </div>
-                </div>
                 <div class="rmod-info-grid">
                     <div class="rmod-info-block">
                         <p class="rmod-info-block__lbl">Full Name</p>
-                        <p class="rmod-info-block__val">James Ocampo</p>
+                        <p class="rmod-info-block__val" id="rmod-fullname">—</p>
                     </div>
                     <div class="rmod-info-block">
                         <p class="rmod-info-block__lbl">Phone</p>
-                        <p class="rmod-info-block__val">09292-096-887</p>
+                        <p class="rmod-info-block__val" id="rmod-phone">—</p>
                     </div>
                     <div class="rmod-info-block">
                         <p class="rmod-info-block__lbl">Email</p>
-                        <p class="rmod-info-block__val">james@email.com</p>
+                        <p class="rmod-info-block__val" id="rmod-email">—</p>
                     </div>
                     <div class="rmod-info-block">
                         <p class="rmod-info-block__lbl">Address</p>
-                        <p class="rmod-info-block__val">Purok 2, Brgy. Cawayan, Valencia City</p>
+                        <p class="rmod-info-block__val" id="rmod-address">—</p>
                     </div>
                     <div class="rmod-info-block">
                         <p class="rmod-info-block__lbl">Date Registered</p>
-                        <p class="rmod-info-block__val">January 15, 2026</p>
+                        <p class="rmod-info-block__val" id="rmod-registered">—</p>
                     </div>
                     <div class="rmod-info-block">
-                        <p class="rmod-info-block__lbl">Vehicle</p>
-                        <p class="rmod-info-block__val">Motorcycle — Honda Click 125i</p>
+                        <p class="rmod-info-block__lbl">Plate Number</p>
+                        <p class="rmod-info-block__val" id="rmod-plate">—</p>
                     </div>
                     <div class="rmod-info-block">
                         <p class="rmod-info-block__lbl">Payment Method</p>
-                        <p class="rmod-info-block__val">GCash — 09292-096-887</p>
-                    </div>
-                    <div class="rmod-info-block">
-                        <p class="rmod-info-block__lbl">Total Deliveries</p>
-                        <p class="rmod-info-block__val">342</p>
+                        <p class="rmod-info-block__val" id="rmod-gcash">—</p>
                     </div>
                 </div>
             </div>
@@ -119,14 +97,10 @@
                 <div class="rmod-doc-row">
                     <div>
                         <p class="rmod-doc-row__name">Professional Driver's License</p>
-                        <p class="rmod-doc-row__sub">DL-0011223 &mdash; Expires Dec 2027</p>
+                        <p class="rmod-doc-row__sub">Uploaded document</p>
                     </div>
                     <div class="rmod-doc-row__right">
-                        <span class="rmod-doc-status rmod-doc-status--ok">
-                            <i class="ph ph-check-circle"></i> Verified
-                        </span>
-                        <button class="admin-modal-doc__preview-btn"
-                                onclick="openDocPreview('image', '../assets/docs/license.jpg', 'Driver\'s License')">
+                        <button class="admin-modal-doc__preview-btn" id="rmod-doc-license-btn" onclick="openRiderDoc('license')">
                             <i class="ph ph-eye"></i>
                         </button>
                     </div>
@@ -135,13 +109,10 @@
                 <div class="rmod-doc-row">
                     <div>
                         <p class="rmod-doc-row__name">Secondary Government ID</p>
-                        <p class="rmod-doc-row__sub">PhilSys National ID</p>
+                        <p class="rmod-doc-row__sub">Uploaded document</p>
                     </div>
                     <div class="rmod-doc-row__right">
-                        <span class="rmod-doc-status rmod-doc-status--ok">
-                            <i class="ph ph-check-circle"></i> Verified
-                        </span>
-                        <button class="admin-modal-doc__preview-btn">
+                        <button class="admin-modal-doc__preview-btn" id="rmod-doc-id-btn" onclick="openRiderDoc('id')">
                             <i class="ph ph-eye"></i>
                         </button>
                     </div>
@@ -150,14 +121,10 @@
                 <div class="rmod-doc-row">
                     <div>
                         <p class="rmod-doc-row__name">OR / CR of Motorcycle</p>
-                        <p class="rmod-doc-row__sub">Renewal pending</p>
+                        <p class="rmod-doc-row__sub">Uploaded document</p>
                     </div>
                     <div class="rmod-doc-row__right">
-                        <span class="rmod-doc-status rmod-doc-status--pending">
-                            <i class="ph ph-clock"></i> Pending
-                        </span>
-                        <button class="admin-modal-doc__preview-btn"
-                                onclick="openDocPreview('pdf','../assets/docs/sampleDocumentPrev.pdf','DTI Registration')">
+                        <button class="admin-modal-doc__preview-btn" id="rmod-doc-orcr-btn" onclick="openRiderDoc('orcr')">
                             <i class="ph ph-eye"></i>
                         </button>
                     </div>
@@ -165,14 +132,23 @@
 
                 <div class="rmod-doc-row">
                     <div>
-                        <p class="rmod-doc-row__name">Clear Vehicle Photos</p>
-                        <p class="rmod-doc-row__sub">Front, side, and rear view</p>
+                        <p class="rmod-doc-row__name">Clear Vehicle Photos (Front)</p>
+                        <p class="rmod-doc-row__sub">Uploaded document</p>
                     </div>
                     <div class="rmod-doc-row__right">
-                        <span class="rmod-doc-status rmod-doc-status--ok">
-                            <i class="ph ph-check-circle"></i> Verified
-                        </span>
-                        <button class="admin-modal-doc__preview-btn">
+                        <button class="admin-modal-doc__preview-btn" id="rmod-doc-front-btn" onclick="openRiderDoc('front')">
+                            <i class="ph ph-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="rmod-doc-row">
+                    <div>
+                        <p class="rmod-doc-row__name">Clear Vehicle Photos (Side)</p>
+                        <p class="rmod-doc-row__sub">Uploaded document</p>
+                    </div>
+                    <div class="rmod-doc-row__right">
+                        <button class="admin-modal-doc__preview-btn" id="rmod-doc-side-btn" onclick="openRiderDoc('side')">
                             <i class="ph ph-eye"></i>
                         </button>
                     </div>
@@ -181,15 +157,12 @@
                 <div class="rmod-doc-row">
                     <div>
                         <p class="rmod-doc-row__name">Verified GCash Account</p>
-                        <p class="rmod-doc-row__sub">09292-096-887</p>
+                        <p class="rmod-doc-row__sub" id="rmod-doc-gcash-num">—</p>
                     </div>
                     <div class="rmod-doc-row__right">
                         <span class="rmod-doc-status rmod-doc-status--ok">
-                            <i class="ph ph-check-circle"></i> Verified
+                            <i class="ph ph-check-circle"></i> Provided
                         </span>
-                        <button class="admin-modal-doc__preview-btn">
-                            <i class="ph ph-eye"></i>
-                        </button>
                     </div>
                 </div>
             </div>
@@ -201,21 +174,21 @@
                         <div class="admin-stat-header">
                             <div class="admin-stat-icon"><i class="ph ph-package"></i></div>
                         </div>
-                        <p class="admin-stat-value">8</p>
+                        <p class="admin-stat-value">—</p>
                         <p class="admin-stat-label">Today's Deliveries</p>
                     </div>
                     <div class="admin-stat-details">
                         <div class="admin-stat-header">
                             <div class="admin-stat-icon"><i class="ph ph-check-circle"></i></div>
                         </div>
-                        <p class="admin-stat-value">342</p>
+                        <p class="admin-stat-value">—</p>
                         <p class="admin-stat-label">All Deliveries</p>
                     </div>
                     <div class="admin-stat-details">
                         <div class="admin-stat-header">
                             <div class="admin-stat-icon"><i class="ph ph-map-pin"></i></div>
                         </div>
-                        <p class="admin-stat-value">1,280 km</p>
+                        <p class="admin-stat-value">—</p>
                         <p class="admin-stat-label">Total Mileage</p>
                     </div>
                 </div>
@@ -234,40 +207,9 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>Order-123</td>
-                                <td>10:59 AM</td>
-                                <td>Jollibee Valencia</td>
-                                <td>123 Street, Don Carlos</td>
-                                <td>
-                                    <span class="admin-badge admin-badge--delivered">
-                                        <span class="admin-badge-dot"></span>Delivered
-                                    </span>
+                                <td colspan="6" style="text-align:center;opacity:0.5;padding:1.5rem;">
+                                    No activity data yet.
                                 </td>
-                                <td>&#8369;309</td>
-                            </tr>
-                            <tr>
-                                <td>Order-124</td>
-                                <td>11:32 AM</td>
-                                <td>McDonalds Valencia</td>
-                                <td>Blk 14, Maramag</td>
-                                <td>
-                                    <span class="admin-badge admin-badge--cancelled">
-                                        <span class="admin-badge-dot"></span>Cancelled
-                                    </span>
-                                </td>
-                                <td>&#8369;0</td>
-                            </tr>
-                            <tr>
-                                <td>Order-125</td>
-                                <td>1:15 PM</td>
-                                <td>Chowking Valencia</td>
-                                <td>Purok 5, Lumbayao</td>
-                                <td>
-                                    <span class="admin-badge admin-badge--delivered">
-                                        <span class="admin-badge-dot"></span>Delivered
-                                    </span>
-                                </td>
-                                <td>&#8369;198</td>
                             </tr>
                         </tbody>
                     </table>
@@ -285,3 +227,68 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Store current rider doc paths for preview buttons
+    var _riderDocPaths = {};
+    var _currentRiderId = 0;
+
+    function viewRiderDetail(riderId) {
+        _currentRiderId = riderId;
+        fetch('/Admin/GetRiderJson?id=' + riderId)
+            .then(function (res) { return res.json(); })
+            .then(function (r) {
+                // Hero
+                document.getElementById('rmod-hero-name').textContent = r.fullName;
+                document.getElementById('rmod-hero-id').textContent = r.riderId;
+                document.getElementById('rmod-hero-status').textContent = r.status;
+
+                // Badge class
+                var badge = document.getElementById('rmod-hero-badge');
+                badge.className = 'admin-badge admin-badge--' + r.status.toLowerCase();
+
+                // Status dot
+                var dot = document.getElementById('rmod-status-dot');
+                dot.className = 'rmod-hero__av-dot rmod-hero__av-dot--' + r.status.toLowerCase();
+
+                // Information tab
+                document.getElementById('rmod-fullname').textContent = r.fullName;
+                document.getElementById('rmod-phone').textContent = r.phone || '—';
+                document.getElementById('rmod-email').textContent = r.email || '—';
+                document.getElementById('rmod-address').textContent = r.address || '—';
+                document.getElementById('rmod-registered').textContent = r.createdAt;
+                document.getElementById('rmod-plate').textContent = r.plateNumber;
+                document.getElementById('rmod-gcash').textContent = r.gcContact ? 'GCash — ' + r.gcContact : '—';
+
+                // Documents tab - store paths
+                _riderDocPaths = {
+                    license: r.licensePath,
+                    id: r.idPath,
+                    orcr: r.orcrPath,
+                    front: r.frontVehiclePath,
+                    side: r.sideVehiclePath
+                };
+
+                // GCash number in docs tab
+                document.getElementById('rmod-doc-gcash-num').textContent = r.gcContact || '—';
+
+                openModal('rider-detail-modal');
+            });
+    }
+
+    function openRiderDoc(docType) {
+        var path = _riderDocPaths[docType];
+        if (path) {
+            var ext = path.split('.').pop().toLowerCase();
+            var type = (ext === 'pdf') ? 'pdf' : 'image';
+            var labels = {
+                license: "Driver's License",
+                id: "Government ID",
+                orcr: "OR/CR of Motorcycle",
+                front: "Vehicle Photo (Front)",
+                side: "Vehicle Photo (Side)"
+            };
+            openDocPreview(type, path, labels[docType] || 'Document');
+        }
+    }
+</script>
