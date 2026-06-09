@@ -1437,6 +1437,10 @@ video {
   transition-duration: 300ms;
 }
 
+.hover\:underline:hover {
+  text-decoration-line: underline;
+}
+
 .hover\:opacity-100:hover {
   opacity: 1;
 }
@@ -1481,10 +1485,6 @@ video {
 
   .md\:mb-10 {
     margin-bottom: 2.5rem;
-  }
-
-  .md\:mb-12 {
-    margin-bottom: 3rem;
   }
 
   .md\:mb-20 {

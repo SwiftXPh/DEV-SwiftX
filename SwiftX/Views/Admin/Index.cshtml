@@ -44,6 +44,7 @@
                            class="login-input"
                            placeholder="Enter your username"
                            autocomplete="username"
+                           onkeydown="if(event.key === ' ') return false;"
                            data-login-field />
                 </div>
                 <span class="field-error" data-error="username"></span>
@@ -60,6 +61,7 @@
                                class="login-input"
                                placeholder="Enter your password"
                                autocomplete="current-password"
+                               onkeydown="if(event.key === ' ') return false;"
                                data-login-field />
                     </div>
                     <button type="button" class="password-toggle" data-toggle-pw aria-label="Toggle password visibility">
