@@ -1,13 +1,19 @@
-﻿
+
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SwiftX.Models;
 
 namespace SwiftX.Controllers
 {
     public class AdminController : Controller
     {
-        public List<UserModel> userModels = new List<UserModel>();
-        public List<RiderModel> riderModels = new List<RiderModel>();
+        private readonly AppDbContext _db;
+
+        public AdminController(AppDbContext db)
+        {
+            _db = db;
+        }
+
         public IActionResult Index()
         {
             return View();
@@ -22,7 +28,8 @@ namespace SwiftX.Controllers
         }
         public IActionResult Rider()
         {
-            return View();
+            var riders = _db.Riders.Include(r => r.User).ToList();
+            return View(riders);
         }
         public IActionResult RiderApplications()
         {

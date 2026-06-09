@@ -1,6 +1,11 @@
-﻿@{
+@model List<SwiftX.Models.Rider>
+@{
     ViewData["Title"] = "Riders";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+
+    var totalRiders = Model.Count;
+    var activeRiders = Model.Count(r => r.Status == "Active");
+    var inactiveRiders = Model.Count(r => r.Status == "Inactive");
 }
 
 @* {{-- ── Stat Cards ── --}} *@
@@ -8,16 +13,15 @@
     <div class="admin-stat-card">
         <div class="admin-stat-header">
             <div class="admin-stat-icon"><i class="ph ph-check-circle"></i></div>
-            <span class="admin-stat-badge admin-stat-badge--up"><i class="ph ph-arrow-up"></i> 4%</span>
         </div>
-        <p class="admin-stat-value">86</p>
+        <p class="admin-stat-value">@activeRiders</p>
         <p class="admin-stat-label">Active Riders</p>
     </div>
     <div class="admin-stat-card">
         <div class="admin-stat-header">
             <div class="admin-stat-icon"><i class="ph ph-motorcycle"></i></div>
         </div>
-        <p class="admin-stat-value">128</p>
+        <p class="admin-stat-value">@totalRiders</p>
         <p class="admin-stat-label">Total Riders</p>
     </div>
     <div class="admin-stat-card">
@@ -46,7 +50,7 @@
         <div class="admin-table-header">
             <div>
                 <h2 class="admin-table-title">Rider Management</h2>
-                <p class="admin-table-subtitle">128 total &middot; 86 active &middot; 4 pending</p>
+                <p class="admin-table-subtitle">@totalRiders total &middot; @activeRiders active &middot; @inactiveRiders inactive</p>
             </div>
             <div class="admin-table-actions">
                 <div class="admin-search">
@@ -74,69 +78,66 @@
                     </tr>
                 </thead>
                 <tbody>
-
-                    @*   {{-- Active rider --}} *@
-                    <tr>
-                        <td>
-                            <div class="td-rider">
-                                <div class="td-rider__avatar"><i class="ph ph-user"></i></div>
-                                <div>
-                                    <p class="td-rider__name">Leo Fernandez</p>
-                                    <p class="td-rider__id">Rider-005</p>
-                                </div>
-                            </div>
-                        </td>
-                        <td><span class="admin-badge admin-badge--active"><span class="admin-badge-dot"></span>Active</span></td>
-                        <td>09321234567</td>
-                        <td><span class="td-plate">JKL-345</span></td>
-                        <td><span class="td-orders td-orders--live"><i class="ph ph-package"></i> 2</span></td>
-                        <td>
-                            <div class="td-actions">
-                                <button class="admin-action-btn" title="View Rider"
-                                        onclick="openModal('rider-detail-modal')">
-                                    <i class="ph ph-eye"></i>
-                                </button>
-                                <button class="admin-action-btn" title="Edit Rider" onclick="openModal('rider-edit-modal')">
-
-                                    <i class="ph ph-pencil-simple"></i>
-                                </button>
-                                <button class="admin-action-btn admin-action-btn--danger-soft" title="Deactivate">
-                                    <i class="ph ph-prohibit"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-
-                    @*   {{-- INACTIVE rider --}} *@
-                    <tr>
-                        <td>
-                            <div class="td-rider">
-                                <div class="td-rider__avatar td-rider__avatar--dim"><i class="ph ph-user"></i></div>
-                                <div>
-                                    <p class="td-rider__name td-rider__name--dim">Rico Tan</p>
-                                    <p class="td-rider__id">Rider-006</p>
-                                </div>
-                            </div>
-                        </td>
-                        <td><span class="admin-badge admin-badge--inactive"><span class="admin-badge-dot"></span>Inactive</span></td>
-                        <td class="td-cell--dim">09451234567</td>
-                        <td><span class="td-plate td-plate--dim">MNO-678</span></td>
-                        <td><span class="td-orders td-orders--zero">—</span></td>
-                        <td>
-                            <div class="td-actions">
-                                <button class="admin-action-btn" title="View Rider"
-                                        onclick="openModal('rider-detail-modal')">
-                                    <i class="ph ph-eye"></i>
-                                </button>
-                                <button class="admin-action-btn admin-action-btn--success" title="Reactivate">
-                                    <i class="ph ph-arrow-counter-clockwise"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-
-
-
+                    @if (Model.Any())
+                    {
+                        @foreach (var rider in Model)
+                        {
+                            var isActive = rider.Status == "Active";
+                            var badgeClass = isActive ? "admin-badge--active" : "admin-badge--inactive";
+                            var avatarDim = isActive ? "" : " td-rider__avatar--dim";
+                            var nameDim = isActive ? "" : " td-rider__name--dim";
+                            var cellDim = isActive ? "" : " td-cell--dim";
+                            var plateDim = isActive ? "" : " td-plate--dim";
+                            var fullName = $"{rider.User.FirstName} {rider.User.LastName}";
+                            <tr>
+                                <td>
+                                    <div class="td-rider">
+                                        <div class="td-rider__avatar@(avatarDim)"><i class="ph ph-user"></i></div>
+                                        <div>
+                                            <p class="td-rider__name@(nameDim)">@fullName</p>
+                                            <p class="td-rider__id">Rider-@rider.Id.ToString("D3")</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="admin-badge @badgeClass"><span class="admin-badge-dot"></span>@rider.Status</span></td>
+                                <td class="@cellDim">@rider.User.Contact</td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(rider.PlateNumber))
+                                    {
+                                        <span class="td-plate@(plateDim)">@rider.PlateNumber</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="td-orders td-orders--zero">—</span>
+                                    }
+                                </td>
+                                <td><span class="td-orders td-orders--zero">—</span></td>
+                                <td>
+                                    <div class="td-actions">
+                                        <button class="admin-action-btn" title="View Rider"
+                                                onclick="openModal('rider-detail-modal')">
+                                            <i class="ph ph-eye"></i>
+                                        </button>
+                                        @if (isActive)
+                                        {
+                                            <button class="admin-action-btn" title="Edit Rider" onclick="openModal('rider-edit-modal')">
+                                                <i class="ph ph-pencil-simple"></i>
+                                            </button>
+                                            <button class="admin-action-btn admin-action-btn--danger-soft" title="Deactivate">
+                                                <i class="ph ph-prohibit"></i>
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <button class="admin-action-btn admin-action-btn--success" title="Reactivate">
+                                                <i class="ph ph-arrow-counter-clockwise"></i>
+                                            </button>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
                 </tbody>
             </table>
         </div>
@@ -227,7 +228,8 @@
                         previous: '<i class="ph ph-caret-left"></i>',
                         next:     '<i class="ph ph-caret-right"></i>'
                     },
-                    info: 'Showing _START_–_END_ of _TOTAL_ riders'
+                    info: 'Showing _START_–_END_ of _TOTAL_ riders',
+                    emptyTable: '<div style="text-align:center;padding:2rem;opacity:0.5;"><i class="ph ph-motorcycle" style="font-size:2rem;"></i><p style="margin-top:0.5rem;">No riders found in the database.</p></div>'
                 },
                 drawCallback: function () {
                     $(this.api().table().container())
