@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -13,12 +14,14 @@ namespace SwiftX.Controllers
         private readonly AppDbContext _db;
         private readonly ISupabaseStorageService _storage;
         private readonly SupabaseOptions _supabase;
+        private readonly IPasswordHasher<UserModel> _passwordHasher;
 
-        public SignUpController(AppDbContext db, ISupabaseStorageService storage, IOptions<SupabaseOptions> supabase)
+        public SignUpController(AppDbContext db, ISupabaseStorageService storage, IOptions<SupabaseOptions> supabase, IPasswordHasher<UserModel> passwordHasher)
         {
             _db = db;
             _storage = storage;
             _supabase = supabase.Value;
+            _passwordHasher = passwordHasher;
         }
 
         public IActionResult Merchant()
@@ -46,6 +49,8 @@ namespace SwiftX.Controllers
             {
                 // 1. Save the user first to get the UserId (used for the storage folder)
                 var user = rider.User;
+                user.Role = "Customer";
+                user.Password = _passwordHasher.HashPassword(user, user.Password);
                 _db.Users.Add(user);
                 await _db.SaveChangesAsync();
 
@@ -100,6 +105,8 @@ namespace SwiftX.Controllers
                 user.LastName = merchant.OwnerLastName;
                 user.Contact = merchant.BusinessContact;
                 user.Address = merchant.BusinessAddress;
+                user.Role = "Customer";
+                user.Password = _passwordHasher.HashPassword(user, user.Password);
                 _db.Users.Add(user);
                 await _db.SaveChangesAsync();
 

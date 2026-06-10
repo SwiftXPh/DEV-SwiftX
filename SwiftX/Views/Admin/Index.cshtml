@@ -25,13 +25,13 @@
     </div>
 
     <!-- Login Form -->
-    <form id="admin-login-form" class="__fade-up __fade-up--d3" novalidate>
+    <form id="admin-login-form" method="post" asp-controller="Admin" asp-action="Login" class="__fade-up __fade-up--d3" novalidate>
         <div class="login-card">
 
-            <!-- Error Banner (hidden by default) -->
-            <div class="login-error-banner hidden" id="login-error-banner">
+            <!-- Error Banner -->
+            <div class="login-error-banner @(ViewBag.LoginError == null ? "hidden" : "")" id="login-error-banner">
                 <i class="ph ph-warning-circle"></i>
-                <span>Invalid username or password.</span>
+                <span>@(ViewBag.LoginError ?? "Invalid username or password.")</span>
             </div>
 
             <!-- Username -->
@@ -41,6 +41,7 @@
                     <i class="ph ph-user login-input-icon"></i>
                     <input type="text"
                            id="login-username"
+                           name="username"
                            class="login-input"
                            placeholder="Enter your username"
                            autocomplete="username"
@@ -58,6 +59,7 @@
                         <i class="ph ph-lock login-input-icon"></i>
                         <input type="password"
                                id="login-password"
+                               name="password"
                                class="login-input"
                                placeholder="Enter your password"
                                autocomplete="current-password"
@@ -88,9 +90,4 @@
         </div>
     </form>
 
-    <div class="text-center mt-6 __fade-up __fade-up--d4">
-        <a asp-area="" asp-controller="Admin" asp-action="Dashboard" class="inline-flex items-center gap-2 __small opacity-50 hover:opacity-100 __footer-link transition-opacity no-underline">
-            Admin Page
-        </a>
-    </div>
 </div>

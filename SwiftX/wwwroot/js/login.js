@@ -35,33 +35,21 @@
         }
 
         // ── Form Submit ──
+        // Real submit to /Admin/Login. We only gate on client validation and show the
+        // loading state; the browser performs the POST so the server can authenticate.
         form.addEventListener('submit', function (e) {
-                e.preventDefault();
-
                 var username = usernameEl.value.trim();
                 var password = passwordEl.value.trim();
 
-                if (!username || !password) return;
+                if (!username || !password) {
+                        e.preventDefault();
+                        return;
+                }
 
-                // Show loading state
-                btnLogin.disabled = true;
+                // Show loading state, then let the form submit normally.
                 btnText.classList.add('hidden');
                 btnLoader.classList.remove('hidden');
                 hideError();
-
-                // Simulate authentication (replace with real API call)
-                setTimeout(function () {
-                        // Reset loading state
-                        btnText.classList.remove('hidden');
-                        btnLoader.classList.add('hidden');
-                        btnLogin.disabled = false;
-
-
-
-                        // Placeholder: always show error for now
-                        // Replace this block with actual auth logic
-                        // showError('Invalid username or password.');
-                }, 1500);
         });
 
         // ── Password Show / Hide ──

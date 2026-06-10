@@ -1,6 +1,9 @@
 using System;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SwiftX;
+using SwiftX.Models;
 using SwiftX.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,7 +18,25 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.Configure<SupabaseOptions>(builder.Configuration.GetSection("Supabase"));
 builder.Services.AddHttpClient<ISupabaseStorageService, SupabaseStorageService>();
 
+// Password hashing (PBKDF2 via the framework's PasswordHasher — no extra package).
+builder.Services.AddSingleton<IPasswordHasher<UserModel>, PasswordHasher<UserModel>>();
+
+// Cookie authentication. The admin portal is gated behind [Authorize(Roles="Admin")].
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Admin";
+        options.AccessDeniedPath = "/Admin";
+        options.ExpireTimeSpan = TimeSpan.FromHours(8);
+        options.SlidingExpiration = true;
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    });
+
 var app = builder.Build();
+
+// Seed the admin account from configuration (AdminSeed:Username / AdminSeed:Password).
+await SeedAdmin.RunAsync(app.Services);
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -30,6 +51,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

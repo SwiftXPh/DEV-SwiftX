@@ -1,4 +1,9 @@
 
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -7,17 +12,20 @@ using SwiftX.Services;
 
 namespace SwiftX.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
         private readonly AppDbContext _db;
         private readonly ISupabaseStorageService _storage;
         private readonly SupabaseOptions _supabase;
+        private readonly IPasswordHasher<UserModel> _passwordHasher;
 
-        public AdminController(AppDbContext db, ISupabaseStorageService storage, IOptions<SupabaseOptions> supabase)
+        public AdminController(AppDbContext db, ISupabaseStorageService storage, IOptions<SupabaseOptions> supabase, IPasswordHasher<UserModel> passwordHasher)
         {
             _db = db;
             _storage = storage;
             _supabase = supabase.Value;
+            _passwordHasher = passwordHasher;
         }
 
         /// <summary>
@@ -46,10 +54,54 @@ namespace SwiftX.Controllers
             return Json(new { url });
         }
 
+        [AllowAnonymous]
         public IActionResult Index()
         {
+            // Already signed in → skip the login page.
+            if (User.Identity?.IsAuthenticated == true)
+                return RedirectToAction(nameof(Dashboard));
             return View();
         }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(string username, string password, string? returnUrl = null)
+        {
+            var user = await _db.Users.FirstOrDefaultAsync(u => u.Username == username && u.Role == "Admin");
+
+            // Verify against the hashed password; uniform failure message avoids leaking which part was wrong.
+            var ok = user != null &&
+                     _passwordHasher.VerifyHashedPassword(user, user.Password, password) != PasswordVerificationResult.Failed;
+
+            if (!ok)
+            {
+                ViewBag.LoginError = "Invalid username or password.";
+                return View(nameof(Index));
+            }
+
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user!.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.Role, "Admin")
+            };
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
+
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                return Redirect(returnUrl);
+            return RedirectToAction(nameof(Dashboard));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction(nameof(Index));
+        }
+
         public IActionResult Dashboard()
         {
             ViewBag.PendingRiders = _db.Riders.Count(r => r.Status == "Pending");

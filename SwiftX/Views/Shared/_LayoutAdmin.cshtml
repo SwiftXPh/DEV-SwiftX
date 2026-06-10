@@ -93,15 +93,16 @@
                         <i class="ph ph-user" aria-hidden="true"></i>
                     </div>
                     <div>
-                        <p class="admin-user-name">Admin User</p>
-                        <p class="admin-user-role">Super Admin</p>
+                        <p class="admin-user-name">@(User.Identity?.Name ?? "Admin User")</p>
+                        <p class="admin-user-role">Administrator</p>
                     </div>
                 </div>
-                <a asp-controller="Admin" asp-action="#"
-                   class="admin-nav-item" style="margin-top:4px;">
-                    <i class="ph ph-sign-out" aria-hidden="true"></i>
-                    <span class="admin-nav-text">Sign Out</span>
-                </a>
+                <form asp-controller="Admin" asp-action="Logout" method="post" style="margin-top:4px;">
+                    <button type="submit" class="admin-nav-item" style="width:100%;background:none;border:none;cursor:pointer;text-align:left;">
+                        <i class="ph ph-sign-out" aria-hidden="true"></i>
+                        <span class="admin-nav-text">Sign Out</span>
+                    </button>
+                </form>
             </div>
         </aside>
 
