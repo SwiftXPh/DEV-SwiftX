@@ -271,14 +271,12 @@
     function openMerchantAppDoc(docType) {
         var path = _merchantAppDocPaths[docType];
         if (path) {
-            var ext = path.split('.').pop().toLowerCase();
-            var type = (ext === 'pdf') ? 'pdf' : 'image';
             var labels = {
                 bir: "BIR Registration",
                 dti: "DTI Certificate",
                 barangay: "Barangay Clearance"
             };
-            openDocPreview(type, path, labels[docType] || 'Document');
+            previewDocument('merchant', path, labels[docType] || 'Document');
         }
     }
 

@@ -1,17 +1,49 @@
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using SwiftX.Models;
+using SwiftX.Services;
 
 namespace SwiftX.Controllers
 {
     public class AdminController : Controller
     {
         private readonly AppDbContext _db;
+        private readonly ISupabaseStorageService _storage;
+        private readonly SupabaseOptions _supabase;
 
-        public AdminController(AppDbContext db)
+        public AdminController(AppDbContext db, ISupabaseStorageService storage, IOptions<SupabaseOptions> supabase)
         {
             _db = db;
+            _storage = storage;
+            _supabase = supabase.Value;
+        }
+
+        /// <summary>
+        /// Issues a short-lived signed URL for a document stored in a private Supabase bucket.
+        /// The browser never sees the service key — it only requests a URL by bucket + object path.
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> DocumentUrl(string bucket, string path)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+                return BadRequest();
+
+            var bucketName = bucket switch
+            {
+                "rider" => _supabase.RiderBucket,
+                "merchant" => _supabase.MerchantBucket,
+                _ => null
+            };
+            if (bucketName == null)
+                return BadRequest();
+
+            var url = await _storage.CreateSignedUrlAsync(bucketName, path);
+            if (url == null)
+                return NotFound();
+
+            return Json(new { url });
         }
 
         public IActionResult Index()

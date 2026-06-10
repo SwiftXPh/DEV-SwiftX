@@ -1,6 +1,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using SwiftX;
+using SwiftX.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,10 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Supabase Storage for user-uploaded documents.
+builder.Services.Configure<SupabaseOptions>(builder.Configuration.GetSection("Supabase"));
+builder.Services.AddHttpClient<ISupabaseStorageService, SupabaseStorageService>();
 
 var app = builder.Build();
 

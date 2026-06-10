@@ -279,8 +279,6 @@
     function openRiderDoc(docType) {
         var path = _riderDocPaths[docType];
         if (path) {
-            var ext = path.split('.').pop().toLowerCase();
-            var type = (ext === 'pdf') ? 'pdf' : 'image';
             var labels = {
                 license: "Driver's License",
                 id: "Government ID",
@@ -288,7 +286,7 @@
                 front: "Vehicle Photo (Front)",
                 side: "Vehicle Photo (Side)"
             };
-            openDocPreview(type, path, labels[docType] || 'Document');
+            previewDocument('rider', path, labels[docType] || 'Document');
         }
     }
 </script>

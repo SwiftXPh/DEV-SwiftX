@@ -335,8 +335,6 @@
     function openAppDoc(docType) {
         var path = _appDocPaths[docType];
         if (path) {
-            var ext = path.split('.').pop().toLowerCase();
-            var type = (ext === 'pdf') ? 'pdf' : 'image';
             var labels = {
                 license: "Driver's License",
                 id: "Government ID",
@@ -345,7 +343,7 @@
                 side: "Vehicle Photo (Side)",
                 agreement: "Agreement"
             };
-            openDocPreview(type, path, labels[docType] || 'Document');
+            previewDocument('rider', path, labels[docType] || 'Document');
         }
     }
 

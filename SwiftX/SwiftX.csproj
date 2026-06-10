@@ -4,6 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>2cab40ac-2c88-4ec0-8084-1efd23d6a597</UserSecretsId>
   </PropertyGroup>
 
 	<Target Name="BuildCss" BeforeTargets="Compile">

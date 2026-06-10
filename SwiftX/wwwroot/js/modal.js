@@ -96,6 +96,20 @@
     // DOCUMENT PREVIEW  (image / pdf)
     // ══════════════════════════════════════════════════════════
 
+    // Fetch a signed URL for a private Supabase object, then preview it.
+    // bucket is the discriminator the server maps to a real bucket ("rider" | "merchant").
+    window.previewDocument = function (bucket, objectPath, title) {
+        if (!objectPath) return;
+        var ext  = objectPath.split('.').pop().toLowerCase();
+        var type = (ext === 'pdf') ? 'pdf' : 'image';
+
+        fetch('/Admin/DocumentUrl?bucket=' + encodeURIComponent(bucket) +
+              '&path=' + encodeURIComponent(objectPath))
+            .then(function (res) { return res.ok ? res.json() : Promise.reject(); })
+            .then(function (data) { openDocPreview(type, data.url, title); })
+            .catch(function () { alert('Unable to load document. Please try again.'); });
+    };
+
     window.openDocPreview = function (type, src, title) {
         var titleEl = document.getElementById('doc-preview-title');
         var body    = document.getElementById('doc-preview-body');
