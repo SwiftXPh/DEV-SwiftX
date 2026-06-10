@@ -1,4 +1,4 @@
-﻿@{
+@{
 
 }
 
@@ -17,30 +17,26 @@
             <!-- ══ HERO ══ -->
             <div class="appmod-hero">
                 <div class="appmod-hero__photo-wrap">
-                    <img class="appmod-hero__photo"
-                         src="~/Assets/images/profile.jpg"
-                         alt="Carlo Mendoza"
-                         onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
-                    <div class="appmod-hero__photo-fallback" style="display:none;">
+                    <div class="appmod-hero__photo-fallback" style="display:flex;">
                         <i class="ph ph-user"></i>
                     </div>
                     <span class="appmod-hero__dot"></span>
                 </div>
 
                 <div class="appmod-hero__info">
-                    <p class="appmod-hero__name">Carlo Mendoza</p>
+                    <p class="appmod-hero__name" id="rapp-hero-name">—</p>
                     <div class="appmod-hero__meta">
-                        <span class="admin-badge admin-badge--pending">
-                            <span class="admin-badge-dot"></span>Pending Review
+                        <span class="admin-badge admin-badge--pending" id="rapp-hero-badge">
+                            <span class="admin-badge-dot"></span><span id="rapp-hero-status">Pending Review</span>
                         </span>
                         <span class="appmod-hero__chip">
-                            <i class="ph ph-calendar-blank"></i> Applied Feb 18, 2026
+                            <i class="ph ph-calendar-blank"></i> <span id="rapp-applied-date">—</span>
                         </span>
                     </div>
                 </div>
 
                 <span class="appmod-hero__chip appmod-hero__chip--id">
-                    <i class="ph ph-hash"></i> APP-2026-031
+                    <i class="ph ph-hash"></i> <span id="rapp-hero-id">APP-000</span>
                 </span>
             </div>
 
@@ -56,35 +52,27 @@
                     <div class="appmod-info-grid">
                         <div class="admin-modal-info-field">
                             <span class="admin-modal-info-field__label">Full Name</span>
-                            <span class="admin-modal-info-field__value">Carlo Mendoza</span>
-                        </div>
-                        <div class="admin-modal-info-field">
-                            <span class="admin-modal-info-field__label">Date of Birth</span>
-                            <span class="admin-modal-info-field__value">Nov 25, 2000</span>
+                            <span class="admin-modal-info-field__value" id="rapp-fullname">—</span>
                         </div>
                         <div class="admin-modal-info-field">
                             <span class="admin-modal-info-field__label">Contact</span>
-                            <span class="admin-modal-info-field__value">09981-234-567</span>
+                            <span class="admin-modal-info-field__value" id="rapp-phone">—</span>
                         </div>
                         <div class="admin-modal-info-field">
                             <span class="admin-modal-info-field__label">GCash Number</span>
-                            <span class="admin-modal-info-field__value">09981-234-567</span>
+                            <span class="admin-modal-info-field__value" id="rapp-gcash">—</span>
+                        </div>
+                        <div class="admin-modal-info-field">
+                            <span class="admin-modal-info-field__label">Plate Number</span>
+                            <span class="admin-modal-info-field__value" id="rapp-plate">—</span>
                         </div>
                         <div class="admin-modal-info-field admin-modal-info-field--full">
                             <span class="admin-modal-info-field__label">Email</span>
-                            <span class="admin-modal-info-field__value">carlo@email.com</span>
+                            <span class="admin-modal-info-field__value" id="rapp-email">—</span>
                         </div>
                         <div class="admin-modal-info-field admin-modal-info-field--full">
                             <span class="admin-modal-info-field__label">Address</span>
-                            <span class="admin-modal-info-field__value">
-                                Purok 3, Brgy. Lumbayao, Valencia City
-                            </span>
-                        </div>
-                        <div class="admin-modal-info-field admin-modal-info-field--full">
-                            <span class="admin-modal-info-field__label">Vehicle Type</span>
-                            <span class="admin-modal-info-field__value">
-                                Motorcycle — Honda Click 125i
-                            </span>
+                            <span class="admin-modal-info-field__value" id="rapp-address">—</span>
                         </div>
                     </div>
                 </div>
@@ -97,23 +85,21 @@
                     </h3>
                     <div class="admin-modal-doc-list">
 
-                        @* SAMPLE IMAGE PREVIEW *@
                         <div class="admin-modal-doc admin-modal-doc--redesigned">
                             <div class="admin-modal-doc__top">
                                 <span class="admin-modal-doc__name">Professional Driver's License</span>
-                                <button class="admin-modal-doc__preview-btn"
-                                        onclick="openDocPreview('image', '../assets/docs/license.jpg', 'Driver\'s License')">
+                                <button class="admin-modal-doc__preview-btn" onclick="openAppDoc('license')">
                                     <i class="ph ph-eye"></i>
                                 </button>
                             </div>
                             <div class="admin-modal-toggle-group">
-                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--approve active">
+                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--approve" onclick="toggleDocStatus(this)">
                                     <i class="ph ph-check-circle"></i> Approve
                                 </button>
-                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--neutral">
+                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--neutral active" onclick="toggleDocStatus(this)">
                                     <i class="ph ph-minus-circle"></i> Pending
                                 </button>
-                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--reject">
+                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--reject" onclick="toggleDocStatus(this)">
                                     <i class="ph ph-x-circle"></i> Reject
                                 </button>
                             </div>
@@ -122,40 +108,38 @@
                         <div class="admin-modal-doc admin-modal-doc--redesigned">
                             <div class="admin-modal-doc__top">
                                 <span class="admin-modal-doc__name">Secondary Government ID</span>
-                                <button class="admin-modal-doc__preview-btn">
+                                <button class="admin-modal-doc__preview-btn" onclick="openAppDoc('id')">
                                     <i class="ph ph-eye"></i>
                                 </button>
                             </div>
                             <div class="admin-modal-toggle-group">
-                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--approve active">
+                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--approve" onclick="toggleDocStatus(this)">
                                     <i class="ph ph-check-circle"></i> Approve
                                 </button>
-                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--neutral">
+                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--neutral active" onclick="toggleDocStatus(this)">
                                     <i class="ph ph-minus-circle"></i> Pending
                                 </button>
-                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--reject">
+                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--reject" onclick="toggleDocStatus(this)">
                                     <i class="ph ph-x-circle"></i> Reject
                                 </button>
                             </div>
                         </div>
 
-                        @* SAMPLE PDF PREVIEW *@
                         <div class="admin-modal-doc admin-modal-doc--redesigned">
                             <div class="admin-modal-doc__top">
                                 <span class="admin-modal-doc__name">OR / CR of Motorcycle</span>
-                                <button class="admin-modal-doc__preview-btn"
-                                        onclick="openDocPreview('pdf', '../assets/docs/sampleDocumentPrev.pdf', 'OR/CR of Motorcycle')">
+                                <button class="admin-modal-doc__preview-btn" onclick="openAppDoc('orcr')">
                                     <i class="ph ph-eye"></i>
                                 </button>
                             </div>
                             <div class="admin-modal-toggle-group">
-                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--approve">
+                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--approve" onclick="toggleDocStatus(this)">
                                     <i class="ph ph-check-circle"></i> Approve
                                 </button>
-                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--neutral active">
+                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--neutral active" onclick="toggleDocStatus(this)">
                                     <i class="ph ph-minus-circle"></i> Pending
                                 </button>
-                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--reject">
+                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--reject" onclick="toggleDocStatus(this)">
                                     <i class="ph ph-x-circle"></i> Reject
                                 </button>
                             </div>
@@ -163,19 +147,19 @@
 
                         <div class="admin-modal-doc admin-modal-doc--redesigned">
                             <div class="admin-modal-doc__top">
-                                <span class="admin-modal-doc__name">Clear Vehicle Photos</span>
-                                <button class="admin-modal-doc__preview-btn">
+                                <span class="admin-modal-doc__name">Vehicle Photo (Front)</span>
+                                <button class="admin-modal-doc__preview-btn" onclick="openAppDoc('front')">
                                     <i class="ph ph-eye"></i>
                                 </button>
                             </div>
                             <div class="admin-modal-toggle-group">
-                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--approve">
+                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--approve" onclick="toggleDocStatus(this)">
                                     <i class="ph ph-check-circle"></i> Approve
                                 </button>
-                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--neutral active">
+                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--neutral active" onclick="toggleDocStatus(this)">
                                     <i class="ph ph-minus-circle"></i> Pending
                                 </button>
-                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--reject">
+                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--reject" onclick="toggleDocStatus(this)">
                                     <i class="ph ph-x-circle"></i> Reject
                                 </button>
                             </div>
@@ -183,19 +167,39 @@
 
                         <div class="admin-modal-doc admin-modal-doc--redesigned">
                             <div class="admin-modal-doc__top">
-                                <span class="admin-modal-doc__name">Verified GCash Account</span>
-                                <button class="admin-modal-doc__preview-btn">
+                                <span class="admin-modal-doc__name">Vehicle Photo (Side)</span>
+                                <button class="admin-modal-doc__preview-btn" onclick="openAppDoc('side')">
                                     <i class="ph ph-eye"></i>
                                 </button>
                             </div>
                             <div class="admin-modal-toggle-group">
-                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--approve">
+                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--approve" onclick="toggleDocStatus(this)">
                                     <i class="ph ph-check-circle"></i> Approve
                                 </button>
-                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--neutral">
+                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--neutral active" onclick="toggleDocStatus(this)">
                                     <i class="ph ph-minus-circle"></i> Pending
                                 </button>
-                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--reject active">
+                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--reject" onclick="toggleDocStatus(this)">
+                                    <i class="ph ph-x-circle"></i> Reject
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="admin-modal-doc admin-modal-doc--redesigned">
+                            <div class="admin-modal-doc__top">
+                                <span class="admin-modal-doc__name">Agreement</span>
+                                <button class="admin-modal-doc__preview-btn" onclick="openAppDoc('agreement')">
+                                    <i class="ph ph-eye"></i>
+                                </button>
+                            </div>
+                            <div class="admin-modal-toggle-group">
+                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--approve" onclick="toggleDocStatus(this)">
+                                    <i class="ph ph-check-circle"></i> Approve
+                                </button>
+                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--neutral active" onclick="toggleDocStatus(this)">
+                                    <i class="ph ph-minus-circle"></i> Pending
+                                </button>
+                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--reject" onclick="toggleDocStatus(this)">
                                     <i class="ph ph-x-circle"></i> Reject
                                 </button>
                             </div>
@@ -205,8 +209,9 @@
                 </div>
 
             </div><!-- /.appmod-body -->
+
             <!-- ══ DECISION BAR ══ -->
-            <div class="appmod-decision">
+            <div class="appmod-decision" id="rapp-decision-bar">
                 <div class="appmod-decision__textarea-wrap">
                     <span class="admin-modal-info-label">
                         Notes for Applicant
@@ -222,12 +227,20 @@
                             onclick="closeModal('rider-application-modal')">
                         Cancel
                     </button>
-                    <button class="admin-modal-btn admin-modal-btn--reject">
-                        <i class="ph ph-x-circle"></i> Reject
-                    </button>
-                    <button class="admin-modal-btn admin-modal-btn--approve">
-                        <i class="ph ph-check-circle"></i> Accept Application
-                    </button>
+                    <form id="rapp-reject-form" asp-controller="Admin" asp-action="RejectRider" method="post" style="display:inline;">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" id="rapp-reject-id" />
+                        <button type="submit" class="admin-modal-btn admin-modal-btn--reject">
+                            <i class="ph ph-x-circle"></i> Reject
+                        </button>
+                    </form>
+                    <form id="rapp-approve-form" asp-controller="Admin" asp-action="ApproveRider" method="post" style="display:inline;">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" id="rapp-approve-id" />
+                        <button type="submit" class="admin-modal-btn admin-modal-btn--approve">
+                            <i class="ph ph-check-circle"></i> Accept Application
+                        </button>
+                    </form>
                 </div>
             </div>
 
@@ -235,3 +248,87 @@
     </div>
 </div>
 
+<script>
+    var _appDocPaths = {};
+
+    function viewRiderApplication(riderId) {
+        fetch('/Admin/GetRiderJson?id=' + riderId)
+            .then(function (res) { return res.json(); })
+            .then(function (r) {
+                // Hero
+                document.getElementById('rapp-hero-name').textContent = r.fullName;
+                document.getElementById('rapp-hero-id').textContent = 'APP-' + String(r.id).padStart(3, '0');
+                document.getElementById('rapp-applied-date').textContent = 'Applied ' + r.createdAt;
+
+                // Status badge
+                var isPending = r.status === 'Pending';
+                var isApproved = r.status === 'Active';
+                var badgeClass = isPending ? 'admin-badge--pending' :
+                                 isApproved ? 'admin-badge--active' : 'admin-badge--rejected';
+                var badgeLabel = isPending ? 'Pending Review' :
+                                 isApproved ? 'Approved' : 'Rejected';
+                var badge = document.getElementById('rapp-hero-badge');
+                badge.className = 'admin-badge ' + badgeClass;
+                document.getElementById('rapp-hero-status').textContent = badgeLabel;
+
+                // Applicant info
+                document.getElementById('rapp-fullname').textContent = r.fullName;
+                document.getElementById('rapp-phone').textContent = r.phone || '—';
+                document.getElementById('rapp-gcash').textContent = r.gcContact || '—';
+                document.getElementById('rapp-plate').textContent = r.plateNumber || '—';
+                document.getElementById('rapp-email').textContent = r.email || '—';
+                document.getElementById('rapp-address').textContent = r.address || '—';
+
+                // Document paths
+                _appDocPaths = {
+                    license: r.licensePath,
+                    id: r.idPath,
+                    orcr: r.orcrPath,
+                    front: r.frontVehiclePath,
+                    side: r.sideVehiclePath,
+                    agreement: r.agreementPath
+                };
+
+                // Decision bar & doc toggles — show only for pending
+                var decisionBar = document.getElementById('rapp-decision-bar');
+                var docToggles = document.querySelectorAll('#rider-application-modal .admin-modal-toggle-group');
+                if (isPending) {
+                    decisionBar.style.display = '';
+                    document.getElementById('rapp-approve-id').value = r.id;
+                    document.getElementById('rapp-reject-id').value = r.id;
+                    docToggles.forEach(function (el) { el.style.display = ''; });
+                } else {
+                    decisionBar.style.display = 'none';
+                    docToggles.forEach(function (el) { el.style.display = 'none'; });
+                }
+
+                openModal('rider-application-modal');
+            });
+    }
+
+    function openAppDoc(docType) {
+        var path = _appDocPaths[docType];
+        if (path) {
+            var ext = path.split('.').pop().toLowerCase();
+            var type = (ext === 'pdf') ? 'pdf' : 'image';
+            var labels = {
+                license: "Driver's License",
+                id: "Government ID",
+                orcr: "OR/CR of Motorcycle",
+                front: "Vehicle Photo (Front)",
+                side: "Vehicle Photo (Side)",
+                agreement: "Agreement"
+            };
+            openDocPreview(type, path, labels[docType] || 'Document');
+        }
+    }
+
+    function toggleDocStatus(btn) {
+        // Remove active from all siblings in the same toggle group
+        var group = btn.closest('.admin-modal-toggle-group');
+        group.querySelectorAll('.admin-modal-toggle-btn').forEach(function (b) {
+            b.classList.remove('active');
+        });
+        btn.classList.add('active');
+    }
+</script>
