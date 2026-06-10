@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewData["Title"] = "Home";
 }
 <!-- #region Hero Section -->
@@ -186,7 +186,7 @@
                         Earn on your own terms with a platform that values your time and safety. No hidden fees, no unfair deductions.
                     </p>
 
-                    <a href="./rider.html" class="__btn __btn--primary w-full justify-center">
+                    <a asp-controller="SignUp" asp-action="Rider" class="__btn __btn--primary w-full justify-center">
                         Apply to Ride
                     </a>
 
@@ -225,7 +225,7 @@
                         List your business on a platform that puts local merchants first. Fair commission rates, no lock-in contracts.
                     </p>
 
-                    <a href="./merchant.html" class="__btn __btn--outline w-full justify-center">
+                    <a asp-controller="SignUp" asp-action="Merchant" class="__btn __btn--outline w-full justify-center">
                         Partner with Us
                     </a>
 
