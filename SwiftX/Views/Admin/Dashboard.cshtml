@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewData["Title"] = "Dashboard";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
@@ -20,44 +20,32 @@
     <div class="admin-stat-card">
         <div class="admin-stat-header">
             <div class="admin-stat-icon"><i class="ph ph-package"></i></div>
-            <span class="admin-stat-badge admin-stat-badge--up">
-                <i class="ph ph-arrow-up"></i> 12%
-            </span>
         </div>
-        <p class="admin-stat-value">1,248</p>
+        <p class="admin-stat-value">0</p>
         <p class="admin-stat-label">Total Orders</p>
     </div>
 
     <div class="admin-stat-card">
         <div class="admin-stat-header">
             <div class="admin-stat-icon"><i class="ph ph-motorcycle"></i></div>
-            <span class="admin-stat-badge admin-stat-badge--up">
-                <i class="ph ph-arrow-up"></i> 8%
-            </span>
         </div>
-        <p class="admin-stat-value">86</p>
+        <p class="admin-stat-value">@ViewBag.ActiveRiders</p>
         <p class="admin-stat-label">Active Riders</p>
     </div>
 
     <div class="admin-stat-card">
         <div class="admin-stat-header">
             <div class="admin-stat-icon"><i class="ph ph-storefront"></i></div>
-            <span class="admin-stat-badge admin-stat-badge--up">
-                <i class="ph ph-arrow-up"></i> 5%
-            </span>
         </div>
-        <p class="admin-stat-value">42</p>
+        <p class="admin-stat-value">@ViewBag.ActiveMerchants</p>
         <p class="admin-stat-label">Partner Merchants</p>
     </div>
 
     <div class="admin-stat-card">
         <div class="admin-stat-header">
             <div class="admin-stat-icon"><i class="ph ph-currency-circle-dollar"></i></div>
-            <span class="admin-stat-badge admin-stat-badge--neutral">
-                <i class="ph ph-minus"></i> 0%
-            </span>
         </div>
-        <p class="admin-stat-value">&#8369;184,520</p>
+        <p class="admin-stat-value">&#8369;0</p>
         <p class="admin-stat-label">Revenue (This Month)</p>
     </div>
 </div>
@@ -78,7 +66,7 @@
             <div class="dash-app-card__pills">
                 @* PENDING *@
                 <span class="dash-app-pill dash-app-pill--pending">
-                    <span class="dash-app-pill__dot"></span>4 Pending
+                    <span class="dash-app-pill__dot"></span>@ViewBag.PendingRiders Pending
                 </span>
                 @*
                     ==== APPROVED ====
@@ -108,7 +96,7 @@
 
                 @* PENDING *@
                 <span class="dash-app-pill dash-app-pill--pending">
-                    <span class="dash-app-pill__dot"></span>6 Pending
+                    <span class="dash-app-pill__dot"></span>@ViewBag.PendingMerchants Pending
                 </span>
                 @*
                     ==== APPROVED ====
@@ -157,57 +145,50 @@
                         <th>Amount</th>
                     </tr>
                 </thead>
-
-                @* MAKE IT 5 ROWS ONLY *@
                 <tbody>
-                    @* DELIVERED *@
-                    <tr>
-                        <td><span class="dash-order-id">#ORD-1248</span></td>
-                        <td><span class="dash-customer">Maria Santos</span></td>
-                        <td><span class="dash-merchant">Jollibee Malaybalay</span></td>
-                        <td>
-                            <span class="admin-badge admin-badge--delivered">
-                                <span class="admin-badge-dot"></span>Delivered
-                            </span>
-                        </td>
-                        <td><span class="dash-amount">&#8369;285</span></td>
-                    </tr>
-                    @* In Transit / En Route / OTW *@
-                    <tr>
-                        <td><span class="dash-order-id">#ORD-1247</span></td>
-                        <td><span class="dash-customer">Juan Dela Cruz</span></td>
-                        <td><span class="dash-merchant">Chowking Valencia</span></td>
-                        <td>
-                            <span class="admin-badge admin-badge--in-transit">
-                                <span class="admin-badge-dot"></span>In Transit
-                            </span>
-                        </td>
-                        <td><span class="dash-amount">&#8369;192</span></td>
-                    </tr>
-                    @* PENDING *@
-                    <tr>
-                        <td><span class="dash-order-id">#ORD-1246</span></td>
-                        <td><span class="dash-customer">Ana Reyes</span></td>
-                        <td><span class="dash-merchant">Mang Inasal</span></td>
-                        <td>
-                            <span class="admin-badge admin-badge--pending">
-                                <span class="admin-badge-dot"></span>Pending
-                            </span>
-                        </td>
-                        <td><span class="dash-amount">&#8369;340</span></td>
-                    </tr>
-                    @* CANCELLED *@
-                    <tr>
-                        <td><span class="dash-order-id">#ORD-1244</span></td>
-                        <td><span class="dash-customer">Rosa Lim</span></td>
-                        <td><span class="dash-merchant">KFC Malaybalay</span></td>
-                        <td>
-                            <span class="admin-badge admin-badge--cancelled">
-                                <span class="admin-badge-dot"></span>Cancelled
-                            </span>
-                        </td>
-                        <td><span class="dash-amount">&#8369;220</span></td>
-                    </tr>
+                    @{
+                        var recentOrders = (List<SwiftX.Models.Order>)ViewBag.RecentOrders;
+                    }
+                    @if (recentOrders.Any())
+                    {
+                        @foreach (var order in recentOrders)
+                        {
+                            var statusLower = order.Status?.ToLower().Replace(" ", "-") ?? "pending";
+                            var badgeClass = statusLower switch
+                            {
+                                "delivered" => "admin-badge--delivered",
+                                "in-transit" => "admin-badge--in-transit",
+                                "pending" => "admin-badge--pending",
+                                "cancelled" => "admin-badge--cancelled",
+                                _ => "admin-badge--pending"
+                            };
+                            var customerName = order.Customer != null
+                                ? $"{order.Customer.FirstName} {order.Customer.LastName}"
+                                : "—";
+                            var merchantName = order.Merchant?.BusinessName ?? "—";
+
+                            <tr>
+                                <td><span class="dash-order-id">#ORD-@order.Id.ToString("D4")</span></td>
+                                <td><span class="dash-customer">@customerName</span></td>
+                                <td><span class="dash-merchant">@merchantName</span></td>
+                                <td>
+                                    <span class="admin-badge @badgeClass">
+                                        <span class="admin-badge-dot"></span>@order.Status
+                                    </span>
+                                </td>
+                                <td><span class="dash-amount">&#8369;@order.TotalAmount.ToString("N0")</span></td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5" style="text-align:center;padding:2rem;opacity:0.5;">
+                                <i class="ph ph-package" style="font-size:2rem;"></i>
+                                <p style="margin-top:0.5rem;">No orders yet.</p>
+                            </td>
+                        </tr>
+                    }
                 </tbody>
             </table>
         </div>
@@ -218,56 +199,41 @@
             <h2 class="admin-table-title">Recent Activity</h2>
         </div>
         <ul class="dash-activity-feed">
-            @* MAKE IT 5 ACTIVITY ROWS ONLY *@
+            @{
+                var recentActivities = (List<dynamic>)ViewBag.RecentActivities;
 
-            @* RIDER ACCEPT ACTIVITY *@
-            <li class="dash-activity-item">
-                <div class="dash-activity-dot dash-activity-dot--rider">
-                    <i class="ph ph-motorcycle"></i>
-                </div>
-                <div>
-                    <p class="dash-activity-text">
-                        <strong>Mark Villanueva</strong> submitted a rider application.
-                    </p>
-                    <p class="dash-activity-time">2 minutes ago</p>
-                </div>
-            </li>
-            @* ORDER DELIVERED ACTIVITY *@
-            <li class="dash-activity-item">
-                <div class="dash-activity-dot dash-activity-dot--order">
-                    <i class="ph ph-package"></i>
-                </div>
-                <div>
-                    <p class="dash-activity-text">
-                        Order <strong>#ORD-1248</strong> was delivered successfully.
-                    </p>
-                    <p class="dash-activity-time">15 minutes ago</p>
-                </div>
-            </li>
-            @* MERCHANT ACCEPT ACTIVITY *@
-            <li class="dash-activity-item">
-                <div class="dash-activity-dot dash-activity-dot--merchant">
-                    <i class="ph ph-storefront"></i>
-                </div>
-                <div>
-                    <p class="dash-activity-text">
-                        <strong>Kusina ni Lola</strong> was approved as a merchant partner.
-                    </p>
-                    <p class="dash-activity-time">1 hour ago</p>
-                </div>
-            </li>
-            @* ORDER CANCELLED ACTIVITY *@
-            <li class="dash-activity-item">
-                <div class="dash-activity-dot dash-activity-dot--system">
-                    <i class="ph ph-warning"></i>
-                </div>
-                <div>
-                    <p class="dash-activity-text">
-                        Order <strong>#ORD-1244</strong> was cancelled by customer.
-                    </p>
-                    <p class="dash-activity-time">2 hours ago</p>
-                </div>
-            </li>
+                string TimeAgo(DateTime dt) {
+                    var span = DateTime.UtcNow - dt;
+                    if (span.TotalMinutes < 1) return "Just now";
+                    if (span.TotalMinutes < 60) return $"{(int)span.TotalMinutes} min ago";
+                    if (span.TotalHours < 24) return $"{(int)span.TotalHours}h ago";
+                    if (span.TotalDays < 7) return $"{(int)span.TotalDays}d ago";
+                    return dt.ToString("MMM dd, yyyy");
+                }
+            }
+            @if (recentActivities.Any())
+            {
+                @foreach (var a in recentActivities)
+                {
+                    <li class="dash-activity-item">
+                        <div class="dash-activity-dot @a.DotClass">
+                            <i class="ph @a.Icon"></i>
+                        </div>
+                        <div>
+                            <p class="dash-activity-text">
+                                <strong>@a.Name</strong> @a.Text
+                            </p>
+                            <p class="dash-activity-time">@TimeAgo((DateTime)a.Date)</p>
+                        </div>
+                    </li>
+                }
+            }
+            else
+            {
+                <li class="dash-activity-item" style="opacity:0.5;justify-content:center;">
+                    <p>No recent activity.</p>
+                </li>
+            }
         </ul>
     </div>
 
@@ -276,27 +242,6 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
-            var recentOrdersTable = $('#recent_orders').DataTable({
-                pageLength:   5,
-                ordering:     true,
-                searching:    false,
-                lengthChange: false,
-                dom: 't<"admin-pagination"<"dataTables_info"i><"admin-pagination-btns"p>>',
-                columnDefs: [{ orderable: false, targets: [4] }],
-                language: {
-                    paginate: {
-                        previous: '<i class="ph ph-caret-left"></i>',
-                        next:     '<i class="ph ph-caret-right"></i>'
-                    },
-                    info: 'Showing _START_–_END_ of _TOTAL_ riders'
-                },
-                drawCallback: function () {
-                    $(this.api().table().container())
-                        .find('.dataTables_paginate .paginate_button')
-                        .addClass('admin-page-btn')
-                        .filter('.current').addClass('active');
-                }
-            });
         });
 
         function updateClock() {

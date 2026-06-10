@@ -6,6 +6,8 @@
     var totalRiders = Model.Count;
     var activeRiders = Model.Count(r => r.Status == "Active");
     var inactiveRiders = Model.Count(r => r.Status == "Inactive");
+    var pendingCount = (int)ViewBag.PendingApplicationCount;
+    var pendingApplicants = (List<SwiftX.Models.Rider>)ViewBag.PendingApplications;
 }
 
 @* {{-- ── Stat Cards ── --}} *@
@@ -152,7 +154,7 @@
                     <div class="ops-btn__icon"><i class="ph ph-user-circle-plus"></i></div>
                     <div>
                         <p class="ops-btn__label">Review Applications</p>
-                        <p class="ops-btn__meta">4 pending review</p>
+                        <p class="ops-btn__meta">@pendingCount pending review</p>
                     </div>
                     <i class="ph ph-arrow-right ops-btn__arrow"></i>
                 </a>
@@ -171,37 +173,27 @@
         <div class="ops-panel">
             <div class="ops-panel__head">Pending Applicants</div>
             <div class="ops-panel__body ops-panel__body--compact">
-                @* RECENT APPLICANTS (5 CARDS OR LESS) *@
-                <div class="ops-applicant" onclick="openModal('rider-application-modal')">
-                    <div class="ops-applicant__av"><i class="ph ph-user"></i></div>
-                    <div class="ops-applicant__body">
-                        <p class="ops-applicant__name">Carlo Mendoza</p>
-                        <p class="ops-applicant__date">Applied Feb 18, 2026</p>
-                    </div>
-                    <span class="admin-badge admin-badge--pending">
-                        <span class="admin-badge admin-badge--pending"><span class="admin-badge-dot"></span>Pending</span>
-                    </span>
-                </div>
-                <div class="ops-applicant" onclick="openModal('rider-application-modal')">
-                    <div class="ops-applicant__av"><i class="ph ph-user"></i></div>
-                    <div class="ops-applicant__body">
-                        <p class="ops-applicant__name">Renz Bautista</p>
-                        <p class="ops-applicant__date">Applied Feb 19, 2026</p>
-                    </div>
-                    <span class="admin-badge admin-badge--pending">
-                        <span class="admin-badge admin-badge--pending"><span class="admin-badge-dot"></span>Pending</span>
-                    </span>
-                </div>
-                <div class="ops-applicant" onclick="openModal('rider-application-modal')">
-                    <div class="ops-applicant__av"><i class="ph ph-user"></i></div>
-                    <div class="ops-applicant__body">
-                        <p class="ops-applicant__name">Jayson Dela Cruz</p>
-                        <p class="ops-applicant__date">Applied Feb 21, 2026</p>
-                    </div>
-                    <span class="admin-badge admin-badge--pending">
-                        <span class="admin-badge admin-badge--pending"><span class="admin-badge-dot"></span>Pending</span>
-                    </span>
-                </div>
+                @if (pendingApplicants.Any())
+                {
+                    @foreach (var applicant in pendingApplicants)
+                    {
+                        var appName = $"{applicant.User.FirstName} {applicant.User.LastName}";
+                        <div class="ops-applicant" onclick="openModal('rider-application-modal')">
+                            <div class="ops-applicant__av"><i class="ph ph-user"></i></div>
+                            <div class="ops-applicant__body">
+                                <p class="ops-applicant__name">@appName</p>
+                                <p class="ops-applicant__date">Applied @applicant.CreatedAt.ToString("MMM dd, yyyy")</p>
+                            </div>
+                            <span class="admin-badge admin-badge--pending">
+                                <span class="admin-badge-dot"></span>Pending
+                            </span>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p style="text-align:center;opacity:0.5;padding:1rem;">No pending applicants</p>
+                }
             </div>
         </div>
     </div>

@@ -20,6 +20,51 @@ namespace SwiftX.Controllers
         }
         public IActionResult Dashboard()
         {
+            ViewBag.PendingRiders = _db.Riders.Count(r => r.Status == "Pending");
+            ViewBag.PendingMerchants = _db.Merchants.Count(m => m.Status == "Pending");
+            ViewBag.ActiveRiders = _db.Riders.Count(r => r.Status == "Active");
+            ViewBag.ActiveMerchants = _db.Merchants.Count(m => m.Status == "Active");
+            ViewBag.RecentOrders = _db.Orders
+                .Include(o => o.Customer)
+                .Include(o => o.Merchant)
+                .OrderByDescending(o => o.CreatedAt)
+                .Take(5)
+                .ToList();
+
+            // Build recent activity from riders and merchants
+            var activities = new List<dynamic>();
+
+            var recentRiders = _db.Riders.Include(r => r.User)
+                .OrderByDescending(r => r.CreatedAt).Take(10).ToList();
+            foreach (var r in recentRiders)
+            {
+                var name = $"{r.User.FirstName} {r.User.LastName}";
+                if (r.Status == "Pending")
+                    activities.Add(new { Type = "rider", Icon = "ph-motorcycle", DotClass = "dash-activity-dot--rider", Name = name, Text = "submitted a rider application.", Date = r.CreatedAt });
+                else if (r.Status == "Active")
+                    activities.Add(new { Type = "rider", Icon = "ph-check-circle", DotClass = "dash-activity-dot--rider", Name = name, Text = "was approved as a rider.", Date = r.CreatedAt });
+                else if (r.Status == "Rejected")
+                    activities.Add(new { Type = "rider", Icon = "ph-x-circle", DotClass = "dash-activity-dot--system", Name = name, Text = "rider application was rejected.", Date = r.CreatedAt });
+            }
+
+            var recentMerchants = _db.Merchants.Include(m => m.User)
+                .OrderByDescending(m => m.CreatedAt).Take(10).ToList();
+            foreach (var m in recentMerchants)
+            {
+                var name = m.BusinessName;
+                if (m.Status == "Pending")
+                    activities.Add(new { Type = "merchant", Icon = "ph-storefront", DotClass = "dash-activity-dot--merchant", Name = name, Text = "submitted a merchant application.", Date = m.CreatedAt });
+                else if (m.Status == "Active")
+                    activities.Add(new { Type = "merchant", Icon = "ph-check-circle", DotClass = "dash-activity-dot--merchant", Name = name, Text = "was approved as a merchant partner.", Date = m.CreatedAt });
+                else if (m.Status == "Rejected")
+                    activities.Add(new { Type = "merchant", Icon = "ph-x-circle", DotClass = "dash-activity-dot--system", Name = name, Text = "merchant application was rejected.", Date = m.CreatedAt });
+            }
+
+            ViewBag.RecentActivities = activities
+                .OrderByDescending(a => (DateTime)a.Date)
+                .Take(5)
+                .ToList();
+
             return View();
         }
         public IActionResult Orders()
@@ -33,6 +78,17 @@ namespace SwiftX.Controllers
                 .Include(r => r.User)
                 .Where(r => r.Status == "Active" || r.Status == "Inactive")
                 .ToList();
+
+            // Pending rider applications for the ops sidebar
+            var pendingApplications = _db.Riders
+                .Include(r => r.User)
+                .Where(r => r.Status == "Pending")
+                .OrderByDescending(r => r.CreatedAt)
+                .ToList();
+
+            ViewBag.PendingApplicationCount = pendingApplications.Count;
+            ViewBag.PendingApplications = pendingApplications.Take(5).ToList();
+
             return View(riders);
         }
         public IActionResult RiderApplications()
