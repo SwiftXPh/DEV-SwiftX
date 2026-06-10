@@ -130,7 +130,14 @@ namespace SwiftX.Controllers
                 orcrPath = rider.ORCRPath,
                 agreementPath = rider.AgreementPath,
                 frontVehiclePath = rider.FrontVehiclePath,
-                sideVehiclePath = rider.SideVehiclePath
+                sideVehiclePath = rider.SideVehiclePath,
+                // Document review statuses
+                licenseStatus = rider.LicenseStatus,
+                idStatus = rider.IDStatus,
+                orcrStatus = rider.ORCRStatus,
+                agreementStatus = rider.AgreementStatus,
+                frontVehicleStatus = rider.FrontVehicleStatus,
+                sideVehicleStatus = rider.SideVehicleStatus
             });
         }
 
@@ -156,6 +163,76 @@ namespace SwiftX.Controllers
                 _db.SaveChanges();
             }
             return RedirectToAction("Rider");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult UpdateDocStatus(int id, string docType, string status)
+        {
+            var rider = _db.Riders.Find(id);
+            if (rider == null) return NotFound();
+
+            switch (docType)
+            {
+                case "license": rider.LicenseStatus = status; break;
+                case "id": rider.IDStatus = status; break;
+                case "orcr": rider.ORCRStatus = status; break;
+                case "agreement": rider.AgreementStatus = status; break;
+                case "front": rider.FrontVehicleStatus = status; break;
+                case "side": rider.SideVehicleStatus = status; break;
+                default: return BadRequest();
+            }
+
+            _db.SaveChanges();
+            return Ok();
+        }
+
+        [HttpGet]
+        public IActionResult GetMerchantJson(int id)
+        {
+            var merchant = _db.Merchants.Include(m => m.User).FirstOrDefault(m => m.Id == id);
+            if (merchant == null) return NotFound();
+
+            return Json(new
+            {
+                id = merchant.Id,
+                merchantId = $"MAPP-{merchant.Id:D3}",
+                businessName = merchant.BusinessName,
+                ownerName = $"{merchant.OwnerFirstName} {merchant.OwnerLastName}",
+                status = merchant.Status,
+                category = merchant.Category ?? "—",
+                businessContact = merchant.BusinessContact,
+                businessEmail = merchant.BusinessEmail,
+                businessAddress = merchant.BusinessAddress,
+                gcContact = merchant.GCContact,
+                createdAt = merchant.CreatedAt.ToString("MMMM dd, yyyy"),
+                birFormPath = merchant.BIRFormPath,
+                dtiCertificatePath = merchant.DTICertificatePath,
+                barangayClearancePath = merchant.BarangayClearancePath,
+                // Document review statuses
+                birFormStatus = merchant.BIRFormStatus,
+                dtiCertificateStatus = merchant.DTICertificateStatus,
+                barangayClearanceStatus = merchant.BarangayClearanceStatus
+            });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult UpdateMerchantDocStatus(int id, string docType, string status)
+        {
+            var merchant = _db.Merchants.Find(id);
+            if (merchant == null) return NotFound();
+
+            switch (docType)
+            {
+                case "bir": merchant.BIRFormStatus = status; break;
+                case "dti": merchant.DTICertificateStatus = status; break;
+                case "barangay": merchant.BarangayClearanceStatus = status; break;
+                default: return BadRequest();
+            }
+
+            _db.SaveChanges();
+            return Ok();
         }
 
     }

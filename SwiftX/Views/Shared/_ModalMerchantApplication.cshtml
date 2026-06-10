@@ -17,30 +17,26 @@
             <!-- ══ HERO ══ -->
             <div class="appmod-hero">
                 <div class="appmod-hero__photo-wrap">
-                    <img class="appmod-hero__photo"
-                         src="~/Assets/images/profile.jpg"
-                         alt="Maria Santos"
-                         onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
-                    <div class="appmod-hero__photo-fallback" style="display:none;">
+                    <div class="appmod-hero__photo-fallback" style="display:flex;">
                         <i class="ph ph-storefront"></i>
                     </div>
                     <span class="appmod-hero__dot"></span>
                 </div>
 
                 <div class="appmod-hero__info">
-                    <p class="appmod-hero__name">Maria Santos</p>
+                    <p class="appmod-hero__name" id="mapp-hero-name">—</p>
                     <div class="appmod-hero__meta">
-                        <span class="admin-badge admin-badge--pending">
-                            <span class="admin-badge-dot"></span>Pending Review
+                        <span class="admin-badge admin-badge--pending" id="mapp-hero-badge">
+                            <span class="admin-badge-dot"></span><span id="mapp-hero-status">Pending Review</span>
                         </span>
                         <span class="appmod-hero__chip">
-                            <i class="ph ph-calendar-blank"></i> Applied Feb 19, 2026
+                            <i class="ph ph-calendar-blank"></i> <span id="mapp-applied-date">—</span>
                         </span>
                     </div>
                 </div>
 
                 <span class="appmod-hero__chip appmod-hero__chip--id">
-                    <i class="ph ph-hash"></i> APP-2026-018
+                    <i class="ph ph-hash"></i> <span id="mapp-hero-id">MAPP-000</span>
                 </span>
             </div>
 
@@ -56,35 +52,31 @@
                     <div class="appmod-info-grid">
                         <div class="admin-modal-info-field">
                             <span class="admin-modal-info-field__label">Business Name</span>
-                            <span class="admin-modal-info-field__value">Kusina ni Lola</span>
+                            <span class="admin-modal-info-field__value" id="mapp-business-name">—</span>
                         </div>
                         <div class="admin-modal-info-field">
-                            <span class="admin-modal-info-field__label">Business Type</span>
-                            <span class="admin-modal-info-field__value">Restaurant — Filipino</span>
+                            <span class="admin-modal-info-field__label">Category</span>
+                            <span class="admin-modal-info-field__value" id="mapp-category">—</span>
                         </div>
                         <div class="admin-modal-info-field">
                             <span class="admin-modal-info-field__label">Owner Name</span>
-                            <span class="admin-modal-info-field__value">Maria Santos</span>
+                            <span class="admin-modal-info-field__value" id="mapp-owner">—</span>
                         </div>
                         <div class="admin-modal-info-field">
                             <span class="admin-modal-info-field__label">Contact</span>
-                            <span class="admin-modal-info-field__value">0917-123-4567</span>
+                            <span class="admin-modal-info-field__value" id="mapp-contact">—</span>
                         </div>
                         <div class="admin-modal-info-field admin-modal-info-field--full">
                             <span class="admin-modal-info-field__label">Email</span>
-                            <span class="admin-modal-info-field__value">maria@kusinalola.ph</span>
+                            <span class="admin-modal-info-field__value" id="mapp-email">—</span>
                         </div>
                         <div class="admin-modal-info-field admin-modal-info-field--full">
                             <span class="admin-modal-info-field__label">Business Address</span>
-                            <span class="admin-modal-info-field__value">
-                                Purok 4, Brgy. Poblacion, Valencia City, Bukidnon
-                            </span>
+                            <span class="admin-modal-info-field__value" id="mapp-address">—</span>
                         </div>
                         <div class="admin-modal-info-field admin-modal-info-field--full">
                             <span class="admin-modal-info-field__label">Settlement Account</span>
-                            <span class="admin-modal-info-field__value">
-                                GCash — 0917-123-4567
-                            </span>
+                            <span class="admin-modal-info-field__value" id="mapp-gcash">—</span>
                         </div>
                     </div>
                 </div>
@@ -99,20 +91,19 @@
 
                         <div class="admin-modal-doc admin-modal-doc--redesigned">
                             <div class="admin-modal-doc__top">
-                                <span class="admin-modal-doc__name">DTI / BIR Registration</span>
-                                <button class="admin-modal-doc__preview-btn"
-                                        onclick="openDocPreview('pdf','../assets/sample_data/SwiftXDetails.pdf','DTI Registration')">
+                                <span class="admin-modal-doc__name">BIR Registration</span>
+                                <button class="admin-modal-doc__preview-btn" onclick="openMerchantAppDoc('bir')">
                                     <i class="ph ph-eye"></i>
                                 </button>
                             </div>
-                            <div class="admin-modal-toggle-group">
-                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--approve active">
+                            <div class="admin-modal-toggle-group" data-doc="bir">
+                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--approve" data-status="Approved" onclick="toggleMerchantDocStatus(this)">
                                     <i class="ph ph-check-circle"></i> Approve
                                 </button>
-                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--neutral">
+                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--neutral active" data-status="Pending" onclick="toggleMerchantDocStatus(this)">
                                     <i class="ph ph-minus-circle"></i> Pending
                                 </button>
-                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--reject">
+                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--reject" data-status="Rejected" onclick="toggleMerchantDocStatus(this)">
                                     <i class="ph ph-x-circle"></i> Reject
                                 </button>
                             </div>
@@ -120,19 +111,19 @@
 
                         <div class="admin-modal-doc admin-modal-doc--redesigned">
                             <div class="admin-modal-doc__top">
-                                <span class="admin-modal-doc__name">Mayor's / Business Permit</span>
-                                <button class="admin-modal-doc__preview-btn">
+                                <span class="admin-modal-doc__name">DTI Certificate</span>
+                                <button class="admin-modal-doc__preview-btn" onclick="openMerchantAppDoc('dti')">
                                     <i class="ph ph-eye"></i>
                                 </button>
                             </div>
-                            <div class="admin-modal-toggle-group">
-                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--approve active">
+                            <div class="admin-modal-toggle-group" data-doc="dti">
+                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--approve" data-status="Approved" onclick="toggleMerchantDocStatus(this)">
                                     <i class="ph ph-check-circle"></i> Approve
                                 </button>
-                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--neutral">
+                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--neutral active" data-status="Pending" onclick="toggleMerchantDocStatus(this)">
                                     <i class="ph ph-minus-circle"></i> Pending
                                 </button>
-                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--reject">
+                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--reject" data-status="Rejected" onclick="toggleMerchantDocStatus(this)">
                                     <i class="ph ph-x-circle"></i> Reject
                                 </button>
                             </div>
@@ -140,59 +131,19 @@
 
                         <div class="admin-modal-doc admin-modal-doc--redesigned">
                             <div class="admin-modal-doc__top">
-                                <span class="admin-modal-doc__name">Sanitary Permit</span>
-                                <button class="admin-modal-doc__preview-btn">
+                                <span class="admin-modal-doc__name">Barangay Clearance</span>
+                                <button class="admin-modal-doc__preview-btn" onclick="openMerchantAppDoc('barangay')">
                                     <i class="ph ph-eye"></i>
                                 </button>
                             </div>
-                            <div class="admin-modal-toggle-group">
-                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--approve">
+                            <div class="admin-modal-toggle-group" data-doc="barangay">
+                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--approve" data-status="Approved" onclick="toggleMerchantDocStatus(this)">
                                     <i class="ph ph-check-circle"></i> Approve
                                 </button>
-                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--neutral active">
+                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--neutral active" data-status="Pending" onclick="toggleMerchantDocStatus(this)">
                                     <i class="ph ph-minus-circle"></i> Pending
                                 </button>
-                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--reject">
-                                    <i class="ph ph-x-circle"></i> Reject
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="admin-modal-doc admin-modal-doc--redesigned">
-                            <div class="admin-modal-doc__top">
-                                <span class="admin-modal-doc__name">Store Photos</span>
-                                <button class="admin-modal-doc__preview-btn">
-                                    <i class="ph ph-eye"></i>
-                                </button>
-                            </div>
-                            <div class="admin-modal-toggle-group">
-                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--approve">
-                                    <i class="ph ph-check-circle"></i> Approve
-                                </button>
-                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--neutral active">
-                                    <i class="ph ph-minus-circle"></i> Pending
-                                </button>
-                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--reject">
-                                    <i class="ph ph-x-circle"></i> Reject
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="admin-modal-doc admin-modal-doc--redesigned">
-                            <div class="admin-modal-doc__top">
-                                <span class="admin-modal-doc__name">Settlement Account Proof</span>
-                                <button class="admin-modal-doc__preview-btn">
-                                    <i class="ph ph-eye"></i>
-                                </button>
-                            </div>
-                            <div class="admin-modal-toggle-group">
-                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--approve active">
-                                    <i class="ph ph-check-circle"></i> Approve
-                                </button>
-                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--neutral">
-                                    <i class="ph ph-minus-circle"></i> Pending
-                                </button>
-                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--reject">
+                                <button class="admin-modal-toggle-btn admin-modal-toggle-btn--reject" data-status="Rejected" onclick="toggleMerchantDocStatus(this)">
                                     <i class="ph ph-x-circle"></i> Reject
                                 </button>
                             </div>
@@ -204,7 +155,7 @@
             </div><!-- /.appmod-body -->
 
             <!-- ══ DECISION BAR ══ -->
-            <div class="appmod-decision">
+            <div class="appmod-decision" id="mapp-decision-bar">
                 <div class="appmod-decision__textarea-wrap">
                     <span class="admin-modal-info-label">
                         Notes for Applicant
@@ -220,15 +171,159 @@
                             onclick="closeModal('merchant-application-modal')">
                         Cancel
                     </button>
-                    <button class="admin-modal-btn admin-modal-btn--reject">
-                        <i class="ph ph-x-circle"></i> Reject
-                    </button>
-                    <button class="admin-modal-btn admin-modal-btn--approve">
-                        <i class="ph ph-check-circle"></i> Accept Application
-                    </button>
+                    <form id="mapp-reject-form" asp-controller="Admin" asp-action="RejectMerchant" method="post" style="display:inline;">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" id="mapp-reject-id" />
+                        <button type="submit" class="admin-modal-btn admin-modal-btn--reject">
+                            <i class="ph ph-x-circle"></i> Reject
+                        </button>
+                    </form>
+                    <form id="mapp-approve-form" asp-controller="Admin" asp-action="ApproveMerchant" method="post" style="display:inline;">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" id="mapp-approve-id" />
+                        <button type="submit" class="admin-modal-btn admin-modal-btn--approve" id="mapp-accept-btn" disabled style="opacity:0.4;cursor:not-allowed;">
+                            <i class="ph ph-check-circle"></i> Accept Application
+                        </button>
+                    </form>
                 </div>
             </div>
 
         </div>
     </div>
 </div>
+
+<script>
+    var _merchantAppDocPaths = {};
+    var _currentMerchantAppId = 0;
+
+    function viewMerchantApplication(merchantId) {
+        _currentMerchantAppId = merchantId;
+        fetch('/Admin/GetMerchantJson?id=' + merchantId)
+            .then(function (res) { return res.json(); })
+            .then(function (m) {
+                // Hero
+                document.getElementById('mapp-hero-name').textContent = m.businessName;
+                document.getElementById('mapp-hero-id').textContent = m.merchantId;
+                document.getElementById('mapp-applied-date').textContent = 'Applied ' + m.createdAt;
+
+                // Status badge
+                var isPending = m.status === 'Pending';
+                var isApproved = m.status === 'Active';
+                var badgeClass = isPending ? 'admin-badge--pending' :
+                                 isApproved ? 'admin-badge--active' : 'admin-badge--rejected';
+                var badgeLabel = isPending ? 'Pending Review' :
+                                 isApproved ? 'Approved' : 'Rejected';
+                document.getElementById('mapp-hero-badge').className = 'admin-badge ' + badgeClass;
+                document.getElementById('mapp-hero-status').textContent = badgeLabel;
+
+                // Business info
+                document.getElementById('mapp-business-name').textContent = m.businessName;
+                document.getElementById('mapp-category').textContent = m.category;
+                document.getElementById('mapp-owner').textContent = m.ownerName;
+                document.getElementById('mapp-contact').textContent = m.businessContact || '—';
+                document.getElementById('mapp-email').textContent = m.businessEmail || '—';
+                document.getElementById('mapp-address').textContent = m.businessAddress || '—';
+                document.getElementById('mapp-gcash').textContent = m.gcContact ? 'GCash — ' + m.gcContact : '—';
+
+                // Document paths
+                _merchantAppDocPaths = {
+                    bir: m.birFormPath,
+                    dti: m.dtiCertificatePath,
+                    barangay: m.barangayClearancePath
+                };
+
+                // Decision bar & doc toggles
+                var decisionBar = document.getElementById('mapp-decision-bar');
+                var docToggles = document.querySelectorAll('#merchant-application-modal .admin-modal-toggle-group');
+                if (isPending) {
+                    decisionBar.style.display = '';
+                    document.getElementById('mapp-approve-id').value = m.id;
+                    document.getElementById('mapp-reject-id').value = m.id;
+                    docToggles.forEach(function (el) { el.style.display = ''; });
+
+                    // Restore saved document statuses
+                    var docStatuses = {
+                        bir: m.birFormStatus,
+                        dti: m.dtiCertificateStatus,
+                        barangay: m.barangayClearanceStatus
+                    };
+                    docToggles.forEach(function (group) {
+                        var docType = group.getAttribute('data-doc');
+                        var savedStatus = docStatuses[docType] || 'Pending';
+                        group.querySelectorAll('.admin-modal-toggle-btn').forEach(function (b) {
+                            b.classList.remove('active');
+                            if (b.getAttribute('data-status') === savedStatus) {
+                                b.classList.add('active');
+                            }
+                        });
+                    });
+
+                    updateMerchantAcceptButton();
+                } else {
+                    decisionBar.style.display = 'none';
+                    docToggles.forEach(function (el) { el.style.display = 'none'; });
+                }
+
+                openModal('merchant-application-modal');
+            });
+    }
+
+    function openMerchantAppDoc(docType) {
+        var path = _merchantAppDocPaths[docType];
+        if (path) {
+            var ext = path.split('.').pop().toLowerCase();
+            var type = (ext === 'pdf') ? 'pdf' : 'image';
+            var labels = {
+                bir: "BIR Registration",
+                dti: "DTI Certificate",
+                barangay: "Barangay Clearance"
+            };
+            openDocPreview(type, path, labels[docType] || 'Document');
+        }
+    }
+
+    function toggleMerchantDocStatus(btn) {
+        var group = btn.closest('.admin-modal-toggle-group');
+        group.querySelectorAll('.admin-modal-toggle-btn').forEach(function (b) {
+            b.classList.remove('active');
+        });
+        btn.classList.add('active');
+
+        // Save to database
+        var docType = group.getAttribute('data-doc');
+        var status = btn.getAttribute('data-status');
+        var token = document.querySelector('#mapp-approve-form input[name="__RequestVerificationToken"]').value;
+
+        fetch('/Admin/UpdateMerchantDocStatus', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'id=' + _currentMerchantAppId + '&docType=' + docType + '&status=' + status + '&__RequestVerificationToken=' + encodeURIComponent(token)
+        });
+
+        updateMerchantAcceptButton();
+    }
+
+    function updateMerchantAcceptButton() {
+        var acceptBtn = document.getElementById('mapp-accept-btn');
+        if (!acceptBtn) return;
+        var allGroups = document.querySelectorAll('#merchant-application-modal .admin-modal-toggle-group');
+        var allApproved = true;
+        allGroups.forEach(function (group) {
+            if (group.style.display !== 'none') {
+                var activeBtn = group.querySelector('.admin-modal-toggle-btn.active');
+                if (!activeBtn || !activeBtn.classList.contains('admin-modal-toggle-btn--approve')) {
+                    allApproved = false;
+                }
+            }
+        });
+        if (allApproved) {
+            acceptBtn.disabled = false;
+            acceptBtn.style.opacity = '1';
+            acceptBtn.style.cursor = 'pointer';
+        } else {
+            acceptBtn.disabled = true;
+            acceptBtn.style.opacity = '0.4';
+            acceptBtn.style.cursor = 'not-allowed';
+        }
+    }
+</script>

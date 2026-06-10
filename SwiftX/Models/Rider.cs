@@ -15,5 +15,13 @@ namespace SwiftX.Models
         public string FrontVehiclePath { get; set; }
         public string SideVehiclePath { get; set; }
         public string GCContact { get; set; }
+
+        // Per-document review statuses
+        public string LicenseStatus { get; set; } = "Pending";
+        public string IDStatus { get; set; } = "Pending";
+        public string ORCRStatus { get; set; } = "Pending";
+        public string AgreementStatus { get; set; } = "Pending";
+        public string FrontVehicleStatus { get; set; } = "Pending";
+        public string SideVehicleStatus { get; set; } = "Pending";
     }
 }

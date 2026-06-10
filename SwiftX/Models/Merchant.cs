@@ -18,5 +18,10 @@ namespace SwiftX.Models
         public string DTICertificatePath { get; set; }
         public string BarangayClearancePath { get; set; }
         public string GCContact { get; set; }
+
+        // Per-document review statuses
+        public string BIRFormStatus { get; set; } = "Pending";
+        public string DTICertificateStatus { get; set; } = "Pending";
+        public string BarangayClearanceStatus { get; set; } = "Pending";
     }
 }
