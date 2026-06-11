@@ -6,7 +6,7 @@
 <div class="dash-welcome">
     <div class="dash-welcome__left">
         <p class="dash-welcome__greeting">Welcome back</p>
-        <h2 class="dash-welcome__name">Admin User</h2>
+        <h2 class="dash-welcome__name">@(User.Identity?.Name ?? "Admin")</h2>
         <p class="dash-welcome__sub">Here's what's happening with SwiftX today.</p>
     </div>
     <div class="dash-welcome__date">
@@ -21,7 +21,7 @@
         <div class="admin-stat-header">
             <div class="admin-stat-icon"><i class="ph ph-package"></i></div>
         </div>
-        <p class="admin-stat-value">0</p>
+        <p class="admin-stat-value">@ViewBag.TotalOrders</p>
         <p class="admin-stat-label">Total Orders</p>
     </div>
 
@@ -45,7 +45,7 @@
         <div class="admin-stat-header">
             <div class="admin-stat-icon"><i class="ph ph-currency-circle-dollar"></i></div>
         </div>
-        <p class="admin-stat-value">&#8369;0</p>
+        <p class="admin-stat-value">&#8369;@(((decimal)ViewBag.MonthlyRevenue).ToString("N0"))</p>
         <p class="admin-stat-label">Revenue (This Month)</p>
     </div>
 </div>

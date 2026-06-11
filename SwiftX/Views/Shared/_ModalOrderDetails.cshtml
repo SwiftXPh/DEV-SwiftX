@@ -1,5 +1,8 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+@*
+    Order detail modal — scaffolding for future integration.
+    Element ids are placeholders to be populated once the ordering flow is wired
+    (e.g. via a GetOrderJson endpoint + JS, mirroring the rider/merchant modals).
+    Write-actions are disabled until their backend logic exists.
 *@
 @{
 }
@@ -14,13 +17,13 @@
             <div class="omod-hero">
                 <div class="omod-hero__left">
                     <p class="omod-hero__label">Order ID</p>
-                    <p class="omod-hero__id">#ORD-1248</p>
+                    <p class="omod-hero__id" id="omod-order-id">—</p>
                     <div class="omod-hero__chips">
-                        <span class="admin-badge admin-badge--delivered">
-                            <span class="admin-badge-dot"></span>Delivered
+                        <span class="admin-badge" id="omod-status">
+                            <span class="admin-badge-dot"></span><span id="omod-status-text">—</span>
                         </span>
                         <span class="rmod-hero__chip">
-                            <i class="ph ph-calendar-blank"></i> Feb 21, 2026 &middot; 2:34 PM
+                            <i class="ph ph-calendar-blank"></i> <span id="omod-date">—</span>
                         </span>
                     </div>
                 </div>
@@ -42,12 +45,12 @@
                                 <i class="ph ph-user"></i>
                             </div>
                             <div>
-                                <p class="omod-party__name">Maria Santos</p>
+                                <p class="omod-party__name" id="omod-customer-name">—</p>
                                 <p class="omod-party__sub">
-                                    <i class="ph ph-phone"></i> 0917-123-4567
+                                    <i class="ph ph-phone"></i> <span id="omod-customer-phone">—</span>
                                 </p>
                                 <p class="omod-party__sub">
-                                    <i class="ph ph-map-pin"></i> 123 Rizal St., Malaybalay City, Bukidnon
+                                    <i class="ph ph-map-pin"></i> <span id="omod-customer-address">—</span>
                                 </p>
                             </div>
                         </div>
@@ -60,13 +63,12 @@
                                 <i class="ph ph-motorcycle"></i>
                             </div>
                             <div>
-                                <p class="omod-party__name">James Ocampo</p>
+                                <p class="omod-party__name" id="omod-rider-name">—</p>
                                 <p class="omod-party__sub">
-                                    <i class="ph ph-phone"></i> 0921-567-8901
+                                    <i class="ph ph-phone"></i> <span id="omod-rider-phone">—</span>
                                 </p>
                                 <p class="omod-party__sub">
-                                    <i class="ph ph-tag"></i> Rider-003 &middot;
-                                    <span class="td-plate td-plate--xs">ABC-123</span>
+                                    <i class="ph ph-tag"></i> <span id="omod-rider-plate">—</span>
                                 </p>
                             </div>
                         </div>
@@ -79,12 +81,12 @@
                                 <i class="ph ph-storefront"></i>
                             </div>
                             <div>
-                                <p class="omod-party__name">Jollibee Malaybalay</p>
+                                <p class="omod-party__name" id="omod-merchant-name">—</p>
                                 <p class="omod-party__sub">
-                                    <i class="ph ph-phone"></i> 088-212-3456
+                                    <i class="ph ph-phone"></i> <span id="omod-merchant-phone">—</span>
                                 </p>
                                 <p class="omod-party__sub">
-                                    <i class="ph ph-map-pin"></i> CM Recto Ave., Malaybalay City, Bukidnon
+                                    <i class="ph ph-map-pin"></i> <span id="omod-merchant-address">—</span>
                                 </p>
                             </div>
                         </div>
@@ -97,37 +99,8 @@
 
                     <div class="admin-modal-section">
                         <p class="admin-modal-section__label">Order Items</p>
-                        <div class="omod-items">
-                            <div class="omod-item">
-                                <span class="omod-item__qty">2&times;</span>
-                                <span class="omod-item__name">Chickenjoy (1pc)</span>
-                                <span class="omod-item__price">&#8369;134</span>
-                            </div>
-                            <div class="omod-item">
-                                <span class="omod-item__qty">1&times;</span>
-                                <span class="omod-item__name">Jolly Spaghetti</span>
-                                <span class="omod-item__price">&#8369;65</span>
-                            </div>
-                            <div class="omod-item">
-                                <span class="omod-item__qty">2&times;</span>
-                                <span class="omod-item__name">Burger Steak (1pc)</span>
-                                <span class="omod-item__price">&#8369;86</span>
-                            </div>
-                            <div class="omod-item">
-                                <span class="omod-item__qty">1&times;</span>
-                                <span class="omod-item__name">Peach Mango Pie</span>
-                                <span class="omod-item__price">&#8369;29</span>
-                            </div>
-                            <div class="omod-item">
-                                <span class="omod-item__qty">3&times;</span>
-                                <span class="omod-item__name">Regular Fries</span>
-                                <span class="omod-item__price">&#8369;90</span>
-                            </div>
-                            <div class="omod-item">
-                                <span class="omod-item__qty">2&times;</span>
-                                <span class="omod-item__name">Coke Float (Med)</span>
-                                <span class="omod-item__price">&#8369;58</span>
-                            </div>
+                        <div class="omod-items" id="omod-items">
+                            <p class="omod-item__name" style="opacity:.4;">No items to display.</p>
                         </div>
                     </div>
 
@@ -136,26 +109,24 @@
                         <div class="omod-breakdown">
                             <div class="omod-breakdown__row">
                                 <span>Subtotal</span>
-                                <span>&#8369;462</span>
+                                <span id="omod-subtotal">—</span>
                             </div>
                             <div class="omod-breakdown__row">
                                 <span>Delivery Fee</span>
-                                <span>&#8369;49</span>
+                                <span id="omod-delivery-fee">—</span>
                             </div>
                             <div class="omod-breakdown__row">
                                 <span>Discount</span>
-                                <span class="omod-breakdown__discount">&#8722; &#8369;226</span>
+                                <span class="omod-breakdown__discount" id="omod-discount">—</span>
                             </div>
                             <div class="omod-breakdown__divider"></div>
                             <div class="omod-breakdown__row omod-breakdown__row--total">
                                 <span>Total</span>
-                                <span>&#8369;285</span>
+                                <span id="omod-total">—</span>
                             </div>
                             <div class="omod-breakdown__row omod-breakdown__payment">
                                 <span class="omod-breakdown__payment-label">Payment Method</span>
-                                <span class="omod-breakdown__payment-value">
-                                    <i class="ph ph-device-mobile"></i> GCash
-                                </span>
+                                <span class="omod-breakdown__payment-value" id="omod-payment">—</span>
                             </div>
                         </div>
                     </div>
@@ -168,23 +139,23 @@
         <div class="omod-footer">
             <p class="omod-footer__note">
                 <i class="ph ph-info"></i>
-                Actions here are irreversible. Make sure before confirming.
+                Order actions are coming soon — these controls are disabled until the ordering flow is integrated.
             </p>
             <div class="omod-footer__actions">
                 <button class="admin-modal-btn admin-modal-btn--ghost"
                         onclick="closeModal('order-detail-modal')">
                     Close
                 </button>
-                <button class="admin-modal-btn admin-modal-btn--warning">
+                <button class="admin-modal-btn admin-modal-btn--warning" disabled title="Coming soon">
                     <i class="ph ph-arrow-counter-clockwise"></i> Reassign Rider
                 </button>
-                <button class="admin-modal-btn admin-modal-btn--danger">
+                <button class="admin-modal-btn admin-modal-btn--danger" disabled title="Coming soon">
                     <i class="ph ph-flag"></i> Report Issue
                 </button>
-                <button class="admin-modal-btn admin-modal-btn--danger-outline">
+                <button class="admin-modal-btn admin-modal-btn--danger-outline" disabled title="Coming soon">
                     <i class="ph ph-x-circle"></i> Cancel Order
                 </button>
-                <button class="admin-modal-btn admin-modal-btn--success">
+                <button class="admin-modal-btn admin-modal-btn--success" disabled title="Coming soon">
                     <i class="ph ph-check-circle"></i> Mark as Delivered
                 </button>
             </div>

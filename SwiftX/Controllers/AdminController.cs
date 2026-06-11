@@ -110,6 +110,15 @@ namespace SwiftX.Controllers
             ViewBag.PendingMerchants = _db.Merchants.Count(m => m.Status == "Pending");
             ViewBag.ActiveRiders = _db.Riders.Count(r => r.Status == "Active");
             ViewBag.ActiveMerchants = _db.Merchants.Count(m => m.Status == "Active");
+            ViewBag.TotalOrders = _db.Orders.Count();
+
+            // Revenue for the current month from delivered orders. Adjust this definition
+            // (e.g. delivery fees or platform commission only) once billing is finalized.
+            var monthStart = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1, 0, 0, 0, DateTimeKind.Utc);
+            ViewBag.MonthlyRevenue = _db.Orders
+                .Where(o => o.Status == "Delivered" && o.CreatedAt >= monthStart)
+                .Sum(o => (decimal?)o.TotalAmount) ?? 0m;
+
             ViewBag.RecentOrders = _db.Orders
                 .Include(o => o.Customer)
                 .Include(o => o.Merchant)
@@ -155,7 +164,15 @@ namespace SwiftX.Controllers
         }
         public IActionResult Orders()
         {
-            return View();
+            // Data-driven order list. Empty until the ordering flow is integrated.
+            var orders = _db.Orders
+                .Include(o => o.Customer)
+                .Include(o => o.Merchant)
+                .Include(o => o.Rider).ThenInclude(r => r.User)
+                .OrderByDescending(o => o.CreatedAt)
+                .ToList();
+
+            return View(orders);
         }
         public IActionResult Rider()
         {
