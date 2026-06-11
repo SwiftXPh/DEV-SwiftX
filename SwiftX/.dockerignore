@@ -1,0 +1,20 @@
+# Build artifacts and local deps — rebuilt inside the image
+bin/
+obj/
+node_modules/
+wwwroot/output.css
+
+# IDE / VCS / local config
+.vs/
+.idea/
+.git/
+.gitignore
+*.user
+
+# Local secrets must never enter the image (use platform env vars)
+appsettings.*.local.json
+*.env
+.env
+
+# Legacy local uploads (media lives in Supabase Storage)
+wwwroot/uploads/
