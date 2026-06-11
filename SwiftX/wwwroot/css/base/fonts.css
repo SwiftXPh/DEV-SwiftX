@@ -6,7 +6,7 @@
 /* ── Web Fonts ── */
 @font-face {
     font-family: 'GT America';
-    src: url('../../assets/fonts/GT-America.otf') format('opentype');
+    src: url('../../Assets/fonts/GT-America.otf') format('opentype');
     font-weight: 400;
     font-style: normal;
     font-display: swap;
@@ -14,7 +14,7 @@
 
 @font-face {
     font-family: 'GT America';
-    src: url('../../assets/fonts/GT-America-Standard-Thin.otf') format('opentype');
+    src: url('../../Assets/fonts/GT-America-Standard-Thin.otf') format('opentype');
     font-weight: 100;
     font-style: normal;
     font-display: swap;
@@ -22,7 +22,7 @@
 
 @font-face {
     font-family: 'Sora';
-    src: url('../../assets/fonts/Sora-Regular.ttf') format('truetype');
+    src: url('../../Assets/fonts/Sora-Regular.ttf') format('truetype');
     font-weight: 400;
     font-style: normal;
     font-display: swap;
