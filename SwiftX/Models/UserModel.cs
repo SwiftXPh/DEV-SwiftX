@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace SwiftX.Models
 {
     public class UserModel
@@ -11,8 +13,16 @@ namespace SwiftX.Models
         public string? BirthMonth { get; set; }
         public string? BirthDate { get; set; }
         public string? BirthYear { get; set; }
+
+        // Login credentials — posted by every signup form, so safe to require here.
+        [Required]
         public string Username { get; set; }
+
+        [Required]
+        [EmailAddress]
         public string Email { get; set; }
+
+        [Required]
         public string Password { get; set; }
 
         // Authorization role: "Customer" (default) or "Admin".

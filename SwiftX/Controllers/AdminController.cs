@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using SwiftX.Models;
@@ -65,6 +66,7 @@ namespace SwiftX.Controllers
 
         [HttpPost]
         [AllowAnonymous]
+        [EnableRateLimiting("login")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(string username, string password, string? returnUrl = null)
         {

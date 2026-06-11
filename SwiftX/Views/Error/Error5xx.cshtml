@@ -22,7 +22,7 @@
         </div>
 
         <!-- Error code -->
-        <span class="__fade-up __fade-up--d1 __error-code">500</span>
+        <span class="__fade-up __fade-up--d1 __error-code">@(ViewBag.StatusCode ?? 500)</span>
 
         <!-- Divider -->
         <div class="__fade-up __fade-up--d2 __divider-accent my-6"></div>
@@ -37,7 +37,13 @@
 
         <div class="__fade-up __fade-up--d4 flex flex-col sm:flex-row items-center gap-4 mt-8">
             <a href="javascript:void(0)" class="__btn __btn--primary" id="btn-retry">Try Again</a>
-            <a href="index.html" class="__btn __btn--outline">Back to Home</a>
+            <a asp-controller="Home" asp-action="Index" class="__btn __btn--outline">Back to Home</a>
         </div>
     </div>
 </section>
+
+<script>
+    document.getElementById('btn-retry')?.addEventListener('click', function () {
+        window.location.reload();
+    });
+</script>

@@ -4,13 +4,17 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using SwiftX.Models;
 using SwiftX.Services;
-using System.Diagnostics;
 
 
 namespace SwiftX.Controllers
 {
     public class SignUpController : Controller
     {
+        // Accepted document types and size cap for uploaded files.
+        private static readonly string[] AllowedContentTypes =
+            { "image/jpeg", "image/png", "image/webp", "application/pdf" };
+        private const long MaxFileBytes = 5 * 1024 * 1024; // 5 MB
+
         private readonly AppDbContext _db;
         private readonly ISupabaseStorageService _storage;
         private readonly SupabaseOptions _supabase;
@@ -37,7 +41,16 @@ namespace SwiftX.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SignUpRider(RiderModel rider)
         {
-            Debug.WriteLine("Rider System is running");
+            // Reject invalid input (missing fields, bad email, disallowed/oversized files)
+            // before touching the database or storage.
+            ValidateUpload(rider.License, nameof(rider.License));
+            ValidateUpload(rider.ID, nameof(rider.ID));
+            ValidateUpload(rider.ORCR, nameof(rider.ORCR));
+            ValidateUpload(rider.Agreement, nameof(rider.Agreement));
+            ValidateUpload(rider.Front_Vehicle, nameof(rider.Front_Vehicle));
+            ValidateUpload(rider.Side_Vehicle, nameof(rider.Side_Vehicle));
+            if (!ModelState.IsValid)
+                return View("Rider", rider);
 
             // Wrap the whole signup in a transaction so a failed document upload
             // rolls back the User row instead of leaving an orphaned record.
@@ -88,7 +101,12 @@ namespace SwiftX.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SignUpMerchant(MerchantModel merchant)
         {
-            Debug.WriteLine("Merchant System is running");
+            // Reject invalid input before touching the database or storage.
+            ValidateUpload(merchant.BIRForm, nameof(merchant.BIRForm));
+            ValidateUpload(merchant.DTICertificate, nameof(merchant.DTICertificate));
+            ValidateUpload(merchant.BarangayClearance, nameof(merchant.BarangayClearance));
+            if (!ModelState.IsValid)
+                return View("Merchant", merchant);
 
             // Wrap the whole signup in a transaction so a failed document upload
             // rolls back the User row instead of leaving an orphaned record.
@@ -140,6 +158,22 @@ namespace SwiftX.Controllers
             }
 
             return RedirectToAction("Index", "Home");
+        }
+
+        /// <summary>
+        /// Adds a ModelState error when an uploaded file is too large or of a disallowed
+        /// type. Missing files are left to the model's [Required] validation.
+        /// </summary>
+        private void ValidateUpload(IFormFile? file, string field)
+        {
+            if (file == null || file.Length == 0)
+                return;
+
+            if (file.Length > MaxFileBytes)
+                ModelState.AddModelError(field, "File exceeds the 5 MB limit.");
+
+            if (!AllowedContentTypes.Contains(file.ContentType))
+                ModelState.AddModelError(field, "Only JPG, PNG, WEBP, or PDF files are allowed.");
         }
 
         /// <summary>

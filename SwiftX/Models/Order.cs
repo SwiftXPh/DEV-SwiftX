@@ -39,7 +39,7 @@ namespace SwiftX.Models
         public string CustomerContact { get; set; }
 
         // Timestamps
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? DeliveredAt { get; set; }
         public DateTime? CancelledAt { get; set; }
 

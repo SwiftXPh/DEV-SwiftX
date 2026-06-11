@@ -12,7 +12,7 @@
 
     <div class="relative flex flex-col items-center text-center px-6 py-16 md:py-20 text-[var(--light-text-color)]">
         <!-- Error code -->
-        <span class="__fade-up __fade-up--d1 __error-code">404</span>
+        <span class="__fade-up __fade-up--d1 __error-code">@(ViewBag.StatusCode ?? 404)</span>
 
         <!-- Divider -->
         <div class="__fade-up __fade-up--d2 __divider-accent my-6"></div>
@@ -26,9 +26,15 @@
         </p>
 
         <div class="__fade-up __fade-up--d4 flex flex-col sm:flex-row items-center gap-4 mt-8">
-            <a href="index.html" class="__btn __btn--primary">Back to Home</a>
+            <a asp-controller="Home" asp-action="Index" class="__btn __btn--primary">Back to Home</a>
             <a href="javascript:void(0)" class="__btn __btn--outline" id="btn-go-back">Go Back</a>
         </div>
 
     </div>
 </section>
+
+<script>
+    document.getElementById('btn-go-back')?.addEventListener('click', function () {
+        if (history.length > 1) { history.back(); } else { window.location.href = '/'; }
+    });
+</script>
