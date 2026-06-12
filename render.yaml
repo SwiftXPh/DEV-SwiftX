@@ -1,0 +1,39 @@
+# Render Blueprint (Infrastructure as Code) for SwiftX.
+# Docs: https://render.com/docs/blueprint-spec
+#
+# Secrets are NOT stored here (sync: false) — set their values in the Render
+# dashboard. Non-secret config has inline values.
+services:
+  - type: web
+    name: swiftx
+    runtime: docker
+    # Build the image from the SwiftX/ subfolder (Dockerfile + project live there).
+    dockerfilePath: ./SwiftX/Dockerfile
+    dockerContext: ./SwiftX
+    branch: main
+    plan: free                # change to "starter" for always-on (no cold starts)
+    region: singapore         # closest to a Southeast-Asia Supabase project — verify it matches yours
+    healthCheckPath: /
+    autoDeploy: false         # flip to true once your first deploy succeeds
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: Supabase__RiderBucket
+        value: rider-documents
+      - key: Supabase__MerchantBucket
+        value: merchant-documents
+      # Secrets / per-environment values — set these in the Render dashboard.
+      - key: ConnectionStrings__DefaultConnection
+        sync: false
+      - key: Supabase__Url
+        sync: false
+      - key: Supabase__ServiceRoleKey
+        sync: false
+      - key: AdminSeed__Username
+        sync: false
+      - key: AdminSeed__Password
+        sync: false
+      - key: AdminSeed__Email
+        sync: false
+      - key: AllowedHosts        # set to your <app>.onrender.com domain
+        sync: false

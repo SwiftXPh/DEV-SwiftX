@@ -1,0 +1,50 @@
+name: CI
+
+# Gate every PR into main (and pushes to main) on a successful build.
+# There are no unit tests yet, so "build compiles" + "Docker image builds"
+# is the gate — the Docker job mirrors exactly what Render does on deploy.
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Build & verify (.NET + Tailwind)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: SwiftX
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Restore .NET dependencies
+        run: dotnet restore
+
+      - name: Install npm dependencies (Tailwind)
+        run: npm ci
+
+      - name: Build (Release)
+        run: dotnet build --configuration Release --no-restore
+
+  docker:
+    name: Docker image builds
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Same Dockerfile + context Render uses, so a green build here means a
+      # green build on Render.
+      - name: Build Docker image
+        run: docker build -f SwiftX/Dockerfile SwiftX
