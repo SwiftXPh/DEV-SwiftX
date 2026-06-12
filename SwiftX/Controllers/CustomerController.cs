@@ -8,5 +8,9 @@ namespace SwiftX.Controllers
         {
             return View();
         }
+        public IActionResult CustomerSignup()
+        {
+            return View();
+        }
     }
 }

@@ -97,8 +97,21 @@
                         <p class="admin-user-role">Administrator</p>
                     </div>
                 </div>
-                <form asp-controller="Admin" asp-action="Logout" method="post" style="margin-top:4px;">
-                    <button type="submit" class="admin-nav-item" style="width:100%;background:none;border:none;cursor:pointer;text-align:left;">
+                @* Real POST sign-out (clears the auth cookie), gated behind the
+                   frontend's confirmation modal — confirm, then the form submits. *@
+                <form id="admin-logout-form" asp-controller="Admin" asp-action="Logout" method="post" style="margin-top:4px;">
+                    <button type="submit" class="admin-nav-item" style="width:100%;background:none;border:none;cursor:pointer;text-align:left;"
+                            onclick="event.preventDefault(); AlertModal.show({
+                                type: 'danger',
+                                title: 'Sign Out',
+                                message: 'Are you sure you want to sign out?',
+                                buttons: [
+                                    { label: 'Cancel',   variant: 'ghost' },
+                                    { label: 'Sign Out', variant: 'danger', callback: function() {
+                                        document.getElementById('admin-logout-form').submit();
+                                    }}
+                                ]
+                            })">
                         <i class="ph ph-sign-out" aria-hidden="true"></i>
                         <span class="admin-nav-text">Sign Out</span>
                     </button>
