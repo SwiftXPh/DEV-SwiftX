@@ -97,8 +97,20 @@
                         <p class="admin-user-role">Super Admin</p>
                     </div>
                 </div>
-                <a asp-controller="Admin" asp-action="#"
-                   class="admin-nav-item" style="margin-top:4px;">
+                <a asp-controller="Admin" asp-action="Index"
+                   class="admin-nav-item"
+                   style="margin-top:4px;"
+                   onclick="event.preventDefault(); AlertModal.show({
+                        type: 'danger',
+                        title: 'Sign Out',
+                        message: 'Are you sure you want to sign out?',
+                        buttons: [
+                            { label: 'Cancel',   variant: 'ghost' },
+                            { label: 'Sign Out', variant: 'danger', callback: function() {
+                                window.location.href = this.href;
+                            }.bind(this)}
+                        ]
+                    })">
                     <i class="ph ph-sign-out" aria-hidden="true"></i>
                     <span class="admin-nav-text">Sign Out</span>
                 </a>
