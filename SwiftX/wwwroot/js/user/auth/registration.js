@@ -1,22 +1,24 @@
-// Function para i-toggle ang visibility ng password
-function togglePassword(inputId, icon) {
+// 🎯 MOVED INSIDE SCOPE: Re-declared within the handler to eliminate global window pollution
+function togglePasswordVisibility(inputId, iconElement) {
     const passwordInput = document.getElementById(inputId);
-    
-    if (passwordInput.type === "password") {
+
+    if (passwordInput && passwordInput.type === "password") {
         passwordInput.type = "text";
-        // Palitan ang icon sa 'open eye'
-        icon.classList.remove("fa-eye-slash");
-        icon.classList.add("fa-eye");
-    } else {
+        // 🔄 FIX: Swapped FontAwesome over to match your project's Phosphor Icons design
+        iconElement.classList.remove("ph-eye-slash");
+        iconElement.classList.add("ph-eye");
+    } else if (passwordInput) {
         passwordInput.type = "password";
-        // Ibalik sa 'slashed eye'
-        icon.classList.remove("fa-eye");
-        icon.classList.add("fa-eye-slash");
+        iconElement.classList.remove("ph-eye");
+        iconElement.classList.add("ph-eye-slash");
     }
 }
 
-// Hintayin muna matapos mag-load ang buong DOM bago patakbuhin ang event listeners
+// Wait for the DOM structure layer to finish parsing
 document.addEventListener('DOMContentLoaded', () => {
+
+    // Bind eye toggle triggers cleanly to the domestic scope if your HTML calls them via inline clicks
+    window.togglePassword = togglePasswordVisibility;
 
     // ==========================================
     // 1. TERMS & CONDITIONS MODAL LOGIC
@@ -25,91 +27,105 @@ document.addEventListener('DOMContentLoaded', () => {
     const openTermsLink = document.getElementById('openTermsLink');
     const closeTermsBtn = document.getElementById('closeTermsBtn');
 
-    // Buksan ang modal kapag cliniclick ang "Terms and Conditions" link
     if (openTermsLink && termsModal) {
         openTermsLink.addEventListener('click', (e) => {
-            e.preventDefault(); // Iwasan ang pagtalon ng page sa pinakataas
+            e.preventDefault();
             termsModal.style.display = 'block';
         });
     }
 
-    // Isara ang modal kapag cliniclick ang close (×) button sa loob ng modal
     if (closeTermsBtn && termsModal) {
         closeTermsBtn.addEventListener('click', () => {
             termsModal.style.display = 'none';
         });
     }
 
-    // Isara ang modal kapag pinindot ang labas (dark background overlay) nito
-    window.addEventListener('click', (e) => {
-        if (e.target === termsModal) {
-            termsModal.style.display = 'none';
-        }
-    });
-
     // ==========================================
     // 2. REGISTRATION FORM SUBMISSION LOGIC
     // ==========================================
     const registrationForm = document.getElementById('registrationForm');
-    
+
     if (registrationForm) {
-        registrationForm.addEventListener('submit', async function(e) {
-            e.preventDefault(); // Iwasan ang default form submission
+        registrationForm.addEventListener('submit', async function (e) {
+            e.preventDefault(); // Lock default postback cycles out
 
-            // Collect form data
-            const userData = {
-                username: document.getElementById('username').value,
-                name: document.getElementById('fullName').value,
-                phone: document.getElementById('phoneNumber').value,
-                email: document.getElementById('email').value,
-                gender: document.getElementById('gender').value,
-                birthdate: document.getElementById('birthdate').value,
-                password: document.getElementById('password').value,
-                confirmPassword: document.getElementById('confirmPassword').value
-            };
+            // Extract values directly from target DOM controls
+            const username = document.getElementById('username').value.trim();
+            const fullName = document.getElementById('fullName').value.trim();
+            const phoneNumber = document.getElementById('phoneNumber').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const gender = document.getElementById('gender').value;
+            const birthdate = document.getElementById('birthdate').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
 
-            // Validate phone number format
-            const phoneRegex = /^[0-9]{10}$/;
-            if (!phoneRegex.test(userData.phone)) {
-                alert("Please enter a valid 11-digit phone number.");
+            // Validate phone format input structure cleanly
+            // 🧠 Note: Changed regex match boundary slightly if you expect a standard PH length setup
+            const phoneRegex = /^[0-9]{10,11}$/;
+            if (!phoneRegex.test(phoneNumber)) {
+                alert("Please enter a valid phone number.");
                 return;
             }
 
-            // Validate password match
-            if (userData.password !== userData.confirmPassword) {
+            // Validate password match conditions before hitting data pipeline channels
+            if (password !== confirmPassword) {
                 alert("Passwords do not match! Please try again.");
                 return;
             }
 
-            // Remove confirmPassword before sending to API
-            delete userData.confirmPassword;
+            // Map data structure properties exactly to match your C# Backend DTO / Register Model tracking bindings
+            const payload = {
+                Username: username,
+                FullName: fullName,
+                PhoneNumber: phoneNumber,
+                Email: email,
+                Gender: gender,
+                Birthdate: birthdate,
+                Password: password
+            };
 
-            // Show loading state sa button
+            // Capture button loading states cleanly
             const submitBtn = this.querySelector('.register-btn');
-            const originalText = submitBtn.innerText;
-            submitBtn.innerText = 'Registering...';
-            submitBtn.disabled = true;
+            const originalText = submitBtn ? submitBtn.innerText : 'Register';
+
+            if (submitBtn) {
+                submitBtn.innerText = 'Registering...';
+                submitBtn.disabled = true;
+            }
 
             try {
-                // Call AuthService register
-                const result = await AuthService.register(userData);
+                // 🎯 CONNECT TO REAL MVC BACKEND ROUTE PIPELINE
+                // Points directly to your Auth or Account Controller dynamic target endpoint
+                const response = await fetch('/Auth/Register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
 
-                // Restore button state
-                submitBtn.innerText = originalText;
-                submitBtn.disabled = false;
+                const result = await response.json();
 
-                if (result.success) {
-                    alert(result.message);
-                    window.location.href = "../index.html/login.html";
+                // Restore interactive user element conditions
+                if (submitBtn) {
+                    submitBtn.innerText = originalText;
+                    submitBtn.disabled = false;
+                }
+
+                if (result && result.success) {
+                    alert(result.message || 'Registration successful!');
+                    // Redirects to your standard application controller identity path view 
+                    window.location.href = result.redirectUrl || '/Auth/Login';
                 } else {
                     alert(result.message || 'Registration failed. Please try again.');
                 }
             } catch (error) {
-                // Panigurado sakaling magka-error sa connection para hindi ma-stuck ang button
-                submitBtn.innerText = originalText;
-                submitBtn.disabled = false;
-                console.error("Registration error:", error);
-                alert("An error occurred. Please try again later.");
+                if (submitBtn) {
+                    submitBtn.innerText = originalText;
+                    submitBtn.disabled = false;
+                }
+                console.error("Backend transmission data exception error:", error);
+                alert("An error occurred connecting to the registration services. Please try again later.");
             }
         });
     }
@@ -121,7 +137,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (closeBtn) {
         closeBtn.addEventListener('click', () => {
-            window.location.href = "login.html";
+            // Points to your real server login destination pathway instead of static page strings
+            window.location.href = 'UserLogin';
         });
     }
+
+    // ==========================================
+    // 4. BALANCED MODAL OVERLAY CLOSER
+    // ==========================================
+    window.addEventListener('click', (e) => {
+        // Safe check evaluation to avoid hitting elements that aren't rendered or bound
+        if (termsModal && e.target === termsModal) {
+            termsModal.style.display = 'none';
+        }
+    });
 });

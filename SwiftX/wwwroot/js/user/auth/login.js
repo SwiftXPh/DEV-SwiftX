@@ -1,67 +1,50 @@
 ﻿document.addEventListener('DOMContentLoaded', () => {
 
+    // =============================================================
+    // 1. PASSWORD SHOW/HIDE ICON CONTROLLER
+    // =============================================================
     const passwordInput = document.getElementById('userPassword');
     const togglePasswordIcon = document.getElementById('togglePasswordIcon');
 
     if (togglePasswordIcon && passwordInput) {
         togglePasswordIcon.addEventListener('click', () => {
             if (passwordInput.type === 'password') {
-                passwordInput.type = 'text'; // Ipakita ang text
-
-                // PALITAN ANG FONTAWESOME NG PHOSPHOR ICONS:
-                togglePasswordIcon.classList.remove('ph-eye-slash'); // Tinanggal ang nakapikit
-                togglePasswordIcon.classList.add('ph-eye'); // Idinagdag ang nakabukas
+                passwordInput.type = 'text';
+                togglePasswordIcon.classList.remove('ph-eye-slash');
+                togglePasswordIcon.classList.add('ph-eye');
             } else {
-                passwordInput.type = 'password'; // Itago ulit ang text
-
-                // PALITAN DIN DITO SA IBABA:
-                togglePasswordIcon.classList.remove('ph-eye'); // Tinanggal ang nakabukas
-                togglePasswordIcon.classList.add('ph-eye-slash'); // Ibinalik ang nakapikit
+                passwordInput.type = 'password';
+                togglePasswordIcon.classList.remove('ph-eye');
+                togglePasswordIcon.classList.add('ph-eye-slash');
             }
         });
     }
 
     // =============================================================
-    // 2. LOGIN FORM SUBMISSION CONTROLLER
-    // (Keep UI intact. Fix only button/function behavior.)
+    // 2. LOGIN FORM SUBMISSION CONTROLLER (MVC INTEGRATED)
     // =============================================================
     const loginForm = document.getElementById('loginForm');
-    const signInBtn = document.querySelector('.btn-sign-in[type="submit"], .btn-sign-in');
-
-    const getUsernamePassword = () => {
-        if (!loginForm) {
-            const u = document.querySelector('input[placeholder="Username"], input[type="text"], input:not([type="password"])');
-            const p = document.querySelector('#userPassword, input[type="password"]');
-            return {
-                username: u ? u.value.trim() : '',
-                password: p ? p.value : ''
-            };
-        }
-
-        const usernameInput = loginForm.querySelector('input[placeholder="Username"], input[type="text"], input:not([type="password"])');
-        const passwordInput = loginForm.querySelector('#userPassword, input[type="password"]');
-
-        return {
-            username: usernameInput ? usernameInput.value.trim() : '',
-            password: passwordInput ? passwordInput.value : ''
-        };
-    };
+    const signInBtn = document.getElementById('signInBtn'); // 🎯 Tip: Give your login button this explicit ID in HTML
 
     const handleLogin = async (e) => {
-        if (e) e.preventDefault();
+        if (e) e.preventDefault(); // Prevents traditional page reloading loops
 
-        const { username, password } = getUsernamePassword();
-        console.log('Login inputs:', { username, password: password ? '***' : '' });
+        // Pull inputs securely directly from our target elements
+        const usernameInput = document.querySelector('input[name="Username"], input[type="text"]');
+        const passwordInput = document.querySelector('input[name="Password"], input[type="password"]');
 
-        // Validate inputs
+        const username = usernameInput ? usernameInput.value.trim() : '';
+        const password = passwordInput ? passwordInput.value : '';
+
+        // Standard validation check
         if (username === '' || password === '') {
             alert('Please fill in all fields.');
             return;
         }
 
-        // Show loading state
-        const submitBtn = (signInBtn && signInBtn.closest && signInBtn.closest('form')) ? signInBtn : (loginForm ? loginForm.querySelector('.btn-sign-in') : null);
-        const originalText = submitBtn ? submitBtn.innerText : '';
+        // Show loading presentation states cleanly
+        const submitBtn = signInBtn || (loginForm ? loginForm.querySelector('button[type="submit"]') : null);
+        const originalText = submitBtn ? submitBtn.innerText : 'Sign In';
 
         if (submitBtn) {
             submitBtn.innerText = 'Signing in...';
@@ -69,8 +52,17 @@
         }
 
         try {
-            const result = await AuthService.login(username, password);
-            console.log('AuthService.login result:', result);
+            // 🎯 MVC BACKEND PIPELINE CONNECTION
+            // Points to your dedicated authentication controller endpoint layout
+            const response = await fetch('/auth/Login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ Username: username, Password: password })
+            });
+
+            const result = await response.json();
 
             if (submitBtn) {
                 submitBtn.innerText = originalText;
@@ -78,30 +70,27 @@
             }
 
             if (result && result.success) {
-                alert('Login Successful! Welcome to SwiftX, ' + result.user.name);
-                window.location.href = "../index.html/home.html";
+                window.location.href = result.redirectUrl || 'CustomerHome';
             } else {
-                alert((result && result.message) ? result.message : 'Maling username o password. Subukan muli.');
+                alert(result.message || 'Maling username o password. Subukan muli.');
             }
         } catch (err) {
-            console.error('Login submission error:', err);
+            console.error('Backend API transmission breakdown:', err);
             if (submitBtn) {
                 submitBtn.innerText = originalText;
                 submitBtn.disabled = false;
             }
-            alert('Login failed. Please try again.');
+            alert('Login failed due to a server connection error. Please try again.');
         }
     };
 
     if (loginForm) {
-        // Enter key / default submit within form
+        // 🎯 FIXED: We exclusively bind to the form submission. 
+        // This naturally catches both button clicks and hitting "Enter" cleanly without double-posting!
         loginForm.addEventListener('submit', handleLogin);
-
-        // Extra safety: button click
-        if (signInBtn) signInBtn.addEventListener('click', handleLogin);
-    } else {
-        // Fallback safety (if form not found)
-        if (signInBtn) signInBtn.addEventListener('click', handleLogin);
+    } else if (signInBtn) {
+        // Fallback fallback if layout doesn't use standard form containers
+        signInBtn.addEventListener('click', handleLogin);
     }
 
     // =============================================================
@@ -124,21 +113,19 @@
     }
 
     // =============================================================
-    // 4. HELP CENTER MODAL CONTROLLER (BAGO)
+    // 4. HELP CENTER MODAL CONTROLLER 
     // =============================================================
     const helpModal = document.getElementById('helpCenterModal');
     const openHelpLink = document.getElementById('openHelpLink');
     const closeHelpBtn = document.getElementById('closeHelpBtn');
 
-    // Buksan ang Help Center kapag tinap ang "Need Help?" sa iyong footer links
     if (openHelpLink && helpModal) {
         openHelpLink.onclick = function (e) {
-            e.preventDefault(); // Pipigilan ang '# anchor' jumping behavior
-            helpModal.style.display = 'flex'; // Ginamit ang flex para laging nasa absolute center ng screen
+            e.preventDefault();
+            helpModal.style.display = 'flex';
         };
     }
 
-    // Isara ang Help Center gamit ang sarili nitong overlay custom button (X)
     if (closeHelpBtn && helpModal) {
         closeHelpBtn.onclick = function () {
             helpModal.style.display = 'none';
@@ -147,14 +134,11 @@
 
     // =============================================================
     // GLOBAL OUTSIDE MODAL CLICK CLOSER
-    // (Pinagsama ang logic para sa Terms at Help Modal)
     // =============================================================
     window.onclick = function (event) {
-        // Kung iclick ang labas ng Terms Modal, isara ito
         if (event.target == modal) {
             modal.style.display = 'none';
         }
-        // Kung iclick ang labas ng Help Modal, isara naman ito
         if (event.target == helpModal) {
             helpModal.style.display = 'none';
         }

@@ -1,3 +1,6 @@
+/* ==========================================================
+    GLOBAL BASICS & VARIABLE FALLBACKS
+   ========================================================== */
 * {
     margin: 0;
     padding: 0;
@@ -6,29 +9,40 @@
 }
 
 body {
-    background-color: var(--card-bg);
+    background-color: var(--card-bg, #121212);
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
 }
 
+/* ==========================================================
+    MAIN REGISTRATION CARD
+   ========================================================== */
 .modal-container {
-    background-color: var(--card-bg);
+    background-color: var(--card-bg, #1e1e1e);
     width: 100%;
     max-width: 450px;
     padding: 40px 30px;
-    border-radius: var(--radius-card);
+    border-radius: var(--radius-card, 12px);
     position: relative;
-    color: var(--text-main);
+    color: var(--text-main, #ffffff);
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    border: 2px solid var(--border-focus, #2c2c2c);
 }
 
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 24px;
+}
+
+/* Main Card Native Top Close Option */
 .close-btn {
     position: absolute;
     top: 15px;
     right: 15px;
-    background: var(--close-btn-bg);
+    background: var(--close-btn-bg, #333333);
     border: none;
     width: 30px;
     height: 30px;
@@ -39,91 +53,119 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    color: inherit;
 }
 
-h1 {
-    text-align: center;
-    margin-bottom: 30px;
-    font-size: 24px;
-}
-
+/* ==========================================================
+   FORM FIELDS & INPUTS
+   ========================================================== */
 .input-group {
     margin-bottom: 15px;
     position: relative;
 }
 
-.input-group input,
-.input-group select {
-    width: 100%;
-    background-color: var(--input-bg);
-    border: 1px solid var(--input-border);
-    border-radius: var(--radius-input);
-    padding: 12px 15px;
-    color: var(--input-text);
-    outline: none;
-    font-size: 14px;
-    transition: border-color var(--transition);
-}
+    .input-group input,
+    .input-group select {
+        width: 100%;
+        background-color: var(--input-bg, #2a2a2a);
+        border: 1px solid var(--input-border, #3a3a3a);
+        border-radius: var(--radius-input, 8px);
+        padding: 12px 15px;
+        color: var(--input-text, #ffffff);
+        outline: none;
+        font-size: 14px;
+        transition: border-color var(--transition, 0.2s ease), box-shadow var(--transition, 0.2s ease);
+    }
 
-/* Focus state */
-.input-group input:focus,
-.input-group select:focus {
-    border-color: var(--border-focus);
-}
+        /* Orange Focus State Architecture */
+        .input-group input:focus,
+        .input-group select:focus {
+            border-color: var(--border-focus, #d34502);
+            box-shadow: 0 0 0 2px rgba(211, 69, 2, 0.2);
+        }
 
-/* Styling para sa select dropdown */
-.input-group select {
-    appearance: none;
-    -webkit-appearance: none;
-    cursor: pointer;
-}
+    /* Custom Select Dropdown Arrow Configuration */
+    .input-group select {
+        appearance: none;
+        -webkit-appearance: none;
+        cursor: pointer;
+    }
 
-/* Idagdag ang sariling arrow para sa select dropdown */
 .row .input-group:first-child::after {
     content: '\25BC';
     position: absolute;
     right: 15px;
     top: 50%;
     transform: translateY(-50%);
-    color: var(--text-secondary);
+    color: var(--text-secondary, #999999);
     pointer-events: none;
     font-size: 12px;
 }
 
-/* Styling para sa Phone Number group na may prefix */
-.phone-group {
-    display: flex;
-    align-items: center;
-    background-color: var(--input-bg);
-    border: 1px solid var(--input-border);
-    border-radius: var(--radius-input);
-}
-
-.phone-group .country-code {
-    padding: 12px 0 12px 15px;
-    color: var(--text-main);
-    font-size: 14px;
-}
-
-.phone-group input {
-    border: none;
-    padding: 12px 15px 12px 8px;
-    flex-grow: 1;
-}
-
+/* Multi-Column Rows */
 .row {
     display: flex;
     gap: 10px;
 }
 
-.row .input-group {
-    flex: 1;
+    .row .input-group {
+        flex: 1;
+    }
+
+/* Compound Flex Input Group (Phone Field Layout) */
+.phone-group {
+    display: flex;
+    align-items: center;
+    background-color: var(--input-bg, #2a2a2a);
+    border: 1px solid var(--input-border, #3a3a3a);
+    border-radius: var(--radius-input, 8px);
+    transition: border-color var(--transition, 0.2s ease), box-shadow var(--transition, 0.2s ease);
 }
 
-/* Password Toggle Styling */
+    .phone-group:focus-within {
+        border-color: var(--border-focus, #d34502);
+        box-shadow: 0 0 0 2px rgba(211, 69, 2, 0.2);
+    }
+
+    .phone-group .country-code {
+        padding: 12px 0 12px 15px;
+        color: var(--text-main, #ffffff);
+        font-size: 14px;
+    }
+
+    .phone-group input {
+        border: none;
+        background: transparent;
+        padding: 12px 15px 12px 8px;
+        flex-grow: 1;
+    }
+
+        .phone-group input:focus {
+            box-shadow: none;
+        }
+
+/* ==========================================================
+    PASSWORD & CONFIRM PASSWORD CONTAINERS         
+   ========================================================== */
 .password-wrapper {
     position: relative;
+    display: block;
+    background-color: var(--input-bg, #2a2a2a);
+    border: 2px solid var(--border-focus, #d34502);
+    border-radius: var(--radius-input, 8px);
+    overflow: hidden;
 }
+
+    /* Standardizing internal inputs to transparent layer inside the container frame */
+    .password-wrapper input {
+        border: none !important;
+        background: transparent !important;
+        border-radius: 0 !important;
+    }
+
+        .password-wrapper input:focus {
+            box-shadow: none !important;
+        }
 
 .toggle-password {
     position: absolute;
@@ -131,161 +173,275 @@ h1 {
     top: 50%;
     transform: translateY(-50%);
     cursor: pointer;
-    color: var(--text-secondary);
+    color: var(--text-secondary, #999999);
+    z-index: 2;
 }
 
+/* ==========================================================
+    TERMS, CHECKBOXES & ACTIONS
+   ========================================================== */
 .terms-text {
     font-size: 10px;
     text-align: center;
-    color: #bbb;
-    margin: 20px 0 10px;
-    line-height: 1.4;
+    color: #888888;
+    margin: 20px 0 15px;
+    line-height: 1.5;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
 }
 
 .checkbox-group {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: flex-start;
+    align-items: flex-start;
     gap: 10px;
     font-size: 12px;
     margin-bottom: 25px;
+    width: 100%;
+    padding: 0 2px;
 }
 
-.checkbox-group input {
-    accent-color: var(--btn-primary);
-}
+    .checkbox-group input[type="checkbox"] {
+        accent-color: var(--btn-primary, #d34502);
+        width: 15px;
+        height: 15px;
+        margin-top: 1px;
+        flex-shrink: 0;
+        cursor: pointer;
+    }
 
-.checkbox-group label {
-    color: #bbb;
-}
+    .checkbox-group label {
+        color: #bbb;
+        line-height: 1.4;
+        text-align: left;
+        cursor: pointer;
+        user-select: none;
+    }
 
-.checkbox-group a {
-    color: var(--text-main);
-    text-decoration: underline;
-}
+    .checkbox-group a {
+        color: var(--text-main, #ffffff);
+        text-decoration: underline;
+    }
 
+/* Main Brand Action Button */
 .register-btn {
     width: 100%;
     padding: 12px;
-    background-color: var(--btn-primary);
+    background-color: var(--btn-primary, #d34502);
     border: none;
-    border-radius: var(--radius-button);
-    color: var(--btn-text);
+    border-radius: var(--radius-button, 8px);
+    color: var(--btn-text, #ffffff);
     font-size: 18px;
     font-weight: bold;
     cursor: pointer;
-    transition: background var(--transition);
+    transition: background var(--transition, 0.2s ease);
 }
 
-.register-btn:hover {
-    background-color: var(--btn-primary-hover);
-}
+    .register-btn:hover {
+        background-color: var(--btn-primary-hover, #e64c02);
+    }
 
-.register-btn:active {
-    background-color: var(--btn-primary-active);
-}
-/* ========================================== */
-/* MODERN SWIFTX TERMS & CONDITIONS MODAL     */
-/* ========================================== */
+    .register-btn:active {
+        background-color: var(--btn-primary-active, #b83a00);
+    }
 
+/* ==========================================================
+    LEGAL TERMS & CONDITIONS OVERLAY MODAL
+   ========================================================== */
 .modal {
-  display: none; 
-  position: fixed;
-  z-index: 9999;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.6); /* Binawasan ng konti ang dilim para mas smooth */
-  backdrop-filter: blur(4px); /* Nilagyan ng blur ang likod para modern */
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
 }
 
-/* Ang puting box / Main Card */
 .modal-content {
-  background-color: #ffffff;
-  margin: 6vh auto; /* Eksaktong kalkulado para pumantay sa gitna */
-  padding: 35px 35px 30px 35px; /* Dinagdagan ng konti ang padding sa gilid para sa safe spacing */
-  width: 90%;
-  max-width: 650px; /* Mas pinaliit ng konti para maging compact ang basahan */
-  height: 75vh; 
-  border-radius: 8px; /* Mas maliit na radius para sa formal/professional look */
-  position: relative;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-  display: flex;
-  flex-direction: column;
+    background-color: #ffffff;
+    margin: 6vh auto;
+    padding: 35px;
+    width: 90%;
+    max-width: 650px;
+    height: 75vh;
+    border-radius: 8px;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
 }
 
-/* Close button style (Inilipat sa gilid ng pamagat para malinis) */
 .close-button {
-  position: absolute;
-  right: 25px; /* Naka-pwesto sa loob ng ligtas na zone ng card */
-  top: 22px;
-  font-size: 24px; /* Binawasan ang laki para hindi mukhang pambata */
-  font-weight: 400;
-  cursor: pointer;
-  color: #999;
-  line-height: 1;
-  transition: color 0.2s ease;
-  z-index: 10; /* Sinisiguradong nasa ibabaw ng scrollable text */
+    position: absolute;
+    right: 25px;
+    top: 22px;
+    font-size: 24px;
+    font-weight: 400;
+    cursor: pointer;
+    color: #999;
+    line-height: 1;
+    transition: color 0.2s ease;
+    z-index: 10;
 }
 
-.close-button:hover {
-  color: #333;
-}
+    .close-button:hover {
+        color: #333;
+    }
 
-/* Container ng text na pwedeng i-scroll */
 .terms-text-container {
-  height: 100%;
-  overflow-y: auto; 
-  padding-right: 20px; /* Inusog pabalik ang scrollbar para hindi magdikit sa close button o text */
-  margin-top: 10px;    /* Nagbigay ng clearance sa pagitan ng top title at text border */
-  text-align: left;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    height: 100%;
+    overflow-y: auto;
+    padding-right: 20px;
+    margin-top: 10px;
+    text-align: left;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-/* --- TYPOGRAPHY UPDATES (Para maging mukhang totoong template) --- */
+    .terms-text-container h1 {
+        font-size: 20px;
+        color: #111111;
+        font-weight: 700;
+        margin-bottom: 20px;
+        border-bottom: 1px solid #eaeaea;
+        padding-bottom: 12px;
+        padding-right: 40px;
+        text-align: left;
+    }
 
-.terms-text-container h1 {
-  font-size: 20px;
-  color: #111111;
-  font-weight: 700;
-  margin-bottom: 20px;
-  border-bottom: 1px solid #eaeaea;
-  padding-bottom: 12px;
-  padding-right: 40px; /* Nilagyan ng space sa kanan para hindi mabangga ng text ang 'X' button */
+    .terms-text-container h2 {
+        font-size: 14px;
+        color: #1a1a1a;
+        font-weight: 600;
+        margin-top: 20px;
+        margin-bottom: 8px;
+        text-transform: capitalize;
+    }
+
+    .terms-text-container p {
+        font-size: 13px;
+        line-height: 1.6;
+        color: #4a4a4a;
+        margin-bottom: 14px;
+    }
+
+    /* Custom Scrollbar for Modal Text Container */
+    .terms-text-container::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .terms-text-container::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+
+    .terms-text-container::-webkit-scrollbar-thumb {
+        background: #ccc;
+        border-radius: 10px;
+    }
+
+    .terms-text-container::-webkit-scrollbar-thumb:hover {
+            background: #999;
+    }
+#contact {
+    margin-top: auto; /* 📥 Pushes the footer to the very bottom of the page content */
+    max-width: none !important; /* 🟥 Removes any width limitations */
+    /*  THE BREAKOUT TRICK: 
+       These lines counteract the body's 20px side padding and 40px bottom padding 
+       so the footer background stretches completely flush against the screen edges. */
+    width: calc(100% + 40px) !important;
+    margin-left: -20px !important;
+    margin-right: -20px !important;
+    margin-bottom: -40px !important;
 }
 
-.terms-text-container h2 {
-  font-size: 14px; /* Maliit pero bold para sa professional sub-headings */
-  color: #1a1a1a;
-  font-weight: 600;
-  margin-top: 20px;
-  margin-bottom: 8px;
-  text-transform: capitalize; /* Tamang capitalization */
+/* ==========================================================
+   📱 RESPONSIVE MEDIA QUERIES (425px, 375px, 320px)
+   ========================================================== */
+
+/* 📱 Mobile Large: Targets viewports up to 425px */
+@media screen and (max-width: 425px) {
+    .modal-container {
+        width: 90%; /* 🟢 SHRINK CARD: Forces a crisp 5% space gap on both the left and right edges */
+        max-width: 380px; /* Prevents it from ballooning on the high end of this breakpoint */
+        padding: 28px 20px; /* Slightly balances inner space */
+        margin: 15px auto; /* Centers the card perfectly with uniform vertical spacing */
+    }
+
+    /* Scaling down typography slightly for tighter viewports */
+    h1 {
+        font-size: 22px;
+    }
+
+    .input-group input,
+    .input-group select,
+    .phone-group .country-code,
+    .phone-group input {
+        font-size: 13px; /* Drops input text size down slightly */
+        padding: 10px 12px; /* Trims text field height slightly to match */
+    }
+
+    .register-btn {
+        font-size: 16px; /* Downscales action button text */
+        padding: 11px;
+    }
+
+    .modal-content {
+        padding: 20px;
+        margin: 4vh auto;
+        height: 85vh;
+    }
 }
 
-.terms-text-container p {
-  font-size: 13px; /* Pinaliit para maging mukhang legal document */
-  line-height: 1.6; /* Magandang espasyo para hindi masakit sa mata basahin */
-  color: #4a4a4a; /* Bahagyang soft black para sa mahabang basahin */
-  margin-bottom: 14px;
+/* 📱 Mobile Medium: Targets viewports up to 375px */
+@media screen and (max-width: 375px) {
+    .modal-container {
+        width: 88%; /* 🟢 INCREASES EDGE GAP: Gives even more screen margin on standard smartphones */
+        padding: 25px 18px;
+    }
+
+    h1 {
+        font-size: 20px;
+        margin-bottom: 20px;
+    }
+
+    .checkbox-group {
+        font-size: 11px; /* Safeguards terms checkbox text from wrapping aggressively */
+    }
+
+    .terms-text {
+        font-size: 9px;
+    }
 }
 
-/* --- MODERN SCROLLBAR STYLE (Para hindi sagabal sa layout) --- */
-.terms-text-container::-webkit-scrollbar {
-  width: 6px; /* Manipis na scrollbar */
-}
+/* 📱 Mobile Small: Targets viewports up to 320px */
+@media screen and (max-width: 320px) {
+    .modal-container {
+        width: 86%; /* 🟢 MAXIMUM EDGE GAP PROTECTION for ultra-narrow devices */
+        padding: 22px 14px;
+    }
 
-.terms-text-container::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 10px;
-}
+    h1 {
+        font-size: 18px;
+    }
 
-.terms-text-container::-webkit-scrollbar-thumb {
-  background: #ccc;
-  border-radius: 10px;
-}
+    .input-group input,
+    .input-group select,
+    .phone-group .country-code,
+    .phone-group input {
+        font-size: 12px; /* Ultra-compact font size to guarantee inputs do not break containment */
+    }
 
-.terms-text-container::-webkit-scrollbar-thumb:hover {
-  background: #999;
+    .register-btn {
+        font-size: 15px;
+    }
+
+    /* CRITICAL SAFETY FALLBACK: 
+       Prevents flex rows (like multi-column fields) from smashing horizontally on thin devices */
+    .row {
+        flex-direction: column;
+        gap: 0;
+    }
 }
