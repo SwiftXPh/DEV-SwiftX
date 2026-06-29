@@ -1,108 +1,139 @@
 /* ==========================================================
-    GLOBAL BASICS & VARIABLE FALLBACKS
+   registration.css  —  v5.0.0
+   Scoped to: CustomerSignup.cshtml
+   Written for the actual HTML class names in use:
+   .modal-container, .registration-card, .input-group,
+   .phone-group, .password-wrapper, .toggle-password,
+   .row, .close-btn, .register-btn, .terms-notice,
+   .checkbox-group
+   Layout centering handled by Tailwind (output.css).
    ========================================================== */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
 
-body {
-    background-color: var(--card-bg, #121212);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-}
 
 /* ==========================================================
-    MAIN REGISTRATION CARD
+   CARD SHELL
    ========================================================== */
 .modal-container {
-    background-color: var(--card-bg, #1e1e1e);
     width: 100%;
-    max-width: 450px;
-    padding: 40px 30px;
-    border-radius: var(--radius-card, 12px);
+}
+
+.registration-card {
     position: relative;
-    color: var(--text-main, #ffffff);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    border: 2px solid var(--border-focus, #2c2c2c);
+    border-radius: 16px;
+    background: rgba(38, 38, 38, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 28px 24px;
 }
 
-h1 {
-    text-align: center;
-    margin-bottom: 30px;
-    font-size: 24px;
+@media (min-width: 768px) {
+    .registration-card {
+        padding: 32px 28px;
+    }
 }
 
-/* Main Card Native Top Close Option */
-.close-btn {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background: var(--close-btn-bg, #333333);
-    border: none;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    cursor: pointer;
+.registration-card h1 {
+    font-family: var(--font-main);
     font-size: 20px;
-    font-weight: bold;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: inherit;
+    font-weight: 600;
+    text-align: center;
+    color: #fff;
+    margin-bottom: 24px;
 }
+
 
 /* ==========================================================
-   FORM FIELDS & INPUTS
+   CLOSE BUTTON
+   ========================================================== */
+.close-btn {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    transition: all 0.2s ease;
+}
+
+    .close-btn:hover {
+        background: rgba(255, 255, 255, 0.08);
+        color: #fff;
+    }
+
+
+/* ==========================================================
+   FORM INPUTS & SELECTS
    ========================================================== */
 .input-group {
-    margin-bottom: 15px;
+    margin-bottom: 12px;
     position: relative;
 }
 
     .input-group input,
     .input-group select {
         width: 100%;
-        background-color: var(--input-bg, #2a2a2a);
-        border: 1px solid var(--input-border, #3a3a3a);
-        border-radius: var(--radius-input, 8px);
-        padding: 12px 15px;
-        color: var(--input-text, #ffffff);
-        outline: none;
+        padding: 12px 14px;
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        color: #fff;
+        font-family: var(--font-main);
         font-size: 14px;
-        transition: border-color var(--transition, 0.2s ease), box-shadow var(--transition, 0.2s ease);
+        outline: none;
+        transition: border-color 0.3s ease;
     }
 
-        /* Orange Focus State Architecture */
         .input-group input:focus,
         .input-group select:focus {
-            border-color: var(--border-focus, #d34502);
-            box-shadow: 0 0 0 2px rgba(211, 69, 2, 0.2);
+            border-color: var(--primary-color);
         }
 
-    /* Custom Select Dropdown Arrow Configuration */
+        .input-group input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+    /* Select — hide default arrow, add custom */
     .input-group select {
         appearance: none;
         -webkit-appearance: none;
         cursor: pointer;
     }
 
+        .input-group select option {
+            background-color: #2c2c2c;
+            color: #fff;
+        }
+
+/* Dropdown arrow on gender (first .input-group inside .row) */
 .row .input-group:first-child::after {
     content: '\25BC';
     position: absolute;
-    right: 15px;
+    right: 14px;
     top: 50%;
     transform: translateY(-50%);
-    color: var(--text-secondary, #999999);
+    color: rgba(255, 255, 255, 0.3);
     pointer-events: none;
-    font-size: 12px;
+    font-size: 10px;
 }
 
-/* Multi-Column Rows */
+/* Date picker tint */
+.input-group input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(0.4);
+    cursor: pointer;
+}
+
+
+/* ==========================================================
+   GENDER + BIRTHDATE ROW
+   ========================================================== */
 .row {
     display: flex;
     gap: 10px;
@@ -110,179 +141,221 @@ h1 {
 
     .row .input-group {
         flex: 1;
+        min-width: 0;
     }
 
-/* Compound Flex Input Group (Phone Field Layout) */
+@media (max-width: 360px) {
+    .row {
+        flex-direction: column;
+        gap: 0;
+    }
+}
+
+
+/* ==========================================================
+   PHONE FIELD
+   ========================================================== */
 .phone-group {
     display: flex;
     align-items: center;
-    background-color: var(--input-bg, #2a2a2a);
-    border: 1px solid var(--input-border, #3a3a3a);
-    border-radius: var(--radius-input, 8px);
-    transition: border-color var(--transition, 0.2s ease), box-shadow var(--transition, 0.2s ease);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    transition: border-color 0.3s ease;
+    /* Override .input-group default border on the wrapper */
+    padding: 0;
 }
 
     .phone-group:focus-within {
-        border-color: var(--border-focus, #d34502);
-        box-shadow: 0 0 0 2px rgba(211, 69, 2, 0.2);
+        border-color: var(--primary-color);
     }
 
-    .phone-group .country-code {
-        padding: 12px 0 12px 15px;
-        color: var(--text-main, #ffffff);
-        font-size: 14px;
-    }
-
+    /* Remove double border — the group itself is the border */
     .phone-group input {
-        border: none;
-        background: transparent;
-        padding: 12px 15px 12px 8px;
-        flex-grow: 1;
-    }
-
-        .phone-group input:focus {
-            box-shadow: none;
-        }
-
-/* ==========================================================
-    PASSWORD & CONFIRM PASSWORD CONTAINERS         
-   ========================================================== */
-.password-wrapper {
-    position: relative;
-    display: block;
-    background-color: var(--input-bg, #2a2a2a);
-    border: 2px solid var(--border-focus, #d34502);
-    border-radius: var(--radius-input, 8px);
-    overflow: hidden;
-}
-
-    /* Standardizing internal inputs to transparent layer inside the container frame */
-    .password-wrapper input {
         border: none !important;
         background: transparent !important;
         border-radius: 0 !important;
+        box-shadow: none !important;
+        padding-left: 8px !important;
+        flex: 1;
     }
 
-        .password-wrapper input:focus {
+        .phone-group input:focus {
+            border-color: transparent !important;
             box-shadow: none !important;
         }
 
-.toggle-password {
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-    color: var(--text-secondary, #999999);
-    z-index: 2;
+.country-code {
+    padding: 12px 0 12px 14px;
+    color: rgba(255, 255, 255, 0.4);
+    font-family: var(--font-main);
+    font-size: 14px;
+    white-space: nowrap;
+    user-select: none;
+    flex-shrink: 0;
 }
 
+
 /* ==========================================================
-    TERMS, CHECKBOXES & ACTIONS
+   PASSWORD WRAPPER
    ========================================================== */
-.terms-text {
+.password-wrapper {
+    position: relative;
+}
+
+    .password-wrapper input {
+        padding-right: 44px !important;
+    }
+
+.toggle-password {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(255, 255, 255, 0.35);
+    font-size: 17px;
+    cursor: pointer;
+    z-index: 2;
+    transition: color 0.2s ease;
+    user-select: none;
+}
+
+    .toggle-password:hover {
+        color: var(--primary-color);
+    }
+
+
+/* ==========================================================
+   TERMS NOTICE & CHECKBOX
+   ========================================================== */
+.terms-notice {
+    font-family: var(--font-secondary);
     font-size: 10px;
+    color: rgba(255, 255, 255, 0.25);
     text-align: center;
-    color: #888888;
-    margin: 20px 0 15px;
-    line-height: 1.5;
+    margin: 8px 0 12px;
+    line-height: 1.6;
     text-transform: uppercase;
     letter-spacing: 0.3px;
 }
 
 .checkbox-group {
     display: flex;
-    justify-content: flex-start;
     align-items: flex-start;
     gap: 10px;
-    font-size: 12px;
-    margin-bottom: 25px;
-    width: 100%;
-    padding: 0 2px;
+    margin-bottom: 20px;
 }
 
     .checkbox-group input[type="checkbox"] {
-        accent-color: var(--btn-primary, #d34502);
-        width: 15px;
-        height: 15px;
-        margin-top: 1px;
-        flex-shrink: 0;
+        width: 16px;
+        height: 16px;
+        accent-color: var(--primary-color);
         cursor: pointer;
+        flex-shrink: 0;
+        margin-top: 2px;
     }
 
     .checkbox-group label {
-        color: #bbb;
-        line-height: 1.4;
-        text-align: left;
+        font-family: var(--font-secondary);
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.45);
+        line-height: 1.5;
         cursor: pointer;
         user-select: none;
     }
 
     .checkbox-group a {
-        color: var(--text-main, #ffffff);
+        color: #fff;
         text-decoration: underline;
+        text-underline-offset: 2px;
+        transition: color 0.2s ease;
     }
 
-/* Main Brand Action Button */
+        .checkbox-group a:hover {
+            color: var(--primary-color);
+        }
+
+
+/* ==========================================================
+   REGISTER BUTTON
+   ========================================================== */
 .register-btn {
     width: 100%;
-    padding: 12px;
-    background-color: var(--btn-primary, #d34502);
+    padding: 14px;
     border: none;
-    border-radius: var(--radius-button, 8px);
-    color: var(--btn-text, #ffffff);
-    font-size: 18px;
-    font-weight: bold;
+    border-radius: 10px;
+    font-family: var(--font-main);
+    font-size: 16px;
+    font-weight: 600;
     cursor: pointer;
-    transition: background var(--transition, 0.2s ease);
+    background: var(--primary-color);
+    color: #fff;
+    transition: opacity 0.3s ease, transform 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
     .register-btn:hover {
-        background-color: var(--btn-primary-hover, #e64c02);
+        opacity: 0.9;
     }
 
     .register-btn:active {
-        background-color: var(--btn-primary-active, #b83a00);
+        transform: scale(0.98);
     }
 
+    .register-btn:disabled {
+        background: rgba(211, 69, 2, 0.3);
+        color: rgba(255, 255, 255, 0.3);
+        cursor: not-allowed;
+        transform: none;
+    }
+
+
 /* ==========================================================
-    LEGAL TERMS & CONDITIONS OVERLAY MODAL
+   TERMS & CONDITIONS MODAL
    ========================================================== */
 .modal {
     display: none;
     position: fixed;
+    inset: 0;
     z-index: 9999;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.65);
     backdrop-filter: blur(4px);
+    justify-content: center;
+    align-items: flex-start;
+    padding: 24px 16px;
+    overflow-y: auto;
 }
+
+    .modal[style*="flex"] {
+        display: flex;
+    }
 
 .modal-content {
     background-color: #ffffff;
-    margin: 6vh auto;
-    padding: 35px;
-    width: 90%;
-    max-width: 650px;
-    height: 75vh;
-    border-radius: 8px;
+    width: 100%;
+    max-width: 660px;
+    max-height: 80vh;
+    border-radius: 12px;
+    padding: 32px;
     position: relative;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35);
     display: flex;
     flex-direction: column;
+    margin: auto;
 }
 
 .close-button {
     position: absolute;
-    right: 25px;
-    top: 22px;
-    font-size: 24px;
-    font-weight: 400;
+    right: 20px;
+    top: 18px;
+    font-size: 22px;
     cursor: pointer;
     color: #999;
     line-height: 1;
+    background: none;
+    border: none;
     transition: color 0.2s ease;
     z-index: 10;
 }
@@ -292,156 +365,230 @@ h1 {
     }
 
 .terms-text-container {
-    height: 100%;
+    flex: 1;
     overflow-y: auto;
-    padding-right: 20px;
-    margin-top: 10px;
+    padding-right: 16px;
     text-align: left;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-family: var(--font-secondary);
 }
 
     .terms-text-container h1 {
-        font-size: 20px;
-        color: #111111;
+        font-family: var(--font-main);
+        font-size: 17px;
+        color: #111;
         font-weight: 700;
-        margin-bottom: 20px;
+        margin: 24px 0 10px;
+        padding-bottom: 10px;
+        padding-right: 36px;
         border-bottom: 1px solid #eaeaea;
-        padding-bottom: 12px;
-        padding-right: 40px;
         text-align: left;
     }
 
+        .terms-text-container h1:first-child {
+            margin-top: 0;
+        }
+
     .terms-text-container h2 {
-        font-size: 14px;
+        font-family: var(--font-main);
+        font-size: 13px;
         color: #1a1a1a;
         font-weight: 600;
-        margin-top: 20px;
-        margin-bottom: 8px;
-        text-transform: capitalize;
+        margin: 18px 0 6px;
     }
 
     .terms-text-container p {
         font-size: 13px;
-        line-height: 1.6;
+        line-height: 1.7;
         color: #4a4a4a;
-        margin-bottom: 14px;
+        margin-bottom: 12px;
     }
 
-    /* Custom Scrollbar for Modal Text Container */
+    .terms-text-container a {
+        color: #d34502;
+        text-decoration: underline;
+    }
+
     .terms-text-container::-webkit-scrollbar {
-        width: 6px;
+        width: 5px;
     }
 
     .terms-text-container::-webkit-scrollbar-track {
         background: #f1f1f1;
-        border-radius: 10px;
+        border-radius: 8px;
     }
 
     .terms-text-container::-webkit-scrollbar-thumb {
         background: #ccc;
-        border-radius: 10px;
+        border-radius: 8px;
     }
 
-    .terms-text-container::-webkit-scrollbar-thumb:hover {
+        .terms-text-container::-webkit-scrollbar-thumb:hover {
             background: #999;
-    }
-#contact {
-    margin-top: auto; /* 📥 Pushes the footer to the very bottom of the page content */
-    max-width: none !important; /* 🟥 Removes any width limitations */
-    /*  THE BREAKOUT TRICK: 
-       These lines counteract the body's 20px side padding and 40px bottom padding 
-       so the footer background stretches completely flush against the screen edges. */
-    width: calc(100% + 40px) !important;
-    margin-left: -20px !important;
-    margin-right: -20px !important;
-    margin-bottom: -40px !important;
-}
+        }
+
 
 /* ==========================================================
-   📱 RESPONSIVE MEDIA QUERIES (425px, 375px, 320px)
+   TERMS & CONDITIONS MODAL  —  dark admin style
+   Replaces old .modal / .modal-content / .terms-text-container
    ========================================================== */
 
-/* 📱 Mobile Large: Targets viewports up to 425px */
-@media screen and (max-width: 425px) {
-    .modal-container {
-        width: 90%; /* 🟢 SHRINK CARD: Forces a crisp 5% space gap on both the left and right edges */
-        max-width: 380px; /* Prevents it from ballooning on the high end of this breakpoint */
-        padding: 28px 20px; /* Slightly balances inner space */
-        margin: 15px auto; /* Centers the card perfectly with uniform vertical spacing */
+.tc-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    align-items: flex-start;
+    justify-content: center;
+    padding: 24px 16px;
+    overflow-y: auto;
+}
+
+    .tc-modal[style*="flex"] {
+        display: flex;
     }
 
-    /* Scaling down typography slightly for tighter viewports */
-    h1 {
-        font-size: 22px;
+.tc-modal__box {
+    background: var(--dark-bg-hero, #242424);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+    width: 100%;
+    max-width: 660px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: tcModalSlideUp 0.25s ease;
+    margin: auto;
+}
+
+@keyframes tcModalSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
     }
 
-    .input-group input,
-    .input-group select,
-    .phone-group .country-code,
-    .phone-group input {
-        font-size: 13px; /* Drops input text size down slightly */
-        padding: 10px 12px; /* Trims text field height slightly to match */
-    }
-
-    .register-btn {
-        font-size: 16px; /* Downscales action button text */
-        padding: 11px;
-    }
-
-    .modal-content {
-        padding: 20px;
-        margin: 4vh auto;
-        height: 85vh;
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 
-/* 📱 Mobile Medium: Targets viewports up to 375px */
-@media screen and (max-width: 375px) {
-    .modal-container {
-        width: 88%; /* 🟢 INCREASES EDGE GAP: Gives even more screen margin on standard smartphones */
-        padding: 25px 18px;
-    }
+.tc-modal__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 22px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    flex-shrink: 0;
+}
 
-    h1 {
+.tc-modal__title {
+    font-family: var(--font-main);
+    font-size: var(--fs-body, 16px);
+    font-weight: var(--fw-semibold, 600);
+    color: rgba(255, 255, 255, 0.92);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+}
+
+    .tc-modal__title i {
         font-size: 20px;
-        margin-bottom: 20px;
+        color: var(--primary-color, #d34502);
     }
 
-    .checkbox-group {
-        font-size: 11px; /* Safeguards terms checkbox text from wrapping aggressively */
-    }
-
-    .terms-text {
-        font-size: 9px;
-    }
+.tc-modal__close {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: transparent;
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.15s ease;
 }
 
-/* 📱 Mobile Small: Targets viewports up to 320px */
-@media screen and (max-width: 320px) {
-    .modal-container {
-        width: 86%; /* 🟢 MAXIMUM EDGE GAP PROTECTION for ultra-narrow devices */
-        padding: 22px 14px;
+    .tc-modal__close:hover {
+        color: #fff;
+        background: rgba(255, 255, 255, 0.06);
     }
 
-    h1 {
-        font-size: 18px;
-    }
-
-    .input-group input,
-    .input-group select,
-    .phone-group .country-code,
-    .phone-group input {
-        font-size: 12px; /* Ultra-compact font size to guarantee inputs do not break containment */
-    }
-
-    .register-btn {
-        font-size: 15px;
-    }
-
-    /* CRITICAL SAFETY FALLBACK: 
-       Prevents flex rows (like multi-column fields) from smashing horizontally on thin devices */
-    .row {
-        flex-direction: column;
-        gap: 0;
-    }
+.tc-modal__body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 22px 24px;
 }
+
+    .tc-modal__body h1 {
+        font-family: var(--font-main);
+        font-size: 13px;
+        font-weight: var(--fw-semibold, 600);
+        color: var(--primary-color, #d34502);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin: 22px 0 8px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+        .tc-modal__body h1:first-child {
+            margin-top: 0;
+        }
+
+    .tc-modal__body h2 {
+        font-family: var(--font-main);
+        font-size: var(--fs-small, 14px);
+        font-weight: var(--fw-semibold, 600);
+        color: rgba(255, 255, 255, 0.85);
+        margin: 16px 0 5px;
+    }
+
+    .tc-modal__body p {
+        font-family: var(--font-secondary);
+        font-size: 13px;
+        line-height: 1.7;
+        color: rgba(255, 255, 255, 0.5);
+        margin-bottom: 10px;
+    }
+
+    .tc-modal__body strong {
+        color: rgba(255, 255, 255, 0.8);
+        font-weight: var(--fw-semibold, 600);
+    }
+
+    .tc-modal__body a {
+        color: var(--primary-color, #d34502);
+        text-decoration: underline;
+        text-underline-offset: 2px;
+    }
+
+        .tc-modal__body a:hover {
+            opacity: 0.8;
+        }
+
+    .tc-modal__body::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    .tc-modal__body::-webkit-scrollbar-track {
+        background: rgba(255,255,255,0.03);
+        border-radius: 8px;
+    }
+
+    .tc-modal__body::-webkit-scrollbar-thumb {
+        background: rgba(255,255,255,0.12);
+        border-radius: 8px;
+    }
+
+        .tc-modal__body::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,255,255,0.22);
+        }

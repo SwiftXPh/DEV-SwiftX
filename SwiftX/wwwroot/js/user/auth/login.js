@@ -1,146 +1,141 @@
-﻿document.addEventListener('DOMContentLoaded', () => {
+﻿
+document.addEventListener('DOMContentLoaded', () => {
 
-    // =============================================================
-    // 1. PASSWORD SHOW/HIDE ICON CONTROLLER
-    // =============================================================
-    const passwordInput = document.getElementById('userPassword');
-    const togglePasswordIcon = document.getElementById('togglePasswordIcon');
+    // ══════════════════════════════════════════════════════════
+    // 1. PASSWORD TOGGLE
+    // Uses two-icon swap (ph-eye / ph-eye-slash) matching admin
+    // pattern. Called by onclick on the toggle button, passing
+    // the input ID and the button element itself.
+    // ══════════════════════════════════════════════════════════
 
-    if (togglePasswordIcon && passwordInput) {
-        togglePasswordIcon.addEventListener('click', () => {
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                togglePasswordIcon.classList.remove('ph-eye-slash');
-                togglePasswordIcon.classList.add('ph-eye');
-            } else {
-                passwordInput.type = 'password';
-                togglePasswordIcon.classList.remove('ph-eye');
-                togglePasswordIcon.classList.add('ph-eye-slash');
-            }
-        });
+    function togglePasswordVisibility(inputId, btnElement) {
+        const input = document.getElementById(inputId);
+        const eyeOpen = btnElement.querySelector('.eye-open');
+        const eyeClosed = btnElement.querySelector('.eye-closed');
+        if (!input) return;
+
+        if (input.type === 'password') {
+            input.type = 'text';
+            eyeOpen?.classList.add('hidden');
+            eyeClosed?.classList.remove('hidden');
+        } else {
+            input.type = 'password';
+            eyeOpen?.classList.remove('hidden');
+            eyeClosed?.classList.add('hidden');
+        }
     }
 
-    // =============================================================
-    // 2. LOGIN FORM SUBMISSION CONTROLLER (MVC INTEGRATED)
-    // =============================================================
+    window.togglePassword = togglePasswordVisibility;
+
+
+    //LOGIN FORM SUBMISSION
+
     const loginForm = document.getElementById('loginForm');
-    const signInBtn = document.getElementById('signInBtn'); // 🎯 Tip: Give your login button this explicit ID in HTML
+    const submitBtn = document.getElementById('signInBtn')
+        ?? loginForm?.querySelector('button[type="submit"]');
 
     const handleLogin = async (e) => {
-        if (e) e.preventDefault(); // Prevents traditional page reloading loops
+        if (e) e.preventDefault();
 
-        // Pull inputs securely directly from our target elements
-        const usernameInput = document.querySelector('input[name="Username"], input[type="text"]');
-        const passwordInput = document.querySelector('input[name="Password"], input[type="password"]');
+        const usernameInput = document.querySelector('input[name="Username"]');
+        const passwordInput = document.querySelector('input[name="Password"]');
 
-        const username = usernameInput ? usernameInput.value.trim() : '';
-        const password = passwordInput ? passwordInput.value : '';
+        const username = usernameInput?.value.trim() ?? '';
+        const password = passwordInput?.value ?? '';
 
-        // Standard validation check
-        if (username === '' || password === '') {
+        if (!username || !password) {
             alert('Please fill in all fields.');
             return;
         }
 
-        // Show loading presentation states cleanly
-        const submitBtn = signInBtn || (loginForm ? loginForm.querySelector('button[type="submit"]') : null);
-        const originalText = submitBtn ? submitBtn.innerText : 'Sign In';
+        const btnText = submitBtn?.querySelector('.btn-login-text');
+        const btnLoader = submitBtn?.querySelector('.btn-login-loader');
 
         if (submitBtn) {
-            submitBtn.innerText = 'Signing in...';
             submitBtn.disabled = true;
+            btnText?.classList.add('hidden');
+            btnLoader?.classList.remove('hidden');
         }
 
         try {
-            // 🎯 MVC BACKEND PIPELINE CONNECTION
-            // Points to your dedicated authentication controller endpoint layout
-            const response = await fetch('/auth/Login', {
+            const response = await fetch('/Auth/Login', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ Username: username, Password: password })
             });
 
             const result = await response.json();
 
             if (submitBtn) {
-                submitBtn.innerText = originalText;
                 submitBtn.disabled = false;
+                btnText?.classList.remove('hidden');
+                btnLoader?.classList.add('hidden');
             }
 
-            if (result && result.success) {
-                window.location.href = result.redirectUrl || 'CustomerHome';
+            if (result?.success) {
+                window.location.href = result.redirectUrl || '/Customer/CustomerHome';
             } else {
-                alert(result.message || 'Maling username o password. Subukan muli.');
+                alert(result?.message || 'Maling username o password. Subukan muli.');
             }
         } catch (err) {
-            console.error('Backend API transmission breakdown:', err);
+            console.error('Login error:', err);
             if (submitBtn) {
-                submitBtn.innerText = originalText;
                 submitBtn.disabled = false;
+                btnText?.classList.remove('hidden');
+                btnLoader?.classList.add('hidden');
             }
-            alert('Login failed due to a server connection error. Please try again.');
+            alert('Login failed due to a server error. Please try again.');
         }
     };
 
     if (loginForm) {
-        // 🎯 FIXED: We exclusively bind to the form submission. 
-        // This naturally catches both button clicks and hitting "Enter" cleanly without double-posting!
         loginForm.addEventListener('submit', handleLogin);
-    } else if (signInBtn) {
-        // Fallback fallback if layout doesn't use standard form containers
-        signInBtn.addEventListener('click', handleLogin);
     }
 
-    // =============================================================
-    // 3. TERMS & CONDITIONS MODAL CONTROLLER
-    // =============================================================
-    const modal = document.getElementById('termsModal');
-    const btn = document.getElementById('openTerms');
-    const closeBtn = document.querySelector('.close-button');
 
-    if (btn && modal) {
-        btn.onclick = function () {
-            modal.style.display = 'block';
-        };
-    }
+    // TERMS & CONDITIONS MODAL
 
-    if (closeBtn && modal) {
-        closeBtn.onclick = function () {
-            modal.style.display = 'none';
-        };
-    }
+    const termsModal = document.getElementById('termsModal');
+    const openTerms = document.getElementById('openTerms');
+    const closeTerms = document.getElementById('closeTermsBtn');
 
-    // =============================================================
-    // 4. HELP CENTER MODAL CONTROLLER 
-    // =============================================================
+    openTerms?.addEventListener('click', (e) => {
+        e.preventDefault();
+        termsModal.style.display = 'flex';
+    });
+
+    closeTerms?.addEventListener('click', () => {
+        termsModal.style.display = 'none';
+    });
+
+
+    //HELP CENTER MODAL
+
     const helpModal = document.getElementById('helpCenterModal');
     const openHelpLink = document.getElementById('openHelpLink');
     const closeHelpBtn = document.getElementById('closeHelpBtn');
 
-    if (openHelpLink && helpModal) {
-        openHelpLink.onclick = function (e) {
-            e.preventDefault();
-            helpModal.style.display = 'flex';
-        };
-    }
+    openHelpLink?.addEventListener('click', (e) => {
+        e.preventDefault();
+        helpModal.style.display = 'flex';
+    });
 
-    if (closeHelpBtn && helpModal) {
-        closeHelpBtn.onclick = function () {
-            helpModal.style.display = 'none';
-        };
-    }
+    closeHelpBtn?.addEventListener('click', () => {
+        helpModal.style.display = 'none';
+    });
 
-    // =============================================================
-    // GLOBAL OUTSIDE MODAL CLICK CLOSER
-    // =============================================================
-    window.onclick = function (event) {
-        if (event.target == modal) {
-            modal.style.display = 'none';
-        }
-        if (event.target == helpModal) {
-            helpModal.style.display = 'none';
-        }
-    };
+
+    // BACKDROP CLICK + ESCAPE TO CLOSE
+
+    window.addEventListener('click', (e) => {
+        if (termsModal && e.target === termsModal) termsModal.style.display = 'none';
+        if (helpModal && e.target === helpModal) helpModal.style.display = 'none';
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Escape') return;
+        if (termsModal?.style.display === 'flex') termsModal.style.display = 'none';
+        if (helpModal?.style.display === 'flex') helpModal.style.display = 'none';
+    });
+
 });

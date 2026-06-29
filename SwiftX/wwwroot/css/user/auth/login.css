@@ -1,484 +1,685 @@
 ﻿/* ==========================================================
-    GLOBAL DESIGN VARIABLES
+   login.css (customer)  —  v4.0.0
+   Scoped to: UserLogin.cshtml
+   Self-contained — all form, card, button, and modal styles
+   are defined here. Layout is handled by Tailwind (output.css).
    ========================================================== */
-:root {
-    --primary-orange: #f26522;
-    --dark-orange: #d34e0d;
-    --bg-main: #2b2826;
-    --bg-card: #383431;
-    --border-color: #4a4541;
-    --bg-modal-card: #2c2c2c;
-    --bg-input-dark: #1a1a1a;
-    --text-main: #ffffff;
-    --text-secondary: #a0a0a0;
-    --error-red: #ff4444;
-    --success-green: #00ff00;
-    --transition: all 0.2s ease-in-out;
-    --radius-card: 10px;
-    --radius-button: 8px;
-}
+
 
 /* ==========================================================
-    GLOBAL BASE RESETS
+   CARD SHELL
    ========================================================== */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Inter', sans-serif;
+.login-card {
+    border-radius: 16px;
+    background: rgba(38, 38, 38, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 28px 24px;
 }
 
-html, body {
-    width: 100%;
-    min-height: 100vh;
-    background-color: var(--bg-main);
+@media (min-width: 768px) {
+    .login-card {
+        padding: 32px 28px;
+    }
 }
 
-body {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    color: var(--text-main);
-    padding: 40px 20px;
-}
 
 /* ==========================================================
-    LOGIN CONTAINER PORTAL
+   INPUTS — base
    ========================================================== */
-.login-container {
-    background-color: var(--bg-modal-card);
+.login-input {
     width: 100%;
-    max-width: 400px;
-    padding: 30px 25px;
-    border-radius: var(--radius-card);
-    display: flex;
-    flex-direction: column;
+    padding: 12px 14px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: #fff;
+    font-family: var(--font-main);
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.3s ease;
 }
 
-    .login-container form,
-    .form-section {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
+    .login-input:focus {
+        border-color: var(--primary-color);
     }
 
-.logo-section .logo {
-    display: block;
-    width: 220px;
-    margin: 0 auto 26px auto;
-}
-
-h2 {
-    font-size: 24px;
-    margin-bottom: 25px;
-    font-weight: 600;
-    text-align: center;
-}
-
-.input-group {
-    width: 100%;
-}
-
-    /*  Updated to perfectly skin inputs inside our clean wrapper containers */
-    input, .input-group input {
-        width: 100%;
-        padding: 15px;
-        margin-bottom: 15px;
-        background-color: var(--bg-card);
-        border: 1px solid var(--border-color);
-        border-radius: 15px;
-        color: var(--text-main);
-        font-size: 16px;
-        outline: none;
-        transition: var(--transition);
+    .login-input::placeholder {
+        color: rgba(255, 255, 255, 0.3);
     }
 
-        input::placeholder, .input-group input::placeholder {
-            color: #999;
-        }
 
-        input:focus, .input-group input:focus {
-            border-color: var(--primary-orange);
-            box-shadow: 0 0 0 2px rgba(242, 101, 34, 0.2);
-        }
-
-#loginForm input[type="text"] {
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
-}
-
-/*  Keeps shadows active with the unified 'password' element target */
-#password {
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
-}
-
-.password-wrapper {
+/* ==========================================================
+   INPUT WITH LEADING ICON
+   ========================================================== */
+.login-input-wrapper {
     position: relative;
-    width: 100%;
-    margin-bottom: 10px;
 }
 
-    .password-wrapper input {
-        margin-bottom: 0;
-        padding-right: 45px;
-    }
-
-/*  Targets the updated toggle class and legacy reference to maintain positioning */
-#togglePasswordIcon, .toggle-password {
+.login-input-icon {
     position: absolute;
-    right: 15px;
+    left: 14px;
     top: 50%;
     transform: translateY(-50%);
-    color: var(--text-secondary);
-    cursor: pointer;
+    color: rgba(255, 255, 255, 0.3);
     font-size: 18px;
-    transition: var(--transition);
-    z-index: 2;
+    pointer-events: none;
+    transition: color 0.3s ease;
+    z-index: 1;
 }
 
-    #togglePasswordIcon:hover, .toggle-password:hover {
-        color: var(--primary-orange);
-        transform: translateY(-50%) scale(1.1);
+.login-input-wrapper:focus-within .login-input-icon {
+    color: var(--primary-color);
+}
+
+.login-input-wrapper .login-input {
+    padding-left: 44px !important;
+}
+
+
+/* ==========================================================
+   PASSWORD WRAPPER
+   ========================================================== */
+.password-wrapper {
+    position: relative;
+}
+
+    .password-wrapper .login-input {
+        padding-right: 44px;
     }
 
-.btn-sign-in {
-    display: block;
-    width: 65%;
-    padding: 12px;
-    background-color: var(--dark-orange);
+.password-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
     border: none;
-    border-radius: 25px;
-    color: var(--text-main);
-    font-weight: bold;
-    font-size: 16px;
+    color: rgba(255, 255, 255, 0.4);
     cursor: pointer;
-    margin: 15px auto 0 auto;
-    transition: var(--transition);
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
-}
-
-    .btn-sign-in:hover {
-        background-color: var(--primary-orange);
-    }
-
-    .btn-sign-in:active {
-        transform: scale(0.98);
-    }
-
-.divider-text {
-    margin: 25px 0 20px;
-    font-size: 14px;
-    color: #ccc;
-    text-align: center;
-}
-
-.social-login {
+    padding: 4px;
     display: flex;
-    flex-direction: column;
-    gap: 12px;
-    width: 100%;
+    align-items: center;
+    font-size: 18px;
+    transition: color 0.3s ease;
+    z-index: 1;
 }
 
-.social-btn {
+    .password-toggle:hover {
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+
+/* ==========================================================
+   TERMS NOTICE
+   ========================================================== */
+.auth-terms-notice {
+    font-family: var(--font-secondary);
+    font-size: var(--fs-micro);
+    color: rgba(255, 255, 255, 0.3);
+    text-align: center;
+    margin: 4px 0 14px;
+    line-height: 1.6;
+}
+
+.auth-legal-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+}
+
+    .auth-legal-link:hover {
+        opacity: 0.8;
+        text-decoration: underline;
+    }
+
+
+/* ==========================================================
+   SUBMIT BUTTON
+   ========================================================== */
+.btn-next {
     width: 100%;
-    padding: 12px;
+    padding: 14px;
+    border: none;
     border-radius: 10px;
-    border: 1px solid transparent;
+    font-family: var(--font-main);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.3s ease, transform 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+    .btn-next:disabled {
+        background: rgba(211, 69, 2, 0.3);
+        color: rgba(255, 255, 255, 0.3);
+        cursor: not-allowed;
+    }
+
+    .btn-next:not(:disabled) {
+        background: var(--primary-color);
+        color: #fff;
+    }
+
+        .btn-next:not(:disabled):hover {
+            opacity: 0.9;
+        }
+
+        .btn-next:not(:disabled):active {
+            transform: scale(0.98);
+        }
+
+/* Loader states */
+.btn-login-text,
+.btn-login-loader {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+    .btn-login-loader.hidden,
+    .btn-login-text.hidden {
+        display: none;
+    }
+
+@keyframes loginSpin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.login-spinner {
+    animation: loginSpin 0.8s linear infinite;
+    font-size: 18px;
+}
+
+
+/* ==========================================================
+   OR DIVIDER
+   ========================================================== */
+.auth-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 18px 0;
+    font-family: var(--font-secondary);
+    font-size: var(--fs-micro);
+    color: rgba(255, 255, 255, 0.25);
+}
+
+    .auth-divider::before,
+    .auth-divider::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+
+/* ==========================================================
+   SOCIAL BUTTON
+   ========================================================== */
+.auth-social-btn {
+    width: 100%;
+    padding: 11px 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #ffffff;
+    color: #111111;
+    font-family: var(--font-secondary);
+    font-size: 14px;
+    font-weight: 600;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
-    font-weight: 600;
     cursor: pointer;
-    background-color: #ffffff;
-    color: #000000;
-    font-size: 14px;
-    transition: var(--transition);
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+    transition: filter 0.2s ease;
 }
 
-    .social-btn:hover {
-        background-color: #f1f1f1;
-        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+    .auth-social-btn:hover {
+        filter: brightness(0.96);
     }
 
-    .social-btn img {
-        width: 20px;
-    }
 
-.footer-links {
-    margin-top: 30px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-}
-
-    .footer-links a {
-        text-decoration: underline;
-        color: var(--text-main);
-        font-size: 13px;
-        transition: var(--transition);
-    }
-
-        .footer-links a:hover {
-            color: var(--primary-orange);
-        }
-
-    .footer-links span {
-        display: block;
-        text-decoration: none;
-        color: #ccc;
-        font-size: 13px;
-        text-align: center;
-    }
-
-    .footer-links a.need-help {
-        color: var(--text-secondary);
-        text-decoration: none;
-        transition: var(--transition);
-        font-size: 14px;
-        margin-top: 5px;
-    }
-
-        .footer-links a.need-help:hover {
-            color: var(--primary-orange);
-            text-decoration: underline;
-        }
-
-.legal-link {
-    color: var(--dark-orange);
-    text-decoration: none;
-    transition: var(--transition);
-}
-
-    .legal-link:hover {
-        color: var(--primary-orange);
-        text-decoration: underline;
-    }
-
+/* ==========================================================
+   TERMS & CONDITIONS MODAL
+   ========================================================== */
 .modal {
     display: none;
     position: fixed;
+    inset: 0;
     z-index: 9999;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.65);
     backdrop-filter: blur(4px);
     justify-content: center;
-    align-items: center;
-    padding: 20px;
+    align-items: flex-start;
+    padding: 24px 16px;
+    overflow-y: auto;
 }
+
+    .modal[style*="flex"] {
+        display: flex;
+    }
 
 .modal-content {
     background-color: #ffffff;
-    padding: 30px;
     width: 100%;
-    max-width: 650px;
-    max-height: 85vh;
-    border-radius: 8px;
+    max-width: 660px;
+    max-height: 80vh;
+    border-radius: 12px;
+    padding: 32px;
     position: relative;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35);
     display: flex;
     flex-direction: column;
+    margin: auto;
 }
-
-.terms-text-container {
-    flex: 1;
-    overflow-y: auto;
-    padding-right: 15px;
-    text-align: left;
-}
-
-    .terms-text-container h1 {
-        font-size: 20px;
-        color: #111111;
-        font-weight: 700;
-        margin-bottom: 20px;
-        border-bottom: 1px solid #eaeaea;
-        padding-bottom: 12px;
-    }
-
-    .terms-text-container p {
-        font-size: 13px;
-        line-height: 1.6;
-        color: #4a4a4a;
-        margin-bottom: 14px;
-    }
 
 .close-button {
     position: absolute;
-    right: 25px;
-    top: 20px;
-    font-size: 24px;
+    right: 20px;
+    top: 18px;
+    font-size: 22px;
     cursor: pointer;
     color: #999;
     line-height: 1;
-    transition: var(--transition);
+    background: none;
+    border: none;
+    transition: color 0.2s ease;
+    z-index: 10;
 }
 
     .close-button:hover {
         color: #333;
     }
 
+.terms-text-container {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 16px;
+    text-align: left;
+    font-family: var(--font-secondary);
+}
+
+    .terms-text-container h1 {
+        font-family: var(--font-main);
+        font-size: 17px;
+        color: #111;
+        font-weight: 700;
+        margin: 24px 0 10px;
+        padding-bottom: 10px;
+        padding-right: 36px;
+        border-bottom: 1px solid #eaeaea;
+        text-align: left;
+    }
+
+        .terms-text-container h1:first-child {
+            margin-top: 0;
+        }
+
+    .terms-text-container h2 {
+        font-family: var(--font-main);
+        font-size: 13px;
+        color: #1a1a1a;
+        font-weight: 600;
+        margin: 18px 0 6px;
+    }
+
+    .terms-text-container p {
+        font-size: 13px;
+        line-height: 1.7;
+        color: #4a4a4a;
+        margin-bottom: 12px;
+    }
+
+    .terms-text-container a {
+        color: #d34502;
+        text-decoration: underline;
+    }
+
+    .terms-text-container::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    .terms-text-container::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 8px;
+    }
+
+    .terms-text-container::-webkit-scrollbar-thumb {
+        background: #ccc;
+        border-radius: 8px;
+    }
+
+        .terms-text-container::-webkit-scrollbar-thumb:hover {
+            background: #999;
+        }
+
+
+/* ==========================================================
+   HELP CENTER MODAL
+   ========================================================== */
 .help-modal {
     display: none;
     position: fixed;
+    inset: 0;
     z-index: 10000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
     background-color: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(5px);
-    align-items: center;
     justify-content: center;
+    align-items: center;
     padding: 20px;
 }
 
+    .help-modal[style*="flex"] {
+        display: flex;
+    }
+
 .help-modal-content {
-    background-color: var(--bg-modal-card);
-    border: 1px solid var(--border-color);
-    padding: 35px 25px;
+    background-color: var(--dark-bg-card);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 32px 24px;
     width: 100%;
-    max-width: 420px;
-    border-radius: var(--radius-card);
+    max-width: 400px;
+    border-radius: 16px;
     position: relative;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
 }
 
 .help-close-btn {
     position: absolute;
-    top: 15px;
-    right: 20px;
+    top: 14px;
+    right: 18px;
     background: none;
     border: none;
-    color: var(--text-secondary);
-    font-size: 28px;
+    color: rgba(255, 255, 255, 0.35);
+    font-size: 26px;
     cursor: pointer;
-    transition: var(--transition);
+    line-height: 1;
+    transition: color 0.2s ease;
 }
 
     .help-close-btn:hover {
-        color: var(--primary-orange);
+        color: var(--primary-color);
     }
 
 .help-header {
     text-align: center;
-    margin-bottom: 25px;
+    margin-bottom: 24px;
 }
 
     .help-header h2 {
-        color: var(--text-main);
-        font-size: 22px;
-        margin-bottom: 8px;
+        font-family: var(--font-main);
+        font-size: 18px;
+        font-weight: 600;
+        color: #fff;
+        margin-bottom: 6px;
+    }
+
+    .help-header p {
+        font-family: var(--font-secondary);
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.35);
     }
 
 .help-channels-container {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
+}
+
+.help-card-link {
+    text-decoration: none;
+    display: block;
 }
 
 .help-channel-card {
-    background-color: var(--bg-input-dark);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-button);
+    background-color: var(--dark-bg-hero);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
     padding: 14px 16px;
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 14px;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+    .help-channel-card:hover {
+        border-color: var(--primary-border-subtle);
+        background: var(--primary-bg-faint);
+    }
+
+.channel-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.fb-card .channel-icon {
+    background: rgba(24,119,242,0.12);
+    color: #1877f2;
+}
+
+.email-card .channel-icon {
+    background: var(--primary-bg-subtle);
+    color: var(--primary-color);
+}
+
+.phone-card .channel-icon {
+    background: var(--success-bg-subtle);
+    color: var(--success-color);
 }
 
 .channel-details {
-    text-align: left;
+    flex: 1;
 }
 
-#contact {
-    margin-top: auto;
-    max-width: none !important;
-    width: calc(100% + 40px) !important;
-    margin-left: -20px !important;
-    margin-right: -20px !important;
-    margin-bottom: -40px !important;
+    .channel-details h3 {
+        font-family: var(--font-main);
+        font-size: 14px;
+        font-weight: 600;
+        color: #fff;
+        margin-bottom: 2px;
+    }
+
+    .channel-details p {
+        font-family: var(--font-secondary);
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.35);
+    }
+
+.arrow-icon {
+    color: rgba(255, 255, 255, 0.2);
+    font-size: 14px;
+    flex-shrink: 0;
+    transition: color 0.2s ease;
 }
+
+.help-channel-card:hover .arrow-icon {
+    color: var(--primary-color);
+}
+
 
 /* ==========================================================
-    RESPONSIVE MOBILE ENGINE
+   TERMS & CONDITIONS MODAL  —  dark admin style
+   Replaces old .modal / .modal-content / .terms-text-container
    ========================================================== */
-@media (max-width: 576px) {
-    body {
-        padding: 15px 10px;
+
+/* Overlay */
+.tc-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    align-items: flex-start;
+    justify-content: center;
+    padding: 24px 16px;
+    overflow-y: auto;
+}
+
+    .tc-modal[style*="flex"] {
+        display: flex;
     }
 
-    .login-container {
-        padding: 30px 20px;
+/* Box */
+.tc-modal__box {
+    background: var(--dark-bg-hero, #242424);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+    width: 100%;
+    max-width: 660px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: tcModalSlideUp 0.25s ease;
+    margin: auto;
+}
+
+@keyframes tcModalSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
     }
 
-    .logo-section .logo {
-        width: 180px;
-        margin-bottom: 20px;
-    }
-
-    h2 {
-        font-size: 21px;
-        margin-bottom: 20px;
-    }
-
-    .btn-sign-in {
-        width: 75%;
-        font-size: 15px;
-        padding: 11px;
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 
-@media (max-width: 375px) {
-    .login-container {
-        padding: 25px 15px;
-    }
-
-    h2 {
-        font-size: 19px;
-    }
-
-    input, .password-wrapper input, .input-group input {
-        padding: 12px 14px;
-        font-size: 15px;
-    }
-
-    .btn-sign-in {
-        width: 80%;
-    }
+/* Header */
+.tc-modal__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 22px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    flex-shrink: 0;
 }
 
-@media (max-width: 320px) {
-    .logo-section .logo {
-        width: 140px;
-    }
-
-    h2 {
-        font-size: 18px;
-    }
-
-    input, .password-wrapper input, .input-group input {
-        padding: 10px 12px;
-        font-size: 14px;
-        border-radius: 10px;
-    }
-
-    .password-wrapper {
-        border-radius: 10px;
-    }
-
-    .btn-sign-in {
-        width: 80%;
-        font-size: 14px;
-        border-radius: 20px;
-    }
-
-    .footer-links span, .footer-links a {
-        font-size: 12px;
-    }
+.tc-modal__title {
+    font-family: var(--font-main);
+    font-size: var(--fs-body, 16px);
+    font-weight: var(--fw-semibold, 600);
+    color: rgba(255, 255, 255, 0.92);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
 }
+
+    .tc-modal__title i {
+        font-size: 20px;
+        color: var(--primary-color, #d34502);
+    }
+
+.tc-modal__close {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: transparent;
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.15s ease;
+}
+
+    .tc-modal__close:hover {
+        color: #fff;
+        background: rgba(255, 255, 255, 0.06);
+    }
+
+/* Scrollable body */
+.tc-modal__body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 22px 24px;
+}
+
+    /* Body typography */
+    .tc-modal__body h1 {
+        font-family: var(--font-main);
+        font-size: 13px;
+        font-weight: var(--fw-semibold, 600);
+        color: var(--primary-color, #d34502);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin: 22px 0 8px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+        .tc-modal__body h1:first-child {
+            margin-top: 0;
+        }
+
+    .tc-modal__body h2 {
+        font-family: var(--font-main);
+        font-size: var(--fs-small, 14px);
+        font-weight: var(--fw-semibold, 600);
+        color: rgba(255, 255, 255, 0.85);
+        margin: 16px 0 5px;
+    }
+
+    .tc-modal__body p {
+        font-family: var(--font-secondary);
+        font-size: 13px;
+        line-height: 1.7;
+        color: rgba(255, 255, 255, 0.5);
+        margin-bottom: 10px;
+    }
+
+    .tc-modal__body strong {
+        color: rgba(255, 255, 255, 0.8);
+        font-weight: var(--fw-semibold, 600);
+    }
+
+    .tc-modal__body a {
+        color: var(--primary-color, #d34502);
+        text-decoration: underline;
+        text-underline-offset: 2px;
+    }
+
+        .tc-modal__body a:hover {
+            opacity: 0.8;
+        }
+
+    /* Scrollbar */
+    .tc-modal__body::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    .tc-modal__body::-webkit-scrollbar-track {
+        background: rgba(255,255,255,0.03);
+        border-radius: 8px;
+    }
+
+    .tc-modal__body::-webkit-scrollbar-thumb {
+        background: rgba(255,255,255,0.12);
+        border-radius: 8px;
+    }
+
+        .tc-modal__body::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,255,255,0.22);
+        }

@@ -12,10 +12,12 @@
 
     <!-- CDN-like link for Tailwind CSS -->
     <link rel="stylesheet" href="~/css/main.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/login.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/output.css" asp-append-version="true" />
 
     <link rel="icon" type="image/x-icon" href="~/favicon.ico">
+
+    <link rel="stylesheet" href="~/css/user/auth/registration.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/user/auth/login.css" asp-append-version="true" />
 
     <!-- PHOSPOR ICONS -->
     <link rel="stylesheet" href="~/lib/phosphor-icons/regular/style.css" />
@@ -54,7 +56,6 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="~/js/login.js" asp-append-version="true"></script>
     @await RenderSectionAsync("PageScripts", required: false)
 </body>
 </html>
