@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using SwiftX.Models; // 🌟 
 
-namespace SwiftX.Controllers
+namespace SwiftX.Controllers { 
+
+public class CustomerController : Controller
 {
-    public class CustomerController : Controller
-    {
         public IActionResult UserLogin()
         {
             return View("CustomerAuth/UserLogin");
@@ -29,24 +31,96 @@ namespace SwiftX.Controllers
             return View("CustomerAuth/ChangePassVerifyEmail");
         }
 
-
         public IActionResult CustomerHome()
         {
-            return View("CustomerHome/CustomerHome");
+            var model = new CustomerHomeViewModel
+            {
+                // User data (loaded after login)
+                FirstName = string.Empty,
+                FullName = string.Empty,
+                ProfileImage = string.Empty,
+
+                // Application data
+                Services = new List<ServiceViewModel>
+        {
+            new()
+            {
+                Name = "FoodX",
+                Icon = "ph ph-hamburger",
+                Enabled = true
+            },
+            new()
+            {
+                Name = "ItemX",
+                Icon = "ph ph-package",
+                Enabled = true
+            },
+            new()
+            {
+                Name = "MotoX",
+                Icon = "ph ph-motorcycle",
+                Enabled = false
+            },
+            new()
+            {
+                Name = "CarX",
+                Icon = "ph ph-car",
+                Enabled = false
+            }
+        },
+
+                // Empty until backend/database is connected
+                Featured = new List<FeaturedBannerViewModel>(),
+                ComingSoon = new List<FeaturedBannerViewModel>()
+            };
+
+            return View("~/Views/Customer/CustomerHome/CustomerHome.cshtml", model);
         }
 
-
-
+        // 🌟 REVISED: Kailangan nitong magpasa ng List<MerchantViewModel> para sa binuo nating CSHTML loop
         public IActionResult CustomerFoodXHome()
         {
-            return View("FoodX/CustomerFoodXHome");
+            // Sa produksyon, dito mo kukunin ang totoong data mula sa iyong DB Context
+            // Halimbawa: var merchants = _context.Merchants.ToList();
+
+            var mockMerchants = new List<MerchantViewModel>
+            {
+                new MerchantViewModel
+                {
+                    Id = 1,
+                    Name = "Jollibee - Don Carlos",
+                    ImageUrl = "https://via.placeholder.com/400x140",
+                    RestaurantType = "Fast Food",
+                    Rating = 4.7,
+                    Distance = "1.2 km" // Gagamitin ng bagong dynamic distance implementation natin
+                },
+                new MerchantViewModel
+                {
+                    Id = 2,
+                    Name = "McDonald's - Bukidnon Highway",
+                    ImageUrl = "https://via.placeholder.com/400x140",
+                    RestaurantType = "Burgers & Fries",
+                    Rating = 4.5,
+                    Distance = "2.5 km"
+                },
+                new MerchantViewModel
+                {
+                    Id = 3,
+                    Name = "Chowking - Poblacion",
+                    ImageUrl = "https://via.placeholder.com/400x140",
+                    RestaurantType = "Chinese Fast Food",
+                    Rating = 4.2,
+                    Distance = "0.8 km"
+                }
+            };
+
+            return View("FoodX/CustomerFoodXHome", mockMerchants);
         }
+
         public IActionResult FoodXRestaurant()
         {
             return View("FoodX/FoodXRestaurant");
         }
-
-
 
         public IActionResult CustomerItemXHome()
         {
@@ -73,8 +147,6 @@ namespace SwiftX.Controllers
             return View("ItemX/ItemXOrder");
         }
 
-
-
         public IActionResult CustomerAccountInfo()
         {
             return View("CustomerHome/CustomerAccountInfo");
@@ -84,7 +156,6 @@ namespace SwiftX.Controllers
             return View("CustomerHome/CustomerSecurity");
         }
 
-        // 🎯 REVISED: Captures 'returnTo' flow tracking parameter from query queries
         public IActionResult CustomerReviewAddress(string returnTo, int? addressId, string fullAddress)
         {
             ViewBag.ReturnTo = returnTo;
@@ -96,7 +167,6 @@ namespace SwiftX.Controllers
             return View("CustomerHome/CustomerOrderHistory");
         }
 
-        // 🎯 REVISED: Explicitly maps the incoming 'mode' string into ViewBag context
         public IActionResult CustomerSavedAddresses(string mode)
         {
             ViewBag.IsCheckoutMode = (mode == "checkout");
