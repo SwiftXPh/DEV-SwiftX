@@ -134,23 +134,21 @@
 /* ==========================================================
    GENDER + BIRTHDATE ROW
    ========================================================== */
-.row {
+.reg-row {
     display: flex;
-    gap: 10px;
+    gap: 15px; /* Adds space between Gender and Date */
+    width: 100%;
 }
 
-    .row .input-group {
-        flex: 1;
-        min-width: 0;
-    }
-
-@media (max-width: 360px) {
-    .row {
-        flex-direction: column;
-        gap: 0;
-    }
+.reg-col {
+    flex: 1; /* Both columns will take up exactly 50% of the row */
+    min-width: 0; /* Prevents the columns from overflowing if content is too wide */
 }
 
+.login-input {
+    width: 100%; /* Ensures the inputs fill the column */
+    box-sizing: border-box; /* Ensures padding doesn't push the element outside its column */
+}
 
 /* ==========================================================
    PHONE FIELD

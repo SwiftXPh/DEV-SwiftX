@@ -54,13 +54,17 @@
 
             @* Phone *@
             <div class="mb-3">
-                <div class="reg-phone-group">
-                    <span class="reg-country-code">+63</span>
-                    <input type="tel" id="phoneNumber" name="PhoneNumber"
-                           class="login-input reg-phone-input"
+                <div class="phone-group">
+                    <span class="country-code">+63</span>
+                    <input type="tel"
+                           id="phoneNumber"
+                           name="PhoneNumber"
+                           class="reg-phone-input"
                            placeholder="9XXXXXXXXX"
-                           pattern="[0-9]{10}" maxlength="10"
-                           autocomplete="tel-national" required>
+                           pattern="[0-9]{10}"
+                           maxlength="10"
+                           autocomplete="tel-national"
+                           required>
                 </div>
             </div>
 
@@ -84,7 +88,7 @@
                             <option value="Male">Male</option>
                             <option value="Female">Female</option>
                         </select>
-                        <i class="ph ph-caret-down reg-select-icon"></i>
+
                     </div>
                 </div>
                 <div class="reg-col">
