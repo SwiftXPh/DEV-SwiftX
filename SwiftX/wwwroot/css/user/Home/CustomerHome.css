@@ -626,6 +626,9 @@ footer, .footer, .site-footer {
     .close-button-home:hover {
         color: #d34502;
     }
+.tc-modal__close {
+    display: none;
+}
 
 /* ==========================================
    Mobile Sidebar (320px - 425px)
