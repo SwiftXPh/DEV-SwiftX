@@ -1,0 +1,199 @@
+﻿@*
+
+*@
+@{
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] | SwiftX</title>
+
+    <link rel="stylesheet" href="~/css/main.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/output.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/user/customerMain/customer.css" asp-append-version="true" />
+
+    <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
+
+    @* Phosphor Icons *@
+    <link rel="stylesheet" href="~/lib/phosphor-icons/regular/style.css" />
+    <link rel="stylesheet" href="~/lib/phosphor-icons/bold/style.css" />
+    <link rel="stylesheet" href="~/lib/phosphor-icons/fill/style.css" />
+
+    @RenderSection("Styles", required: false)
+    @await Html.PartialAsync("_ModalAlert")
+</head>
+<body class="cust-body">
+
+    @* ══════════════════════════════════════════════════════════
+       SIDEBAR OVERLAY (backdrop click closes drawer)
+       ══════════════════════════════════════════════════════════ *@
+    <div class="cust-sidebar-overlay" id="cust-sidebar-overlay" onclick="toggleMenu()"></div>
+
+    @* ══════════════════════════════════════════════════════════
+       SIDEBAR DRAWER
+       ══════════════════════════════════════════════════════════ *@
+    <aside class="cust-sidebar" id="sideMenu" aria-label="Customer navigation">
+
+        @* ── Close button ── *@
+        <button class="cust-sidebar-close" onclick="toggleMenu()" aria-label="Close menu">&times;</button>
+
+        @* ── User profile ── *@
+        <div class="cust-sidebar-profile">
+            <img class="cust-profile-pic"
+                 src="~/Assets/images/profile.jpg"
+                 alt="Profile">
+            <div class="cust-profile-info">
+                <h3 id="sidebarUserName">@(ViewData["FullName"] ?? "Customer")</h3>
+                <span>Customer</span>
+            </div>
+        </div>
+
+        @* ── Nav links ── *@
+        <nav class="cust-sidebar-nav">
+            <div class="cust-nav-divider"></div>
+
+            <a asp-controller="Customer" asp-action="CustomerAccountInfo">
+                <i class="ph ph-user-circle"></i> Account Information
+            </a>
+            <a asp-controller="Customer" asp-action="CustomerSecurity">
+                <i class="ph ph-shield-check"></i> Security and Privacy
+            </a>
+            <a asp-controller="Customer" asp-action="CustomerSavedAddresses">
+                <i class="ph ph-map-pin"></i> My Addresses
+            </a>
+            <a asp-controller="Customer" asp-action="CustomerOrderHistory">
+                <i class="ph ph-clock-counter-clockwise"></i> Order History
+            </a>
+
+            <div class="cust-nav-divider"></div>
+
+            <a href="#" id="openHelpCenterHome">
+                <i class="ph ph-info"></i> Help Center
+            </a>
+            <a href="#" id="openTermsHome">
+                <i class="ph ph-scales"></i> Support &amp; Legal
+            </a>
+        </nav>
+
+        @* ── Logout ──  MODIFY IF NEEDED*@
+        <div class="cust-sidebar-logout">
+            <a asp-controller="Customer" asp-action="UserLogin" class="cust-logout-btn"
+               onclick="event.preventDefault(); AlertModal.show({
+                        type: 'danger',
+                        title: 'Log Out',
+                        message: 'Are you sure you want to log out of SwiftX?',
+                        buttons: [
+                            { label: 'Cancel',  variant: 'ghost' },
+                            { label: 'Log Out', variant: 'danger', callback: function() {
+                                window.location.href = this.href;
+                            }.bind(this)}
+                        ]
+                    })">
+                <i class="ph ph-sign-out"></i>
+                <span>Log Out</span>
+            </a>
+        </div>
+
+    </aside>
+
+    @* ══════════════════════════════════════════════════════════
+       MAIN SHELL
+       ══════════════════════════════════════════════════════════ *@
+    <div class="cust-shell">
+
+        @* ── Top header ── *@
+        <header class="cust-topbar">
+            <div class="cust-topbar-inner">
+                @* Hamburger *@
+                <button class="cust-menu-btn" onclick="toggleMenu()" aria-label="Open menu">
+                    <i class="ph ph-list"></i>
+                </button>
+                @* Greeting *@
+                <div class="cust-greeting">
+                    <h1>Hi, <span id="customerName">@(ViewData["FirstName"] ?? "there")</span></h1>
+                    <p><b>Welcome To SwiftX</b></p>
+                </div>
+            </div>
+        </header>
+
+        @* ── Page content ── *@
+        <main class="cust-content" role="main">
+            @RenderBody()
+        </main>
+
+    </div>
+
+    @* ══════════════════════════════════════════════════════════
+       HELP CENTER MODAL (global — sidebar link triggers this)
+       ══════════════════════════════════════════════════════════ *@
+    <div id="helpCenterModalHome" class="cust-help-modal">
+        <div class="cust-help-modal__box">
+
+            <button class="cust-help-modal__close help-close-btn" aria-label="Close Help Center">&times;</button>
+
+            <div class="cust-help-modal__header">
+                <h2>SwiftX Help Center</h2>
+                <p>We&rsquo;re here to assist you! Choose a channel to reach us.</p>
+            </div>
+
+            <div class="cust-help-modal__channels">
+
+                <a href="https://www.facebook.com/profile.php?id=61577468267412"
+                   target="_blank" rel="noopener noreferrer" class="cust-help-card-link">
+                    <div class="cust-help-card fb-card">
+                        <div class="cust-help-card__icon"><i class="ph ph-facebook-logo"></i></div>
+                        <div class="cust-help-card__details">
+                            <h3>Facebook Messenger</h3>
+                            <p>SwiftX Ph</p>
+                        </div>
+                        <i class="ph ph-caret-right cust-help-card__arrow"></i>
+                    </div>
+                </a>
+
+                <a href="mailto:swiftxph@gmail.com" class="cust-help-card-link">
+                    <div class="cust-help-card email-card">
+                        <div class="cust-help-card__icon"><i class="ph ph-envelope-simple"></i></div>
+                        <div class="cust-help-card__details">
+                            <h3>Email Support</h3>
+                            <p>swiftxph@gmail.com</p>
+                        </div>
+                        <i class="ph ph-caret-right cust-help-card__arrow"></i>
+                    </div>
+                </a>
+
+                <a href="tel:+639292096887" class="cust-help-card-link">
+                    <div class="cust-help-card phone-card">
+                        <div class="cust-help-card__icon"><i class="ph ph-phone-call"></i></div>
+                        <div class="cust-help-card__details">
+                            <h3>Hotline Support</h3>
+                            <p>0929 209 6887</p>
+                        </div>
+                        <i class="ph ph-caret-right cust-help-card__arrow"></i>
+                    </div>
+                </a>
+
+            </div>
+        </div>
+    </div>
+
+    @* ══════════════════════════════════════════════════════════
+       TERMS & CONDITIONS MODAL (global — sidebar link triggers)
+       ══════════════════════════════════════════════════════════ *@
+    @await Html.PartialAsync("_ModalTermsAndConditions")
+
+    @* ══════════════════════════════════════════════════════════
+       SCRIPTS
+       ══════════════════════════════════════════════════════════ *@
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/modal.js" asp-append-version="true"></script>
+    <script src="~/js/modal-alert.js" asp-append-version="true"></script>
+    <script src="~/js/user/Home/CustomerHome.js" asp-append-version="true"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    
+    @await RenderSectionAsync("PageScripts", required: false)
+
+</body>
+</html>
