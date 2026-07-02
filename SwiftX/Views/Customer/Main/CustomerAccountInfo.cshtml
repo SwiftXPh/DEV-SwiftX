@@ -1,0 +1,76 @@
+﻿@* For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860 *@
+@{
+    ViewData["Title"] = "Account Information";
+    Layout = "~/Views/Shared/_LayoutUserSideMenu.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/user/customerMain/CustomerAccountInfo.css" asp-append-version="true" />
+}
+
+<div class="fullscreen-container">
+
+    <!-- HEADER SECTION -->
+    <header class="header">
+        <button type="button" class="close-btn" aria-label="Close">
+            <i class="ph ph-arrow-left" style="font-size: 20px; color: black;"></i>
+        </button>
+        <h1>@ViewData["Title"]</h1>
+
+        <div class="profile-pic-container">
+            <div class="profile-pic" id="profilePic"></div>
+            <label for="fileUpload" class="edit-label">Edit</label>
+            <input type="file" id="fileUpload" accept="image/*" hidden />
+        </div>
+    </header>
+
+    <!-- FORM SECTION -->
+    <main class="form-section">
+        <form id="accountForm" method="post">
+
+            <!-- Username -->
+            <div class="input-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" />
+            </div>
+
+            <!-- Full Name -->
+            <div class="input-group">
+                <label for="fullName">Full Name</label>
+                <input type="text" id="fullName" name="fullName" />
+            </div>
+
+            <!-- Row: Gender & Birthdate -->
+            <div class="row">
+                <!-- Gender -->
+                <div class="input-group half">
+                    <label for="gender">Gender</label>
+                    <select id="gender" name="gender">
+                        <option value="">Select</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="Rather Not Say">Rather Not Say</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <!-- Birthdate -->
+                <div class="input-group half">
+                    <label for="birthdate">Birthdate</label>
+                    <input type="date" id="birthdate" name="birthdate" />
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="form-actions">
+                <button type="submit" class="save-btn">Save</button>
+            </div>
+
+        </form>
+    </main>
+
+</div>
+
+@section PageScripts {
+    <script src="~/js/user/customerMain/CustomerAccountInfo.js" asp-append-version="true"></script>
+}

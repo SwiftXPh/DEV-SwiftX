@@ -8,27 +8,27 @@ public class CustomerController : Controller
 {
         public IActionResult UserLogin()
         {
-            return View("CustomerAuth/UserLogin");
+            return View("Auth/UserLogin");
         }
         public IActionResult CustomerSignup()
         {
-            return View("CustomerAuth/CustomerSignup");
+            return View("Auth/CustomerSignup");
         }
         public IActionResult CPPostOTP()
         {
-            return View("CustomerAuth/CPPostOTP");
+            return View("Auth/CPPostOTP");
         }
         public IActionResult CustomerChangePass()
         {
-            return View("CustomerAuth/CustomerChangePass");
+            return View("Auth/CustomerChangePass");
         }
         public IActionResult ChangePassEnterEmail()
         {
-            return View("CustomerAuth/ChangePassEnterEmail");
+            return View("Auth/ChangePassEnterEmail");
         }
         public IActionResult ChangePassVerifyEmail()
         {
-            return View("CustomerAuth/ChangePassVerifyEmail");
+            return View("Auth/ChangePassVerifyEmail");
         }
 
         public IActionResult CustomerHome()
@@ -74,7 +74,7 @@ public class CustomerController : Controller
                 ComingSoon = new List<FeaturedBannerViewModel>()
             };
 
-            return View("~/Views/Customer/CustomerHome/CustomerHome.cshtml", model);
+            return View("Main/CustomerHome", model);
         }
 
         // 🌟 REVISED: Kailangan nitong magpasa ng List<MerchantViewModel> para sa binuo nating CSHTML loop
@@ -149,28 +149,28 @@ public class CustomerController : Controller
 
         public IActionResult CustomerAccountInfo()
         {
-            return View("CustomerHome/CustomerAccountInfo");
+            return View("Main/CustomerAccountInfo");
         }
         public IActionResult CustomerSecurity()
         {
-            return View("CustomerHome/CustomerSecurity");
+            return View("Main/CustomerSecurity");
         }
 
         public IActionResult CustomerReviewAddress(string returnTo, int? addressId, string fullAddress)
         {
             ViewBag.ReturnTo = returnTo;
-            return View("CustomerHome/CustomerReviewAddress");
+            return View("Main/CustomerReviewAddress");
         }
 
         public IActionResult CustomerOrderHistory()
         {
-            return View("CustomerHome/CustomerOrderHistory");
+            return View("Main/CustomerOrderHistory");
         }
 
         public IActionResult CustomerSavedAddresses(string mode)
         {
             ViewBag.IsCheckoutMode = (mode == "checkout");
-            return View("CustomerHome/CustomerSavedAddresses");
+            return View("Main/CustomerSavedAddresses");
         }
 
         public IActionResult CustomerFoodXCart()
