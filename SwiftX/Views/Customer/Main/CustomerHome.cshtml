@@ -1,0 +1,70 @@
+﻿@model SwiftX.Models.CustomerHomeViewModel
+
+@{
+    ViewData["Title"] = "Home";
+    ViewData["FirstName"] = "John";
+    ViewData["FullName"] = "John Doe";
+    Layout = "~/Views/Shared/_LayoutCustomerMain.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/user/customerMain/customerHome.css" asp-append-version="true" />
+}
+
+@* ── Services row ── *@
+<section class="services-row">
+    @* @foreach (var service in Model.Services)
+    {
+        <div class="service-card @(service.Enabled ? "" : "disabled")"
+             onclick="selectService(this)">
+            <p>@service.Name</p>
+            <div class="icon">
+                <i class="@service.Icon"></i>
+            </div>
+        </div>
+    } *@
+
+    <div class="service-card" onclick="selectService(this)">
+        <p>FoodX</p>
+        <div class="icon">
+            <i class="ph ph-fork-knife"></i>
+        </div>
+    </div>
+
+    <div class="service-card disabled">
+        <p>ItemX</p>
+        <div class="icon">
+            <i class="ph ph-package"></i>
+        </div>
+    </div>
+</section>
+
+@* ── Featured section ── *@
+<section class="item-section">
+    @* <h2 class="section-label">Featured</h2>
+    <div class="items-grid">
+        @foreach (var item in Model.Featured)
+        {
+            <div class="item-card">
+                <img src="@item.ImageUrl" alt="@item.Title">
+            </div>
+        }
+    </div> *@
+
+    <h2 class="section-label">Featured</h2>
+    <div class="items-grid">
+
+        <div class="item-card">
+            <div class="img-placeholder"></div>
+        </div>
+
+        <div class="item-card">
+            <div class="img-placeholder"></div>
+        </div>
+
+    </div>
+</section>
+
+@section PageScripts {
+    <script src="~/js/user/customerMain/CustomerHome.js" asp-append-version="true"></script>
+}

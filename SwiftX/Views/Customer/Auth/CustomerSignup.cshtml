@@ -1,0 +1,184 @@
+﻿
+@{
+    ViewData["Title"] = "Register";
+    Layout = "~/Views/Shared/_LayoutCustomerLogin.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/user/auth/registration.css" asp-append-version="true" />
+}
+
+@* ── Background glow ── *@
+<div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+    <div class="absolute -top-40 -right-40 w-[500px] h-[500px] rounded-full __hero-glow-lg __glow-bg"></div>
+    <div class="absolute -bottom-48 -left-48 w-[400px] h-[400px] rounded-full __hero-glow-sm __glow-bg"></div>
+</div>
+
+<div class="relative w-full max-w-md mx-auto px-5 py-12 md:py-16">
+
+    @* ── Logo ── *@
+    <div class="flex justify-center mb-6 __fade-up __fade-up--d1">
+        <img src="~/Assets/images/swiftX_logo.png" alt="SwiftX" class="h-12 w-auto block" />
+    </div>
+
+    @* ── Pill label ── *@
+    <div class="text-center mb-8 __fade-up __fade-up--d2">
+        <span class="__pill">Create Account</span>
+    </div>
+
+    @* ── Registration form ── *@
+    <form id="registrationForm" class="__fade-up __fade-up--d3" novalidate>
+        <div class="login-card">
+
+            @* Username *@
+            <div class="mb-3">
+                <div class="login-input-wrapper">
+                    <i class="ph ph-user login-input-icon"></i>
+                    <input type="text" id="username" name="Username"
+                           class="login-input"
+                           placeholder="Username"
+                           autocomplete="username" required>
+                </div>
+            </div>
+
+            @* Full Name *@
+            <div class="mb-3">
+                <div class="login-input-wrapper">
+                    <i class="ph ph-identification-card login-input-icon"></i>
+                    <input type="text" id="fullName" name="FullName"
+                           class="login-input"
+                           placeholder="Full Name"
+                           autocomplete="name" required>
+                </div>
+            </div>
+
+            @* Phone *@
+            <div class="mb-3">
+                <div class="phone-group">
+                    <span class="country-code">+63</span>
+                    <input type="tel"
+                           id="phoneNumber"
+                           name="PhoneNumber"
+                           class="reg-phone-input"
+                           placeholder="9XXXXXXXXX"
+                           pattern="[0-9]{10}"
+                           maxlength="10"
+                           autocomplete="tel-national"
+                           required>
+                </div>
+            </div>
+
+            @* Email *@
+            <div class="mb-3">
+                <div class="login-input-wrapper">
+                    <i class="ph ph-envelope-simple login-input-icon"></i>
+                    <input type="email" id="email" name="Email"
+                           class="login-input"
+                           placeholder="Email Address"
+                           autocomplete="email" required>
+                </div>
+            </div>
+
+            @* Gender + Birthdate row *@
+            <div class="reg-row mb-3">
+                <div class="reg-col">
+                    <div class="reg-select-wrapper">
+                        <select id="gender" name="Gender" class="login-input reg-select" required>
+                            <option value="" disabled selected>Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+
+                    </div>
+                </div>
+                <div class="reg-col">
+                    <input type="date" id="birthdate" name="Birthdate"
+                           class="login-input" autocomplete="bday">
+                </div>
+            </div>
+
+            @* Password *@
+            <div class="mb-3">
+                <div class="password-wrapper">
+                    <div class="login-input-wrapper">
+                        <i class="ph ph-lock login-input-icon"></i>
+                        <input type="password" id="password" name="Password"
+                               class="login-input"
+                               placeholder="Password"
+                               autocomplete="new-password" required>
+                    </div>
+                    <button type="button" class="password-toggle"
+                            onclick="togglePassword('password', this)"
+                            aria-label="Toggle password visibility">
+                        <i class="ph ph-eye eye-open"></i>
+                        <i class="ph ph-eye-slash eye-closed hidden"></i>
+                    </button>
+                </div>
+            </div>
+
+            @* Confirm Password *@
+            <div class="mb-4">
+                <div class="password-wrapper">
+                    <div class="login-input-wrapper">
+                        <i class="ph ph-lock login-input-icon"></i>
+                        <input type="password" id="confirmPassword" name="ConfirmPassword"
+                               class="login-input"
+                               placeholder="Confirm Password"
+                               autocomplete="new-password" required>
+                    </div>
+                    <button type="button" class="password-toggle"
+                            onclick="togglePassword('confirmPassword', this)"
+                            aria-label="Toggle confirm password visibility">
+                        <i class="ph ph-eye eye-open"></i>
+                        <i class="ph ph-eye-slash eye-closed hidden"></i>
+                    </button>
+                </div>
+            </div>
+
+            @* Terms notice *@
+            <p class="auth-terms-notice">
+                By clicking &ldquo;Register&rdquo; you acknowledge that you have read,
+                understood, and agree to be bound by this agreement.
+            </p>
+
+            @* Checkbox *@
+            <div class="reg-checkbox-group mb-5">
+                <input type="checkbox" id="terms" name="Terms"
+                       class="login-checkbox" required>
+                <label for="terms" class="login-checkbox-label __small">
+                    I have read and agree to the
+                    <a href="javascript:void(0)" id="openTermsLink" class="auth-legal-link">
+                        Terms and Conditions
+                    </a>
+                </label>
+            </div>
+
+            @* Submit *@
+            <button type="submit" class="btn-next">
+                <span class="btn-login-text">Register</span>
+                <span class="btn-login-loader hidden">
+                    <i class="ph ph-circle-notch login-spinner"></i>
+                    Registering...
+                </span>
+            </button>
+
+        </div>
+    </form>
+
+    @* ── Footer link ── *@
+    <div class="text-center mt-5 __fade-up __fade-up--d4">
+        <span class="__small opacity-50">
+            Already have an account?
+            <a asp-controller="Customer" asp-action="UserLogin"
+               class="opacity-100 __text-primary __footer-link no-underline">Sign In</a>
+        </span>
+    </div>
+
+</div>
+
+@* ── Terms & Conditions modal (shared partial) ── *@
+@await Html.PartialAsync("_ModalTermsAndConditions")
+
+@section PageScripts {
+    <script src="~/js/user/auth/registration.js" asp-append-version="true"></script>
+}

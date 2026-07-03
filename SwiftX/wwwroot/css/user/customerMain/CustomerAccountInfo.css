@@ -1,0 +1,344 @@
+
+
+
+/* ==========================================================
+   BODY (scoped via layout body class)
+   ========================================================== */
+.cust-subpage-body {
+    background-color: var(--dark-bg-color);
+    color: var(--light-text-color);
+    font-family: var(--font-secondary);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+
+/* ==========================================================
+   PAGE WRAPPER
+   ========================================================== */
+.acct-page {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--dark-bg-color);
+}
+
+
+/* ==========================================================
+   ORANGE HEADER
+   ========================================================== */
+.acct-header {
+    background: linear-gradient(to top, var(--primary-color), #f15a10);
+    padding: 60px 40px 40px;
+    position: relative;
+    text-align: center;
+    color: var(--light-text-color);
+    width: 100%;
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+    flex-shrink: 0;
+}
+
+/* Back button */
+.acct-back-btn {
+    position: absolute;
+    top: 30px;
+    left: 40px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: none;
+    background: var(--light-text-color);
+    color: var(--dark-text-color);
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    transition: background 0.2s ease, transform 0.15s ease;
+    flex-shrink: 0;
+}
+
+    .acct-back-btn:hover {
+        background: rgba(255, 255, 255, 0.85);
+        transform: scale(1.05);
+    }
+
+/* Page title */
+.acct-header__title {
+    font-family: var(--font-main);
+    font-size: 28px;
+    font-weight: var(--fw-semibold);
+    position: absolute;
+    top: 34px;
+    left: 100px;
+    color: var(--light-text-color);
+}
+
+/* Avatar */
+.acct-avatar-wrap {
+    display: inline-block;
+    margin-top: 40px;
+}
+
+.acct-avatar {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    margin: 0 auto 12px;
+    background-color: rgba(255, 255, 255, 0.2);
+    background-size: cover;
+    background-position: center;
+    border: 3px solid var(--light-text-color);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+}
+
+.acct-avatar-edit {
+    display: block;
+    font-family: var(--font-secondary);
+    font-size: var(--fs-label);
+    color: var(--light-text-color);
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+    user-select: none;
+}
+
+    .acct-avatar-edit:hover {
+        opacity: 0.75;
+        text-decoration: underline;
+    }
+
+
+/* ==========================================================
+   FORM SECTION
+   ========================================================== */
+.acct-form-section {
+    flex: 1;
+    padding: 48px 20px;
+    display: flex;
+    justify-content: center;
+}
+
+    .acct-form-section form {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        width: 100%;
+        max-width: 650px;
+    }
+
+
+/* ==========================================================
+   FORM FIELDS
+   ========================================================== */
+.acct-field {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+    .acct-field label {
+        font-family: var(--font-secondary);
+        font-size: var(--fs-micro);
+        color: rgba(255, 255, 255, 0.45);
+        position: absolute;
+        top: 9px;
+        left: 16px;
+        pointer-events: none;
+        z-index: 2;
+    }
+
+    .acct-field input,
+    .acct-field select {
+        background-color: var(--dark-bg-hero);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 10px;
+        padding: 28px 16px 10px;
+        color: var(--light-text-color);
+        font-family: var(--font-secondary);
+        font-size: var(--fs-body);
+        outline: none;
+        width: 100%;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .acct-field input:focus,
+        .acct-field select:focus {
+            border-color: var(--primary-border-focus);
+            box-shadow: 0 0 0 3px var(--primary-bg-subtle);
+        }
+
+        .acct-field input::placeholder {
+            color: rgba(255, 255, 255, 0.2);
+        }
+
+    /* Select */
+    .acct-field select {
+        appearance: none;
+        -webkit-appearance: none;
+        cursor: pointer;
+    }
+
+        .acct-field select option {
+            background-color: var(--dark-bg-card);
+            color: var(--light-text-color);
+        }
+
+    /* Date picker */
+    .acct-field input[type="date"]::-webkit-calendar-picker-indicator {
+        filter: invert(0.4);
+        cursor: pointer;
+    }
+
+/* Gender + Birthdate side by side */
+.acct-row {
+    display: flex;
+    gap: 16px;
+}
+
+    .acct-row .acct-field {
+        flex: 1;
+        min-width: 0;
+    }
+
+
+/* ==========================================================
+   ACTIONS
+   ========================================================== */
+.acct-actions {
+    margin-top: 8px;
+}
+
+.acct-save-btn {
+    background-color: var(--light-text-color);
+    color: var(--dark-text-color);
+    border: none;
+    padding: 14px 40px;
+    font-family: var(--font-main);
+    font-size: var(--fs-body);
+    font-weight: var(--fw-semibold);
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+    .acct-save-btn:hover {
+        background-color: #e0e0e0;
+        transform: scale(1.02) translateY(-2px);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+    }
+
+    .acct-save-btn:active {
+        transform: scale(0.98);
+    }
+
+
+/* ==========================================================
+   RESPONSIVE
+   ========================================================== */
+@media (max-width: 600px) {
+    .acct-row {
+        flex-direction: column;
+        gap: 18px;
+    }
+
+    .acct-header__title {
+        font-size: 22px;
+        top: 36px;
+        left: 90px;
+    }
+
+    .acct-back-btn {
+        left: 20px;
+    }
+
+    .acct-form-section {
+        padding: 32px 16px;
+    }
+}
+
+@media (max-width: 425px) {
+    .acct-header {
+        padding: 50px 20px 30px;
+        border-bottom-left-radius: 20px;
+        border-bottom-right-radius: 20px;
+    }
+
+    .acct-header__title {
+        position: static;
+        font-size: 22px;
+        margin-top: -12px;
+        display: block;
+        text-align: center;
+    }
+
+    .acct-avatar {
+        width: 110px;
+        height: 110px;
+    }
+
+    .acct-save-btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 375px) {
+    .acct-header {
+        padding: 48px 20px 28px;
+    }
+
+    .acct-header__title {
+        font-size: 20px;
+        margin-top: -10px;
+    }
+
+    .acct-avatar {
+        width: 100px;
+        height: 100px;
+    }
+}
+
+@media (max-width: 320px) {
+    .acct-header {
+        padding: 40px 14px 22px;
+        border-bottom-left-radius: 14px;
+        border-bottom-right-radius: 14px;
+    }
+
+    .acct-header__title {
+        font-size: 18px;
+        margin-top: -8px;
+    }
+
+    .acct-back-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+        left: 14px;
+        top: 24px;
+    }
+
+    .acct-avatar {
+        width: 90px;
+        height: 90px;
+    }
+
+    .acct-field input,
+    .acct-field select {
+        font-size: var(--fs-small);
+    }
+
+    .acct-save-btn {
+        width: 100%;
+        padding: 12px 20px;
+        font-size: var(--fs-small);
+    }
+
+    .acct-form-section form {
+        gap: 12px;
+    }
+}

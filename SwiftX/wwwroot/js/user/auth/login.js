@@ -1,162 +1,141 @@
-﻿document.addEventListener('DOMContentLoaded', () => {
+﻿
+document.addEventListener('DOMContentLoaded', () => {
 
-    const passwordInput = document.getElementById('userPassword');
-    const togglePasswordIcon = document.getElementById('togglePasswordIcon');
+    // ══════════════════════════════════════════════════════════
+    // 1. PASSWORD TOGGLE
+    // Uses two-icon swap (ph-eye / ph-eye-slash) matching admin
+    // pattern. Called by onclick on the toggle button, passing
+    // the input ID and the button element itself.
+    // ══════════════════════════════════════════════════════════
 
-    if (togglePasswordIcon && passwordInput) {
-        togglePasswordIcon.addEventListener('click', () => {
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text'; // Ipakita ang text
+    function togglePasswordVisibility(inputId, btnElement) {
+        const input = document.getElementById(inputId);
+        const eyeOpen = btnElement.querySelector('.eye-open');
+        const eyeClosed = btnElement.querySelector('.eye-closed');
+        if (!input) return;
 
-                // PALITAN ANG FONTAWESOME NG PHOSPHOR ICONS:
-                togglePasswordIcon.classList.remove('ph-eye-slash'); // Tinanggal ang nakapikit
-                togglePasswordIcon.classList.add('ph-eye'); // Idinagdag ang nakabukas
-            } else {
-                passwordInput.type = 'password'; // Itago ulit ang text
-
-                // PALITAN DIN DITO SA IBABA:
-                togglePasswordIcon.classList.remove('ph-eye'); // Tinanggal ang nakabukas
-                togglePasswordIcon.classList.add('ph-eye-slash'); // Ibinalik ang nakapikit
-            }
-        });
+        if (input.type === 'password') {
+            input.type = 'text';
+            eyeOpen?.classList.add('hidden');
+            eyeClosed?.classList.remove('hidden');
+        } else {
+            input.type = 'password';
+            eyeOpen?.classList.remove('hidden');
+            eyeClosed?.classList.add('hidden');
+        }
     }
 
-    // =============================================================
-    // 2. LOGIN FORM SUBMISSION CONTROLLER
-    // (Keep UI intact. Fix only button/function behavior.)
-    // =============================================================
+    window.togglePassword = togglePasswordVisibility;
+
+
+    //LOGIN FORM SUBMISSION
+
     const loginForm = document.getElementById('loginForm');
-    const signInBtn = document.querySelector('.btn-sign-in[type="submit"], .btn-sign-in');
-
-    const getUsernamePassword = () => {
-        if (!loginForm) {
-            const u = document.querySelector('input[placeholder="Username"], input[type="text"], input:not([type="password"])');
-            const p = document.querySelector('#userPassword, input[type="password"]');
-            return {
-                username: u ? u.value.trim() : '',
-                password: p ? p.value : ''
-            };
-        }
-
-        const usernameInput = loginForm.querySelector('input[placeholder="Username"], input[type="text"], input:not([type="password"])');
-        const passwordInput = loginForm.querySelector('#userPassword, input[type="password"]');
-
-        return {
-            username: usernameInput ? usernameInput.value.trim() : '',
-            password: passwordInput ? passwordInput.value : ''
-        };
-    };
+    const submitBtn = document.getElementById('signInBtn')
+        ?? loginForm?.querySelector('button[type="submit"]');
 
     const handleLogin = async (e) => {
         if (e) e.preventDefault();
 
-        const { username, password } = getUsernamePassword();
-        console.log('Login inputs:', { username, password: password ? '***' : '' });
+        const usernameInput = document.querySelector('input[name="Username"]');
+        const passwordInput = document.querySelector('input[name="Password"]');
 
-        // Validate inputs
-        if (username === '' || password === '') {
+        const username = usernameInput?.value.trim() ?? '';
+        const password = passwordInput?.value ?? '';
+
+        if (!username || !password) {
             alert('Please fill in all fields.');
             return;
         }
 
-        // Show loading state
-        const submitBtn = (signInBtn && signInBtn.closest && signInBtn.closest('form')) ? signInBtn : (loginForm ? loginForm.querySelector('.btn-sign-in') : null);
-        const originalText = submitBtn ? submitBtn.innerText : '';
+        const btnText = submitBtn?.querySelector('.btn-login-text');
+        const btnLoader = submitBtn?.querySelector('.btn-login-loader');
 
         if (submitBtn) {
-            submitBtn.innerText = 'Signing in...';
             submitBtn.disabled = true;
+            btnText?.classList.add('hidden');
+            btnLoader?.classList.remove('hidden');
         }
 
         try {
-            const result = await AuthService.login(username, password);
-            console.log('AuthService.login result:', result);
+            const response = await fetch('/Auth/Login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ Username: username, Password: password })
+            });
+
+            const result = await response.json();
 
             if (submitBtn) {
-                submitBtn.innerText = originalText;
                 submitBtn.disabled = false;
+                btnText?.classList.remove('hidden');
+                btnLoader?.classList.add('hidden');
             }
 
-            if (result && result.success) {
-                alert('Login Successful! Welcome to SwiftX, ' + result.user.name);
-                window.location.href = "../index.html/home.html";
+            if (result?.success) {
+                window.location.href = result.redirectUrl || '/Customer/CustomerHome';
             } else {
-                alert((result && result.message) ? result.message : 'Maling username o password. Subukan muli.');
+                alert(result?.message || 'Maling username o password. Subukan muli.');
             }
         } catch (err) {
-            console.error('Login submission error:', err);
+            console.error('Login error:', err);
             if (submitBtn) {
-                submitBtn.innerText = originalText;
                 submitBtn.disabled = false;
+                btnText?.classList.remove('hidden');
+                btnLoader?.classList.add('hidden');
             }
-            alert('Login failed. Please try again.');
+            alert('Login failed due to a server error. Please try again.');
         }
     };
 
     if (loginForm) {
-        // Enter key / default submit within form
         loginForm.addEventListener('submit', handleLogin);
-
-        // Extra safety: button click
-        if (signInBtn) signInBtn.addEventListener('click', handleLogin);
-    } else {
-        // Fallback safety (if form not found)
-        if (signInBtn) signInBtn.addEventListener('click', handleLogin);
     }
 
-    // =============================================================
-    // 3. TERMS & CONDITIONS MODAL CONTROLLER
-    // =============================================================
-    const modal = document.getElementById('termsModal');
-    const btn = document.getElementById('openTerms');
-    const closeBtn = document.querySelector('.close-button');
 
-    if (btn && modal) {
-        btn.onclick = function () {
-            modal.style.display = 'block';
-        };
-    }
+    // TERMS & CONDITIONS MODAL
 
-    if (closeBtn && modal) {
-        closeBtn.onclick = function () {
-            modal.style.display = 'none';
-        };
-    }
+    const termsModal = document.getElementById('termsModal');
+    const openTerms = document.getElementById('openTerms');
+    const closeTerms = document.getElementById('closeTermsBtn');
 
-    // =============================================================
-    // 4. HELP CENTER MODAL CONTROLLER (BAGO)
-    // =============================================================
+    openTerms?.addEventListener('click', (e) => {
+        e.preventDefault();
+        termsModal.style.display = 'flex';
+    });
+
+    closeTerms?.addEventListener('click', () => {
+        termsModal.style.display = 'none';
+    });
+
+
+    //HELP CENTER MODAL
+
     const helpModal = document.getElementById('helpCenterModal');
     const openHelpLink = document.getElementById('openHelpLink');
     const closeHelpBtn = document.getElementById('closeHelpBtn');
 
-    // Buksan ang Help Center kapag tinap ang "Need Help?" sa iyong footer links
-    if (openHelpLink && helpModal) {
-        openHelpLink.onclick = function (e) {
-            e.preventDefault(); // Pipigilan ang '# anchor' jumping behavior
-            helpModal.style.display = 'flex'; // Ginamit ang flex para laging nasa absolute center ng screen
-        };
-    }
+    openHelpLink?.addEventListener('click', (e) => {
+        e.preventDefault();
+        helpModal.style.display = 'flex';
+    });
 
-    // Isara ang Help Center gamit ang sarili nitong overlay custom button (X)
-    if (closeHelpBtn && helpModal) {
-        closeHelpBtn.onclick = function () {
-            helpModal.style.display = 'none';
-        };
-    }
+    closeHelpBtn?.addEventListener('click', () => {
+        helpModal.style.display = 'none';
+    });
 
-    // =============================================================
-    // GLOBAL OUTSIDE MODAL CLICK CLOSER
-    // (Pinagsama ang logic para sa Terms at Help Modal)
-    // =============================================================
-    window.onclick = function (event) {
-        // Kung iclick ang labas ng Terms Modal, isara ito
-        if (event.target == modal) {
-            modal.style.display = 'none';
-        }
-        // Kung iclick ang labas ng Help Modal, isara naman ito
-        if (event.target == helpModal) {
-            helpModal.style.display = 'none';
-        }
-    };
+
+    // BACKDROP CLICK + ESCAPE TO CLOSE
+
+    window.addEventListener('click', (e) => {
+        if (termsModal && e.target === termsModal) termsModal.style.display = 'none';
+        if (helpModal && e.target === helpModal) helpModal.style.display = 'none';
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Escape') return;
+        if (termsModal?.style.display === 'flex') termsModal.style.display = 'none';
+        if (helpModal?.style.display === 'flex') helpModal.style.display = 'none';
+    });
+
 });

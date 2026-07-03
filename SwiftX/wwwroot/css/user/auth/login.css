@@ -1,427 +1,465 @@
-﻿* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Inter', sans-serif;
+﻿/* ==========================================================
+   login.css (customer)  —  v4.0.0
+   Scoped to: UserLogin.cshtml
+   Self-contained — all form, card, button, and modal styles
+   are defined here. Layout is handled by Tailwind (output.css).
+   ========================================================== */
+
+
+/* ==========================================================
+   CARD SHELL
+   ========================================================== */
+.login-card {
+    border-radius: 16px;
+    background: rgba(38, 38, 38, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 28px 24px;
 }
 
-body {
-    background-color: #2b2826;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    color: white;
-}
-
-.login-container {
-    background-color: #2b2826;
-    width: 100%;
-    max-width: 400px;
-    padding: 40px 20px;
-    text-align: center;
-}
-
-.logo-section .logo {
-    width: 250px;
-    margin-bottom: 30px;
-    margin-left: 30px;
-}
-
-h2 {
-    font-size: 24px;
-    margin-bottom: 30px;
-    font-weight: 600;
-}
-
-/* Inputs */
-input {
-    width: 100%;
-    padding: 15px;
-    margin-bottom: 15px;
-    background-color: #383431;
-    border: 1px solid #4a4541;
-    border-radius: 15px;
-    color: white;
-    font-size: 16px;
-    outline: none;
-    box-sizing: border-box; /* Sinisiguradong sakop ng 100% width ang padding */
-}
-
-/* --- 2. ANG PASSWORD WRAPPER (Ito ang magiging kamukha ng input mo) --- */
-.password-wrapper {
-    display: flex !important;
-    align-items: center !important;
-    width: 100%;
-    margin-bottom: 15px; /* Spacing pababa */
-    /* Eksaktong kopya ng input variables mo para parehong-pareho sila */
-    background-color: #383431;
-    border: 1px solid #4a4541;
-    border-radius: 15px;
-    box-sizing: border-box;
-}
-
-    /* --- 3. ANG INPUT SA LOOB NG WRAPPER (Inaalis natin ang double layering) --- */
-    .password-wrapper input {
-        flex: 1 !important;
-        width: 100%;
-        padding: 15px !important; /* Eksaktong padding gaya ng username */
-        /* INALIS ANG BORDER AT BACKGROUND PARA HINDI MAGPATONG AT LUMAKI */
-        background-color: transparent !important;
-        border: none !important;
-        margin-bottom: 0 !important; /* Inalis dahil nasa wrapper na ang margin */
-        border-radius: 0 !important;
-        outline: none !important;
+@media (min-width: 768px) {
+    .login-card {
+        padding: 32px 28px;
     }
-
-/* --- 4. ANG EYE ICON (Naka-inline style ka na rin sa HTML, pero ire-ready natin dito) --- */
-#togglePasswordIcon {
-    color: #a0a0a0;
-    cursor: pointer;
-    font-size: 18px;
-    display: block;
-    transition: color 0.2s;
 }
 
-    #togglePasswordIcon:hover {
-        color: #f26522; /* SwiftX Orange */
-    }
 
-input::placeholder {
-    color: #999;
-}
-
-/* Sign In Button */
-.btn-sign-in {
-    width: 60%;
-    padding: 12px;
-    background-color: #d34e0d; /* Orange accent */
-    border: none;
-    border-radius: 25px;
-    color: white;
-    font-weight: bold;
-    font-size: 16px;
-    cursor: pointer;
-    margin-top: 10px;
-    transition: background 0.3s;
-}
-
-    .btn-sign-in:hover {
-        background-color: #f15a10;
-    }
-
-.divider-text {
-    margin: 30px 0 20px;
+/* ==========================================================
+   INPUTS — base
+   ========================================================== */
+.login-input {
+    width: 100%;
+    padding: 12px 14px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: #fff;
+    font-family: var(--font-main);
     font-size: 14px;
-    color: #ccc;
+    outline: none;
+    transition: border-color 0.3s ease;
 }
 
-/* Social Buttons */
-.social-login {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+    .login-input:focus {
+        border-color: var(--primary-color);
+    }
+
+    .login-input::placeholder {
+        color: rgba(255, 255, 255, 0.3);
+    }
+
+
+/* ==========================================================
+   INPUT WITH LEADING ICON
+   ========================================================== */
+.login-input-wrapper {
+    position: relative;
 }
 
-.social-btn {
-    width: 100%;
-    padding: 12px;
-    border-radius: 10px;
+.login-input-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 18px;
+    pointer-events: none;
+    transition: color 0.3s ease;
+    z-index: 1;
+}
+
+.login-input-wrapper:focus-within .login-input-icon {
+    color: var(--primary-color);
+}
+
+.login-input-wrapper .login-input {
+    padding-left: 44px !important;
+}
+
+
+/* ==========================================================
+   PASSWORD WRAPPER
+   ========================================================== */
+.password-wrapper {
+    position: relative;
+}
+
+    .password-wrapper .login-input {
+        padding-right: 44px;
+    }
+
+.password-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
     border: none;
+    color: rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+    transition: color 0.3s ease;
+    z-index: 1;
+}
+
+    .password-toggle:hover {
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+
+/* ==========================================================
+   TERMS NOTICE
+   ========================================================== */
+.auth-terms-notice {
+    font-family: var(--font-secondary);
+    font-size: var(--fs-micro);
+    color: rgba(255, 255, 255, 0.3);
+    text-align: center;
+    margin: 4px 0 14px;
+    line-height: 1.6;
+}
+
+.auth-legal-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+}
+
+    .auth-legal-link:hover {
+        opacity: 0.8;
+        text-decoration: underline;
+    }
+
+
+/* ==========================================================
+   SUBMIT BUTTON
+   ========================================================== */
+.btn-next {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    font-family: var(--font-main);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.3s ease, transform 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+    .btn-next:disabled {
+        background: rgba(211, 69, 2, 0.3);
+        color: rgba(255, 255, 255, 0.3);
+        cursor: not-allowed;
+    }
+
+    .btn-next:not(:disabled) {
+        background: var(--primary-color);
+        color: #fff;
+    }
+
+        .btn-next:not(:disabled):hover {
+            opacity: 0.9;
+        }
+
+        .btn-next:not(:disabled):active {
+            transform: scale(0.98);
+        }
+
+/* Loader states */
+.btn-login-text,
+.btn-login-loader {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+    .btn-login-loader.hidden,
+    .btn-login-text.hidden {
+        display: none;
+    }
+
+@keyframes loginSpin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.login-spinner {
+    animation: loginSpin 0.8s linear infinite;
+    font-size: 18px;
+}
+
+
+/* ==========================================================
+   OR DIVIDER
+   ========================================================== */
+.auth-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 18px 0;
+    font-family: var(--font-secondary);
+    font-size: var(--fs-micro);
+    color: rgba(255, 255, 255, 0.25);
+}
+
+    .auth-divider::before,
+    .auth-divider::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+
+/* ==========================================================
+   SOCIAL BUTTON
+   ========================================================== */
+.auth-social-btn {
+    width: 100%;
+    padding: 11px 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #ffffff;
+    color: #111111;
+    font-family: var(--font-secondary);
+    font-size: 14px;
+    font-weight: 600;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
-    font-weight: 600;
     cursor: pointer;
-    background-color: white;
-    color: black;
-    font-size: 14px;
+    transition: filter 0.2s ease;
 }
 
-    .social-btn img {
-        width: 20px;
+    .auth-social-btn:hover {
+        filter: brightness(0.96);
     }
 
-/* Footer */
-.footer-links {
-    margin-top: 30px;
-}
 
-    .footer-links a {
-        text-decoration: underline;
-        color: white;
-    }
-
-    .footer-links span {
-        display: block;
-        text-decoration: none;
-        color: #ccc;
-        font-size: 13px;
-        margin-bottom: 15px;
-    }
-
-.need-help {
-    font-size: 18px !important;
-    color: white !important;
-}
-/* I-target natin ang class na 'legal-link' */
-.legal-link {
-    /* 1. Ang pangunahing kulay ng link (Command: color) */
-    color: #d34e0d; /* Magandang shade ng blue */
-    /* 2. Tanggalin ang default na underline (Command: text-decoration) */
-    text-decoration: none;
-}
-
-    /* Pagbabago kapag tinatapatan ng mouse (hover) */
-    .legal-link:hover {
-        text-decoration: underline; /* Lalabas ang underline kapag tinatapatan */
-        color: #d34e0d; /* Mas madilim na blue para sa feedback */
-    }
-
-    /* Ito ang pinaka-importante para hindi maging violet! */
-    /* Pagbabago kapag napuntahan na ang link (visited) */
-    .legal-link:visited {
-        color: #d34e0d; /* Panatilihin ang original na blue, o ibahin kung gusto mo */
-    }
-/* I-target natin ang class na 'legal-link' */
-/* Layout ng buong background ng overlay */
-/* Base style ng modal (Overlay) */
-/* Buong itim na background sa labas */
+/* ==========================================================
+   TERMS & CONDITIONS MODAL
+   ========================================================== */
 .modal {
     display: none;
     position: fixed;
+    inset: 0;
     z-index: 9999;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.6); /* Binawasan ng konti ang dilim para mas smooth */
-    backdrop-filter: blur(4px); /* Nilagyan ng blur ang likod para modern */
+    background-color: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(4px);
+    justify-content: center;
+    align-items: flex-start;
+    padding: 24px 16px;
+    overflow-y: auto;
 }
 
-/* Ang puting box / Main Card */
+    .modal[style*="flex"] {
+        display: flex;
+    }
+
 .modal-content {
     background-color: #ffffff;
-    margin: 6vh auto; /* Eksaktong kalkulado para pumantay sa gitna */
-    padding: 30px;
-    width: 90%;
-    max-width: 650px; /* Mas pinaliit ng konti para maging compact ang basahan */
-    height: 75vh;
-    border-radius: 8px; /* Mas maliit na radius para sa formal/professional look */
+    width: 100%;
+    max-width: 660px;
+    max-height: 80vh;
+    border-radius: 12px;
+    padding: 32px;
     position: relative;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35);
     display: flex;
     flex-direction: column;
+    margin: auto;
 }
 
-/* Container ng text na pwedeng i-scroll */
-.terms-text-container {
-    height: 100%;
-    overflow-y: auto;
-    padding-right: 15px;
-    text-align: left;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-}
-
-    /* --- TYPOGRAPHY UPDATES (Para maging mukhang totoong template) --- */
-
-    .terms-text-container h1 {
-        font-size: 20px;
-        color: #111111;
-        font-weight: 700;
-        margin-bottom: 20px;
-        border-bottom: 1px solid #eaeaea;
-        padding-bottom: 12px;
-    }
-
-    .terms-text-container h2 {
-        font-size: 14px; /* Maliit pero bold para sa professional sub-headings */
-        color: #1a1a1a;
-        font-weight: 600;
-        margin-top: 20px;
-        margin-bottom: 8px;
-        text-transform: capitalize; /* Tamang capitalization */
-    }
-
-    .terms-text-container p {
-        font-size: 13px; /* Pinaliit para maging mukhang legal document */
-        line-height: 1.6; /* Magandang espasyo para hindi masakit sa mata basahin */
-        color: #4a4a4a; /* Bahagyang soft black para sa mahabang basahin */
-        margin-bottom: 14px;
-    }
-
-/* Close button style (Inilipat sa gilid ng pamagat para malinis) */
 .close-button {
     position: absolute;
-    right: 25px;
-    top: 20px;
-    font-size: 24px; /* Binawasan ang laki para hindi mukhang pambata */
-    font-weight: 400;
+    right: 20px;
+    top: 18px;
+    font-size: 22px;
     cursor: pointer;
     color: #999;
     line-height: 1;
+    background: none;
+    border: none;
     transition: color 0.2s ease;
+    z-index: 10;
 }
 
     .close-button:hover {
         color: #333;
     }
 
-/* --- MODERN SCROLLBAR STYLE (Para hindi sagabal sa layout) --- */
-.terms-text-container::-webkit-scrollbar {
-    width: 6px; /* Manipis na scrollbar */
+.terms-text-container {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 16px;
+    text-align: left;
+    font-family: var(--font-secondary);
 }
 
-.terms-text-container::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 10px;
-}
-
-.terms-text-container::-webkit-scrollbar-thumb {
-    background: #ccc;
-    border-radius: 10px;
-}
-
-    .terms-text-container::-webkit-scrollbar-thumb:hover {
-        background: #999;
+    .terms-text-container h1 {
+        font-family: var(--font-main);
+        font-size: 17px;
+        color: #111;
+        font-weight: 700;
+        margin: 24px 0 10px;
+        padding-bottom: 10px;
+        padding-right: 36px;
+        border-bottom: 1px solid #eaeaea;
+        text-align: left;
     }
-/* ========================================== */
-/* SWIFTX HELP CENTER OVERLAY MODAL STYLES    */
-/* ========================================== */
 
-/* Base adjustment para sa "Need Help?" link sa iyong footer-links */
-.footer-links a.need-help {
-    color: var(--text-secondary);
-    text-decoration: none;
-    transition: var(--transition);
-    font-size: 14px;
-}
+        .terms-text-container h1:first-child {
+            margin-top: 0;
+        }
 
-    .footer-links a.need-help:hover {
-        color: var(--primary-orange);
+    .terms-text-container h2 {
+        font-family: var(--font-main);
+        font-size: 13px;
+        color: #1a1a1a;
+        font-weight: 600;
+        margin: 18px 0 6px;
+    }
+
+    .terms-text-container p {
+        font-size: 13px;
+        line-height: 1.7;
+        color: #4a4a4a;
+        margin-bottom: 12px;
+    }
+
+    .terms-text-container a {
+        color: #d34502;
         text-decoration: underline;
     }
 
-/* Background Overlay - Lumilikha ng madilim at blur na background */
+    .terms-text-container::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    .terms-text-container::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 8px;
+    }
+
+    .terms-text-container::-webkit-scrollbar-thumb {
+        background: #ccc;
+        border-radius: 8px;
+    }
+
+        .terms-text-container::-webkit-scrollbar-thumb:hover {
+            background: #999;
+        }
+
+
+/* ==========================================================
+   HELP CENTER MODAL
+   ========================================================== */
 .help-modal {
-    display: none; /* JavaScript ang magpapalit nito sa 'flex' kapag binuksan */
+    display: none;
     position: fixed;
-    z-index: 10000; /* Sinisiguradong nasa ibabaw ng kahit anong element */
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    background-color: rgba(0, 0, 0, 0.7); /* Madilim na transparent overlay */
-    backdrop-filter: blur(5px); /* Modern blur effect para sa likod */
-    align-items: center;
+    inset: 0;
+    z-index: 10000;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
     justify-content: center;
+    align-items: center;
+    padding: 20px;
 }
 
-/* Main Card Container ng Help Center */
+    .help-modal[style*="flex"] {
+        display: flex;
+    }
+
 .help-modal-content {
-    background-color: var(--bg-card); /* Sumusunod sa #2c2c2c o var mo */
-    border: 1px solid var(--border-color);
-    padding: 35px 25px;
-    width: 90%;
-    max-width: 420px; /* Tamang sukat para maging compact at mukhang mobile-first app widget */
-    border-radius: var(--radius-card); /* Sumusunod sa 10px radius mo */
+    background-color: var(--dark-bg-card);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 32px 24px;
+    width: 100%;
+    max-width: 400px;
+    border-radius: 16px;
     position: relative;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
-    animation: helpPopUp 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
 }
 
-/* Smooth pop-up entry animation */
-@keyframes helpPopUp {
-    from {
-        opacity: 0;
-        transform: scale(0.92);
-    }
-
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-/* Close Button (X) sa itaas ng card */
 .help-close-btn {
     position: absolute;
-    top: 15px;
-    right: 20px;
+    top: 14px;
+    right: 18px;
     background: none;
     border: none;
-    color: var(--text-secondary);
-    font-size: 28px;
-    font-weight: 300;
+    color: rgba(255, 255, 255, 0.35);
+    font-size: 26px;
     cursor: pointer;
-    transition: color 0.2s ease;
     line-height: 1;
+    transition: color 0.2s ease;
 }
 
     .help-close-btn:hover {
-        color: var(--error-red); /* Magiging pula (#ff4444) kapag tinatapatan */
+        color: var(--primary-color);
     }
 
-/* Header Sections ng Tulong Panel */
 .help-header {
     text-align: center;
-    margin-bottom: 25px;
+    margin-bottom: 24px;
 }
 
     .help-header h2 {
-        color: var(--text-main); /* Puting teksto */
-        font-size: 22px;
-        font-weight: 700;
-        margin-bottom: 8px;
+        font-family: var(--font-main);
+        font-size: 18px;
+        font-weight: 600;
+        color: #fff;
+        margin-bottom: 6px;
     }
 
     .help-header p {
-        color: var(--text-secondary); /* Gray sub-details */
+        font-family: var(--font-secondary);
         font-size: 13px;
-        line-height: 1.4;
+        color: rgba(255, 255, 255, 0.35);
     }
 
-/* Layout Wrapper para sa tatlong Channels */
 .help-channels-container {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
 }
 
-/* Link Resets para sa Cards */
 .help-card-link {
     text-decoration: none;
-    color: inherit;
     display: block;
 }
 
-/* Individual Channel Rows (FB, Email, Phone) */
 .help-channel-card {
-    background-color: var(--bg-input); /* Madilim na input-box bg (#1a1a1a) */
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-button); /* 8px rounded corners */
+    background-color: var(--dark-bg-hero);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
     padding: 14px 16px;
     display: flex;
     align-items: center;
-    gap: 15px;
-    cursor: pointer;
-    transition: var(--transition);
+    gap: 14px;
+    transition: border-color 0.2s ease, background 0.2s ease;
 }
 
-    /* Hover effect sa bawat channel rows */
     .help-channel-card:hover {
-        border-color: var(--primary-orange); /* Mag-oorange ang border outline */
-        background-color: #242424; /* Bahagyang sisindi ang background */
-        transform: translateX(4px); /* Swabeng usog pakanan execution */
+        border-color: var(--primary-border-subtle);
+        background: var(--primary-bg-faint);
     }
 
-/* Pabilog na lalagyan ng Icon sa kaliwa */
 .channel-icon {
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -429,48 +467,219 @@ input::placeholder {
     flex-shrink: 0;
 }
 
-/* Custom branding identity colors para sa mga Icons */
 .fb-card .channel-icon {
-    background-color: rgba(24, 119, 242, 0.15);
+    background: rgba(24,119,242,0.12);
     color: #1877f2;
 }
 
 .email-card .channel-icon {
-    background-color: rgba(242, 101, 34, 0.15);
-    color: var(--primary-orange);
+    background: var(--primary-bg-subtle);
+    color: var(--primary-color);
 }
 
 .phone-card .channel-icon {
-    background-color: rgba(0, 255, 0, 0.1);
-    color: var(--success-green);
+    background: var(--success-bg-subtle);
+    color: var(--success-color);
 }
 
-/* Text alignment sa loob ng bawat card details */
 .channel-details {
-    flex-grow: 1;
-    text-align: left; /* Tiyaking laging nakahanay sa kaliwa kahit may text-center ang header */
+    flex: 1;
 }
 
     .channel-details h3 {
-        color: var(--text-main);
-        font-size: 15px;
+        font-family: var(--font-main);
+        font-size: 14px;
         font-weight: 600;
-        margin: 0 0 2px 0;
+        color: #fff;
+        margin-bottom: 2px;
     }
 
     .channel-details p {
-        color: var(--text-secondary);
+        font-family: var(--font-secondary);
         font-size: 12px;
-        margin: 0;
+        color: rgba(255, 255, 255, 0.35);
     }
 
-/* Chevron arrow sa pinakadulong kanan */
 .arrow-icon {
-    color: var(--text-secondary);
-    font-size: 12px;
-    transition: var(--transition);
+    color: rgba(255, 255, 255, 0.2);
+    font-size: 14px;
+    flex-shrink: 0;
+    transition: color 0.2s ease;
 }
 
 .help-channel-card:hover .arrow-icon {
-    color: var(--primary-orange);
+    color: var(--primary-color);
 }
+
+
+/* ==========================================================
+   TERMS & CONDITIONS MODAL  —  dark admin style
+   Replaces old .modal / .modal-content / .terms-text-container
+   ========================================================== */
+
+/* Overlay */
+.tc-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    align-items: flex-start;
+    justify-content: center;
+    padding: 24px 16px;
+    overflow-y: auto;
+}
+
+    .tc-modal[style*="flex"] {
+        display: flex;
+    }
+
+/* Box */
+.tc-modal__box {
+    background: var(--dark-bg-hero, #242424);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+    width: 100%;
+    max-width: 660px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: tcModalSlideUp 0.25s ease;
+    margin: auto;
+}
+
+@keyframes tcModalSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Header */
+.tc-modal__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 22px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    flex-shrink: 0;
+}
+
+.tc-modal__title {
+    font-family: var(--font-main);
+    font-size: var(--fs-body, 16px);
+    font-weight: var(--fw-semibold, 600);
+    color: rgba(255, 255, 255, 0.92);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+}
+
+    .tc-modal__title i {
+        font-size: 20px;
+        color: var(--primary-color, #d34502);
+    }
+
+.tc-modal__close {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: transparent;
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.15s ease;
+}
+
+    .tc-modal__close:hover {
+        color: #fff;
+        background: rgba(255, 255, 255, 0.06);
+    }
+
+/* Scrollable body */
+.tc-modal__body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 22px 24px;
+}
+
+    /* Body typography */
+    .tc-modal__body h1 {
+        font-family: var(--font-main);
+        font-size: 13px;
+        font-weight: var(--fw-semibold, 600);
+        color: var(--primary-color, #d34502);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin: 22px 0 8px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+        .tc-modal__body h1:first-child {
+            margin-top: 0;
+        }
+
+    .tc-modal__body h2 {
+        font-family: var(--font-main);
+        font-size: var(--fs-small, 14px);
+        font-weight: var(--fw-semibold, 600);
+        color: rgba(255, 255, 255, 0.85);
+        margin: 16px 0 5px;
+    }
+
+    .tc-modal__body p {
+        font-family: var(--font-secondary);
+        font-size: 13px;
+        line-height: 1.7;
+        color: rgba(255, 255, 255, 0.5);
+        margin-bottom: 10px;
+    }
+
+    .tc-modal__body strong {
+        color: rgba(255, 255, 255, 0.8);
+        font-weight: var(--fw-semibold, 600);
+    }
+
+    .tc-modal__body a {
+        color: var(--primary-color, #d34502);
+        text-decoration: underline;
+        text-underline-offset: 2px;
+    }
+
+        .tc-modal__body a:hover {
+            opacity: 0.8;
+        }
+
+    /* Scrollbar */
+    .tc-modal__body::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    .tc-modal__body::-webkit-scrollbar-track {
+        background: rgba(255,255,255,0.03);
+        border-radius: 8px;
+    }
+
+    .tc-modal__body::-webkit-scrollbar-thumb {
+        background: rgba(255,255,255,0.12);
+        border-radius: 8px;
+    }
+
+        .tc-modal__body::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,255,255,0.22);
+        }

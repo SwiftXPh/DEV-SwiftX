@@ -1,0 +1,173 @@
+﻿
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_LayoutCustomerLogin.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/user/auth/login.css" asp-append-version="true" />
+}
+
+@* ── Background glow (matches admin page) ── *@
+<div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+    <div class="absolute -top-40 -right-40 w-[500px] h-[500px] rounded-full __hero-glow-lg __glow-bg"></div>
+    <div class="absolute -bottom-48 -left-48 w-[400px] h-[400px] rounded-full __hero-glow-sm __glow-bg"></div>
+</div>
+
+<div class="relative w-full max-w-md mx-auto px-5 py-12 md:py-16">
+
+    @* ── Logo ── *@
+    <div class="flex justify-center mb-6 __fade-up __fade-up--d1">
+        <img src="~/Assets/images/swiftX_logo.png" alt="SwiftX" class="h-12 w-auto block" />
+    </div>
+
+    @* ── Pill label ── *@
+    <div class="text-center mb-8 __fade-up __fade-up--d2">
+        <span class="__pill">Customer Portal</span>
+    </div>
+
+    @* ── Login form ── *@
+    <form id="loginForm" class="__fade-up __fade-up--d3" novalidate>
+        <div class="login-card">
+
+            @* Username *@
+            <div class="mb-4">
+                <div class="login-input-wrapper">
+                    <i class="ph ph-user login-input-icon"></i>
+                    <input type="text" id="username" name="Username"
+                           class="login-input"
+                           placeholder="Username"
+                           autocomplete="username" required>
+                </div>
+            </div>
+
+            @* Password *@
+            <div class="mb-3">
+                <div class="password-wrapper">
+                    <div class="login-input-wrapper">
+                        <i class="ph ph-lock login-input-icon"></i>
+                        <input type="password" id="password" name="Password"
+                               class="login-input"
+                               placeholder="Password"
+                               autocomplete="current-password" required>
+                    </div>
+                    <button type="button" class="password-toggle"
+                            onclick="togglePassword('password', this)"
+                            aria-label="Toggle password visibility">
+                        <i class="ph ph-eye eye-open"></i>
+                        <i class="ph ph-eye-slash eye-closed hidden"></i>
+                    </button>
+                </div>
+            </div>
+
+            @* Terms notice *@
+            <p class="auth-terms-notice">
+                <i>
+                    By signing in, you agree to our
+                    <a href="javascript:void(0)" id="openTerms" class="auth-legal-link">Terms and Privacy Policy</a>
+                </i>
+            </p>
+
+            @* Submit *@
+            <button type="submit" id="signInBtn" class="btn-next mt-2">
+                <span class="btn-login-text">Sign In</span>
+                <span class="btn-login-loader hidden">
+                    <i class="ph ph-circle-notch login-spinner"></i>
+                    Signing in...
+                </span>
+            </button>
+
+            @* Divider *@
+            <div class="auth-divider">
+                <span>Or continue with</span>
+            </div>
+
+            @* Google *@
+            <button type="button" class="auth-social-btn">
+                <img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" alt="Google" class="w-5 h-5">
+                Continue with Google
+            </button>
+
+        </div>
+    </form>
+
+    @* ── Footer links ── *@
+    <div class="text-center mt-5 flex flex-col items-center gap-3 __fade-up __fade-up--d4">
+        <span class="__small opacity-50">
+            Don&rsquo;t have an account?
+            <a asp-controller="Customer" asp-action="CustomerSignup"
+               class="opacity-100 __text-primary __footer-link no-underline">Register Now</a>
+        </span>
+        <a href="/Auth/ChangePassEnterEmail"
+           class="__small opacity-50 hover:opacity-100 __footer-link transition-opacity no-underline">
+            Forgot Password?
+        </a>
+        <a href="javascript:void(0)" id="openHelpLink"
+           class="__small opacity-40 hover:opacity-100 __footer-link transition-opacity no-underline">
+            Need Help?
+        </a>
+        <a asp-controller="Customer" asp-action="CustomerHome"
+           class="__small opacity-40 hover:opacity-100 __footer-link transition-opacity no-underline">
+            Customer Home (Please remove me after)
+        </a>
+    </div>
+
+</div>
+
+@* ── Terms & Conditions modal (shared partial) ── *@
+@await Html.PartialAsync("_ModalTermsAndConditions")
+
+@* ── Help Center modal ── *@
+<div id="helpCenterModal" class="help-modal" role="dialog" aria-modal="true" aria-labelledby="helpModalTitle">
+    <div class="help-modal-content">
+
+        <button class="help-close-btn" id="closeHelpBtn" aria-label="Close Help Center">&times;</button>
+
+        <div class="help-header">
+            <h2 id="helpModalTitle">SwiftX Help Center</h2>
+            <p>We&rsquo;re here to assist you! Choose a channel to reach us.</p>
+        </div>
+
+        <div class="help-channels-container">
+
+            <a href="https://www.facebook.com/profile.php?id=61577468267412"
+               target="_blank" rel="noopener noreferrer" class="help-card-link">
+                <div class="help-channel-card fb-card">
+                    <div class="channel-icon"><i class="ph ph-facebook-logo"></i></div>
+                    <div class="channel-details">
+                        <h3>Facebook Messenger</h3>
+                        <p>SwiftX Ph</p>
+                    </div>
+                    <i class="ph ph-caret-right arrow-icon"></i>
+                </div>
+            </a>
+
+            <a href="mailto:swiftxph@gmail.com" class="help-card-link">
+                <div class="help-channel-card email-card">
+                    <div class="channel-icon"><i class="ph ph-envelope-simple"></i></div>
+                    <div class="channel-details">
+                        <h3>Email Support</h3>
+                        <p>swiftxph@gmail.com</p>
+                    </div>
+                    <i class="ph ph-caret-right arrow-icon"></i>
+                </div>
+            </a>
+
+            <a href="tel:+639292096887" class="help-card-link">
+                <div class="help-channel-card phone-card">
+                    <div class="channel-icon"><i class="ph ph-phone"></i></div>
+                    <div class="channel-details">
+                        <h3>Hotline Support</h3>
+                        <p>0929 209 6887</p>
+                    </div>
+                    <i class="ph ph-caret-right arrow-icon"></i>
+                </div>
+            </a>
+
+        </div>
+    </div>
+</div>
+
+@section PageScripts {
+    <script src="~/js/user/auth/login.js" asp-append-version="true"></script>
+}

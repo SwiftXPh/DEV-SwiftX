@@ -1,0 +1,48 @@
+@*
+    _LayoutCustomerSubPage.cshtml
+    Shell for logged-in customer sub-pages:
+    Account Info, Security, Order History, Saved Addresses, etc.
+
+    - No sidebar, no topbar — each page owns its full top section
+    - Loads modal.js + modal-alert.js so AlertModal is always available
+    - Loads _ModalAlert partial globally
+
+    Usage in page:
+        Layout = "~/Views/Shared/_LayoutCustomerSubPage.cshtml";
+*@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] | SwiftX</title>
+
+    <link rel="stylesheet" href="~/css/main.css"       asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/output.css"     asp-append-version="true" />
+
+    <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
+
+    @* Phosphor Icons *@
+    <link rel="stylesheet" href="~/lib/phosphor-icons/regular/style.css" />
+    <link rel="stylesheet" href="~/lib/phosphor-icons/bold/style.css" />
+    <link rel="stylesheet" href="~/lib/phosphor-icons/fill/style.css" />
+
+    @RenderSection("Styles", required: false)
+</head>
+<body class="cust-subpage-body">
+
+    @RenderBody()
+
+    @* ── Alert modal (global — AlertModal.show() available on all sub-pages) ── *@
+    @await Html.PartialAsync("_ModalAlert")
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/modal.js"        asp-append-version="true"></script>
+    <script src="~/js/modal-alert.js"  asp-append-version="true"></script>
+    <script src="~/js/site.js"         asp-append-version="true"></script>
+
+    @await RenderSectionAsync("PageScripts", required: false)
+
+</body>
+</html>

@@ -1,0 +1,71 @@
+﻿@{
+    ViewData["Title"] = "Account Information";
+    Layout = "~/Views/Shared/_LayoutCustomerSubPage.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/user/customerMain/CustomerAccountInfo.css" asp-append-version="true" />
+}
+
+<div class="acct-page">
+
+    @* ── Orange header with profile pic ── *@
+    <header class="acct-header">
+        <button type="button" class="acct-back-btn" aria-label="Go back">
+            <i class="ph ph-arrow-left"></i>
+        </button>
+        <h1 class="acct-header__title">@ViewData["Title"]</h1>
+
+        <div class="acct-avatar-wrap">
+            <div class="acct-avatar" id="profilePic"></div>
+            <label for="fileUpload" class="acct-avatar-edit">Edit</label>
+            <input type="file" id="fileUpload" accept="image/*" hidden />
+        </div>
+    </header>
+
+    @* ── Form ── *@
+    <main class="acct-form-section">
+        <form id="accountForm" method="post">
+
+            <div class="acct-field">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="Username"
+                       autocomplete="username" />
+            </div>
+
+            <div class="acct-field">
+                <label for="fullName">Full Name</label>
+                <input type="text" id="fullName" name="FullName"
+                       autocomplete="name" />
+            </div>
+
+            <div class="acct-row">
+                <div class="acct-field">
+                    <label for="gender">Gender</label>
+                    <select id="gender" name="Gender">
+                        <option value="">Select</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="RatherNotSay">Rather Not Say</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="acct-field">
+                    <label for="birthdate">Birthdate</label>
+                    <input type="date" id="birthdate" name="Birthdate" />
+                </div>
+            </div>
+
+            <div class="acct-actions">
+                <button type="submit" class="acct-save-btn">Save</button>
+            </div>
+
+        </form>
+    </main>
+
+</div>
+
+@section PageScripts {
+    <script src="~/js/user/customerMain/CustomerAccountInfo.js" asp-append-version="true"></script>
+}
