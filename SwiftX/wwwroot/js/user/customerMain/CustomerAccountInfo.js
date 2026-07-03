@@ -1,87 +1,103 @@
+
 document.addEventListener('DOMContentLoaded', () => {
+
     const fileUpload = document.getElementById('fileUpload');
     const profilePic = document.getElementById('profilePic');
     const accountForm = document.getElementById('accountForm');
-    const closeBtn = document.querySelector('.close-btn');
+    const backBtn = document.querySelector('.acct-back-btn');
     const birthdateInput = document.getElementById('birthdate');
 
-    // Dynamically calculate and restrict calendar to exactly 18 years ago today
     if (birthdateInput) {
         const today = new Date();
         const maxYear = today.getFullYear() - 18;
-        const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+        const month = String(today.getMonth() + 1).padStart(2, '0');
         const day = String(today.getDate()).padStart(2, '0');
-
-        // Format: YYYY-MM-DD
-        const maxValidDate = `${maxYear}-${month}-${day}`;
-
-        // Set the max attribute on the native date picker
-        birthdateInput.setAttribute('max', maxValidDate);
+        birthdateInput.setAttribute('max', `${maxYear}-${month}-${day}`);
     }
 
-    // Handle dynamic profile picture preview
     if (fileUpload && profilePic) {
-        fileUpload.addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    profilePic.style.backgroundImage = `url('${e.target.result}')`;
-                }
-                reader.readAsDataURL(file);
-            }
+        fileUpload.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                profilePic.style.backgroundImage = `url('${ev.target.result}')`;
+            };
+            reader.readAsDataURL(file);
         });
     }
 
-    // Handle Form Submission
     if (accountForm) {
         accountForm.addEventListener('submit', (e) => {
             e.preventDefault();
 
-            // 🎯 Fail-safe validation check for age calculation
-            if (birthdateInput && birthdateInput.value) {
-                const selectedBirthdate = new Date(birthdateInput.value);
+            // Age validation — secondary check in case browser max attr is bypassed
+            if (birthdateInput?.value) {
+                const birth = new Date(birthdateInput.value);
                 const today = new Date();
-
-                let age = today.getFullYear() - selectedBirthdate.getFullYear();
-                const monthDifference = today.getMonth() - selectedBirthdate.getMonth();
-                const dayDifference = today.getDate() - selectedBirthdate.getDate();
-
-                // Adjust age if the birthday hasn't occurred yet this year
-                if (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)) {
-                    age--;
-                }
+                let age = today.getFullYear() - birth.getFullYear();
+                const m = today.getMonth() - birth.getMonth();
+                if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
 
                 if (age < 18) {
-                    alert('Registration failed. You must be at least 18 years old to create an account.');
-                    return; // Stops the submission flow entirely
+                    AlertModal.show({
+                        type: 'danger',
+                        title: 'Age Requirement',
+                        message: 'You must be at least <strong>18 years old</strong> to use SwiftX.',
+                        buttons: [
+                            { label: 'OK', variant: 'danger' }
+                        ]
+                    });
+                    return;
                 }
             }
 
-            // Only tracking elements that exist on your current form screen
+            // Collect form data
             const formData = {
-                username: document.getElementById('username').value,
-                fullName: document.getElementById('fullName').value,
-                gender: document.getElementById('gender').value,
-                birthdate: birthdateInput ? birthdateInput.value : ''
+                Username: document.getElementById('username')?.value ?? '',
+                FullName: document.getElementById('fullName')?.value ?? '',
+                Gender: document.getElementById('gender')?.value ?? '',
+                Birthdate: birthdateInput?.value ?? ''
             };
 
-            console.log('Saved Account Information:', formData);
-            alert('Account information saved successfully!');
-            window.location.href = 'CustomerHome';
+            console.log('Saving account info:', formData);
+
+            // TODO: replace with real fetch/POST to backend
+            AlertModal.show({
+                type: 'success',
+                title: 'Changes Saved',
+                message: 'Your account information has been updated successfully.',
+                buttons: [
+                    {
+                        label: 'OK',
+                        variant: 'success',
+                        callback: () => { window.location.href = '/Customer/CustomerHome'; }
+                    }
+                ]
+            });
         });
     }
 
-    // Close button event
-    if (closeBtn) {
-        closeBtn.addEventListener('click', (e) => {
-            // Pigilan ang default form submission behavior ng browser
+
+    if (backBtn) {
+        backBtn.addEventListener('click', (e) => {
             e.preventDefault();
 
-            if (confirm("Are you sure you want to exit? Unsaved changes might be lost.")) {
-                console.log("Exit flow initiated.");
-                window.location.href = 'CustomerHome';
-            }
+            AlertModal.show({
+                type: 'warning',
+                title: 'Discard Changes?',
+                message: 'Are you sure you want to go back? Any unsaved changes will be lost.',
+                buttons: [
+                    { label: 'Stay', variant: 'ghost' },
+                    {
+                        label: 'Go Back',
+                        variant: 'warning',
+                        callback: () => { window.location.href = '/Customer/CustomerHome'; }
+                    }
+                ]
+            });
         });
     }
+
 });
