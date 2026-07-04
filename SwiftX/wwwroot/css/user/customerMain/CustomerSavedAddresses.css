@@ -1,0 +1,333 @@
+/* ==========================================================
+   CustomerSavedAddresses.css  —  v2.0.0
+   Scoped to: CustomerSavedAddresses.cshtml
+   Layout shell: _LayoutCustomerSubPage.cshtml
+   Tokens from: fonts.css / colors.css (via main.css)
+   ========================================================== */
+
+
+/* ==========================================================
+   PAGE WRAPPER
+   ========================================================== */
+.sa-page {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--dark-bg-color);
+    color: var(--light-text-color);
+    font-family: var(--font-secondary);
+}
+
+
+/* ==========================================================
+   ORANGE HEADER
+   ========================================================== */
+.sa-header {
+    background: linear-gradient(to top, var(--primary-color), #f15a10);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 24px;
+    height: 90px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    width: 100%;
+    border-bottom-left-radius: 24px;
+    border-bottom-right-radius: 24px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+    flex-shrink: 0;
+}
+
+.sa-back-btn {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: none;
+    background: var(--light-text-color);
+    color: var(--dark-text-color);
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+    transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.sa-back-btn:hover {
+    background: rgba(255, 255, 255, 0.85);
+    transform: scale(1.05);
+}
+
+.sa-header__title {
+    font-family: var(--font-main);
+    font-size: var(--fs-h4);
+    font-weight: var(--fw-semibold);
+    color: var(--light-text-color);
+    margin: 0;
+    line-height: 1;
+}
+
+
+/* ==========================================================
+   MAIN CONTENT
+   ========================================================== */
+.sa-content {
+    max-width: 680px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 28px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    flex: 1;
+}
+
+
+/* ==========================================================
+   ADDRESS FEED
+   ========================================================== */
+#saved-addresses-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+}
+
+/* Empty state */
+.sa-empty {
+    text-align: center;
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.sa-empty i {
+    font-size: 40px;
+    color: var(--primary-color);
+}
+
+.sa-empty p {
+    font-family: var(--font-secondary);
+    font-size: var(--fs-small);
+    color: rgba(255, 255, 255, 0.35);
+}
+
+
+/* ==========================================================
+   ADDRESS CARD
+   ========================================================== */
+.address-card {
+    background: var(--dark-bg-card);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    padding: 18px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.address-card:hover {
+    border-color: var(--primary-border-subtle);
+    transform: translateY(-2px);
+}
+
+.address-card.selectable-checkout-card {
+    cursor: pointer;
+}
+
+.address-details {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+    min-width: 0;
+}
+
+.address-label {
+    font-family: var(--font-main);
+    font-size: var(--fs-body);
+    font-weight: var(--fw-semibold);
+    color: var(--light-text-color);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.address-label i {
+    color: var(--primary-color);
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.address-text {
+    font-family: var(--font-secondary);
+    font-size: var(--fs-small);
+    color: rgba(255, 255, 255, 0.4);
+    line-height: var(--lh-compact);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+/* ==========================================================
+   ACTION BUTTONS (edit / delete)
+   ========================================================== */
+.address-actions {
+    display: flex;
+    gap: 10px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 10;
+}
+
+.action-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--dark-bg-hero);
+    color: var(--light-text-color);
+    font-size: 17px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.action-btn.edit-btn:hover {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    color: #fff;
+}
+
+.action-btn.delete-btn:hover {
+    background: var(--danger-color);
+    border-color: var(--danger-color);
+    color: #fff;
+}
+
+
+/* ==========================================================
+   ADD ADDRESS BUTTON
+   ========================================================== */
+.sa-add-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.sa-add-btn {
+    width: 100%;
+    max-width: 320px;
+    padding: 13px;
+    background: transparent;
+    color: var(--primary-color);
+    border: 2px dashed var(--primary-border-faint);
+    border-radius: 25px;
+    font-family: var(--font-main);
+    font-size: var(--fs-label);
+    font-weight: var(--fw-semibold);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.2s ease, border-color 0.2s ease,
+                color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sa-add-btn:hover {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    border-style: solid;
+    color: #fff;
+    box-shadow: 0 8px 24px rgba(211, 69, 2, 0.3);
+}
+
+
+/* ==========================================================
+   RESPONSIVE
+   ========================================================== */
+@media (max-width: 425px) {
+    .sa-header {
+        padding: 0 16px;
+        height: 76px;
+        border-bottom-left-radius: 18px;
+        border-bottom-right-radius: 18px;
+    }
+
+    .sa-header__title { font-size: 20px; }
+
+    .sa-content { padding: 20px 16px; }
+
+    .address-card {
+        padding: 14px 16px;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .address-actions {
+        width: 100%;
+        justify-content: flex-end;
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        padding-top: 10px;
+    }
+
+    .sa-add-btn { max-width: 100%; }
+}
+
+@media (max-width: 375px) {
+    .sa-header__title { font-size: 18px; }
+
+    .address-label { font-size: var(--fs-label); }
+
+    .address-text { font-size: var(--fs-micro); }
+
+    .sa-add-btn {
+        max-width: 280px;
+        padding: 11px;
+        font-size: var(--fs-small);
+    }
+}
+
+@media (max-width: 320px) {
+    .sa-header {
+        height: 64px;
+        padding: 0 12px;
+        border-bottom-left-radius: 14px;
+        border-bottom-right-radius: 14px;
+    }
+
+    .sa-back-btn {
+        width: 34px;
+        height: 34px;
+        font-size: 15px;
+    }
+
+    .sa-header__title { font-size: 16px; }
+
+    .sa-content { padding: 14px 12px; }
+
+    .address-card { padding: 11px 12px; }
+
+    .action-btn {
+        width: 34px;
+        height: 34px;
+        font-size: 15px;
+    }
+
+    .sa-add-btn {
+        max-width: 240px;
+        font-size: var(--fs-micro);
+    }
+}

@@ -1,0 +1,54 @@
+@{
+    ViewData["Title"] = "Saved Addresses";
+    Layout = "~/Views/Shared/_LayoutCustomerSubPage.cshtml";
+
+    string refererHeader  = Context.Request.Headers["Referer"].ToString() ?? "";
+    bool hasQueryFlag     = Context.Request.Query.ContainsKey("mode") &&
+                            string.Equals(Context.Request.Query["mode"], "checkout", StringComparison.OrdinalIgnoreCase);
+    bool hasRefererFlag   = refererHeader.Contains("FoodXCheckOut", StringComparison.OrdinalIgnoreCase);
+    bool isCheckoutMode   = (ViewBag.IsCheckoutMode ?? false) || hasQueryFlag || hasRefererFlag;
+
+    var backUrl           = isCheckoutMode
+        ? Url.Action("FoodXCheckOut", "Customer")
+        : Url.Action("CustomerHome",  "Customer");
+
+    var addNewAddressUrl  = isCheckoutMode
+        ? Url.Action("CustomerReviewAddress", "Customer") + "?returnTo=checkout"
+        : Url.Action("CustomerReviewAddress", "Customer");
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/user/customerMain/CustomerSavedAddresses.css" asp-append-version="true" />
+}
+
+<div class="sa-page">
+
+    <header class="sa-header">
+        <button type="button" class="sa-back-btn" id="btnCloseAddresses"
+                data-back-url="@backUrl" aria-label="Go back">
+            <i class="ph ph-arrow-left"></i>
+        </button>
+        <h1 class="sa-header__title">Addresses</h1>
+    </header>
+
+    <main class="sa-content">
+
+        <div id="saved-addresses-feed"
+             data-checkout-mode="@(isCheckoutMode ? "true" : "false")"
+             role="list">
+        </div>
+
+        <div class="sa-add-wrapper">
+            <button type="button" class="sa-add-btn" id="btnAddAddress"
+                    data-add-url="@addNewAddressUrl">
+                <i class="ph ph-plus"></i> Add New Address
+            </button>
+        </div>
+
+    </main>
+
+</div>
+
+@section PageScripts {
+    <script src="~/js/user/customerMain/CustomerSavedAddresses.js" asp-append-version="true"></script>
+}

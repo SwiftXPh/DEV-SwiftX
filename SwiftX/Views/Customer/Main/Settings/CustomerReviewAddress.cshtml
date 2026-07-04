@@ -1,0 +1,78 @@
+@{
+    ViewData["Title"] = "Review Address";
+    Layout = "~/Views/Shared/_LayoutCustomerSubPage.cshtml";
+}
+
+@section Styles {
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl-js.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/user/customerMain/CustomerReviewAddress.css" asp-append-version="true" />
+}
+
+@* ── Map canvas ── *@
+<div class="ra-map" id="addressPickerMap">
+    <div class="ra-map__controls">
+
+        <button type="button" id="back-btn" class="ra-back-btn" aria-label="Go back">
+            <i class="ph ph-arrow-left"></i>
+        </button>
+
+        <div class="ra-search-wrap">
+            <i class="ph ph-map-trifold ra-search-icon"></i>
+            <input type="text" id="selectedAddressBar"
+                   class="ra-search-input"
+                   placeholder="Type an address or drag the map pin..."
+                   data-lng="" data-lat="" />
+        </div>
+
+    </div>
+</div>
+
+@* ── Form ── *@
+<div class="ra-form-section">
+    <div class="ra-container">
+
+        <h2 class="ra-form-title">Enter Address Details</h2>
+
+        <form id="addressForm" novalidate>
+
+            <div class="ra-field">
+                <label for="address">Address</label>
+                <input type="text" id="address" name="Address" required>
+            </div>
+
+            <div class="ra-field">
+                <label for="floor">Floor / Unit</label>
+                <input type="text" id="floor" name="Floor">
+            </div>
+
+            <div class="ra-field">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" name="Phone"
+                       placeholder="e.g. 09292096887" required>
+            </div>
+
+            <div class="ra-field">
+                <label for="contact">Contact Name</label>
+                <input type="text" id="contact" name="Contact" required>
+            </div>
+
+            <div class="ra-field">
+                <label for="landmark">Landmark / Notes</label>
+                <textarea id="landmark" name="Landmark"></textarea>
+            </div>
+
+            <label class="ra-checkbox">
+                <input type="checkbox" id="remember" checked>
+                Save this address
+            </label>
+
+            <button type="submit" class="ra-submit-btn">Save Address</button>
+
+        </form>
+    </div>
+</div>
+
+@section PageScripts {
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl-js.js"></script>
+    <script src="~/js/user/customerMain/CustomerReviewAddress.js" asp-append-version="true"></script>
+}
