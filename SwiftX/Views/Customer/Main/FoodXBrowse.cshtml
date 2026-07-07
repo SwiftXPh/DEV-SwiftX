@@ -1,0 +1,61 @@
+@{
+    ViewData["Title"] = "FoodX";
+    Layout = "~/Views/Shared/_LayoutCustomerSubPage.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/user/customerMain/FoodXBrowse.css" asp-append-version="true" />
+}
+
+<div class="fxb-page" id="homepage-root">
+
+    <header class="fxb-header">
+        <div class="fxb-header__bg"></div>
+
+        <div class="fxb-nav">
+            <a asp-controller="Customer" asp-action="CustomerHome"
+               class="fxb-nav__btn" aria-label="Go back">
+                <i class="ph ph-arrow-left"></i>
+            </a>
+
+            <div class="fxb-search-wrap">
+                <i class="ph ph-magnifying-glass fxb-search-icon"></i>
+                <input type="text" id="merchant-search-input"
+                       class="fxb-search-input"
+                       placeholder="Search for restaurants"
+                       autocomplete="off">
+            </div>
+
+            <button class="fxb-nav__btn" id="fxbCartBtn" aria-label="View cart">
+                <i class="ph ph-shopping-cart"></i>
+            </button>
+        </div>
+
+        <div class="fxb-hero-text">
+            <p class="fxb-hero-text__main">Your cravings, delivered.</p>
+            <p class="fxb-hero-text__sub">Ano'ng nasa menu natin today?</p>
+        </div>
+    </header>
+
+    <main class="fxb-content">
+
+        @* Default feed — populated by JS *@
+        <div class="fxb-feeds" id="default-feeds-wrapper"></div>
+
+        @* Search results — shown when user types *@
+        <div class="fxb-search-results" id="search-results-container" style="display:none;">
+            <div class="fxb-section">
+                <h2 class="fxb-search-heading">
+                    Results for: &ldquo;<span id="search-query-text" class="fxb-search-heading__term"></span>&rdquo;
+                </h2>
+                <div class="fxb-grid" id="search-results-feed"></div>
+            </div>
+        </div>
+
+    </main>
+
+</div>
+
+@section PageScripts {
+    <script src="~/js/user/FoodX/FoodXBrowse.js" asp-append-version="true"></script>
+}
