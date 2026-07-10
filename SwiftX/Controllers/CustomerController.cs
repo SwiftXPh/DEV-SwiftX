@@ -1,11 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SwiftX.Models; // 🌟 
+using SwiftX.Models;
 
-namespace SwiftX.Controllers { 
-
-public class CustomerController : Controller
+namespace SwiftX.Controllers
 {
+
+    public class CustomerController : Controller
+    {
+
+        // AUTH LEVEL
         public IActionResult UserLogin()
         {
             return View("Auth/UserLogin");
@@ -14,138 +17,60 @@ public class CustomerController : Controller
         {
             return View("Auth/CustomerSignup");
         }
-        public IActionResult CPPostOTP()
+        public IActionResult ForgotPasswordEmail()
         {
-            return View("Auth/CPPostOTP");
+            return View("Auth/ForgotPasswordEmail");
         }
-        public IActionResult CustomerChangePass()
+        public IActionResult ForgotPasswordOTP()
         {
-            return View("Auth/CustomerChangePass");
+            return View("Auth/ForgotPasswordOTP");
         }
-        public IActionResult ChangePassEnterEmail()
+        public IActionResult ChangePassword()
         {
-            return View("Auth/ChangePassEnterEmail");
-        }
-        public IActionResult ChangePassVerifyEmail()
-        {
-            return View("Auth/ChangePassVerifyEmail");
+            return View("Auth/ChangePassword");
         }
 
+        // CUSTOMER MAIN
         public IActionResult CustomerHome()
         {
-            var model = new CustomerHomeViewModel
-            {
-                // User data (loaded after login)
-                FirstName = string.Empty,
-                FullName = string.Empty,
-                ProfileImage = string.Empty,
-
-                // Application data
-                Services = new List<ServiceViewModel>
-        {
-            new()
-            {
-                Name = "FoodX",
-                Icon = "ph ph-hamburger",
-                Enabled = true
-            },
-            new()
-            {
-                Name = "ItemX",
-                Icon = "ph ph-package",
-                Enabled = true
-            },
-            new()
-            {
-                Name = "MotoX",
-                Icon = "ph ph-motorcycle",
-                Enabled = false
-            },
-            new()
-            {
-                Name = "CarX",
-                Icon = "ph ph-car",
-                Enabled = false
-            }
-        },
-
-                // Empty until backend/database is connected
-                Featured = new List<FeaturedBannerViewModel>(),
-                ComingSoon = new List<FeaturedBannerViewModel>()
-            };
-
-            return View("Main/CustomerHome", model);
+            return View("Main/CustomerHome");
         }
 
-        // 🌟 REVISED: Kailangan nitong magpasa ng List<MerchantViewModel> para sa binuo nating CSHTML loop
-        public IActionResult CustomerFoodXHome()
+        public IActionResult CustomerOrderHistory()
         {
-            // Sa produksyon, dito mo kukunin ang totoong data mula sa iyong DB Context
-            // Halimbawa: var merchants = _context.Merchants.ToList();
+            return View("Main/CustomerOrderHistory");
+        }
+        
 
-            var mockMerchants = new List<MerchantViewModel>
-            {
-                new MerchantViewModel
-                {
-                    Id = 1,
-                    Name = "Jollibee - Don Carlos",
-                    ImageUrl = "https://via.placeholder.com/400x140",
-                    RestaurantType = "Fast Food",
-                    Rating = 4.7,
-                    Distance = "1.2 km" // Gagamitin ng bagong dynamic distance implementation natin
-                },
-                new MerchantViewModel
-                {
-                    Id = 2,
-                    Name = "McDonald's - Bukidnon Highway",
-                    ImageUrl = "https://via.placeholder.com/400x140",
-                    RestaurantType = "Burgers & Fries",
-                    Rating = 4.5,
-                    Distance = "2.5 km"
-                },
-                new MerchantViewModel
-                {
-                    Id = 3,
-                    Name = "Chowking - Poblacion",
-                    ImageUrl = "https://via.placeholder.com/400x140",
-                    RestaurantType = "Chinese Fast Food",
-                    Rating = 4.2,
-                    Distance = "0.8 km"
-                }
-            };
-
-            return View("FoodX/CustomerFoodXHome", mockMerchants);
+        // FOODX
+        public IActionResult FoodXBrowse()
+        {
+            return View("Main/FoodXBrowse");
+        }
+        public IActionResult FoodXMenu()
+        {
+            return View("Main/FoodXMenu");
+        }
+        public IActionResult FoodXCart()
+        {
+            return View("Main/FoodXCart");
+        }
+        public IActionResult FoodXCheckOut()
+        {
+            return View("Main/FoodXCheckOut");
+        }
+        public IActionResult FoodXPayment()
+        {
+            return View("Main/FoodXPayment");
+        }
+        public IActionResult FoodXTracking()
+        {
+            return View("Main/FoodXTracking");
         }
 
-        public IActionResult FoodXRestaurant()
-        {
-            return View("FoodX/FoodXRestaurant");
-        }
 
-        public IActionResult CustomerItemXHome()
-        {
-            return View("ItemX/CustomerItemXHome");
-        }
-        public IActionResult ItemXPickUp()
-        {
-            return View("ItemX/ItemXPickUp");
-        }
-        public IActionResult ItemXDropOff()
-        {
-            return View("ItemX/ItemXDropOff");
-        }
-        public IActionResult ItemXReviewOrder()
-        {
-            return View("ItemX/ItemXReviewOrder");
-        }
-        public IActionResult ItemXCheckOut()
-        {
-            return View("ItemX/ItemXCheckOut");
-        }
-        public IActionResult ItemXOrder()
-        {
-            return View("ItemX/ItemXOrder");
-        }
+
+        // ACCOUNT SETTINGS
 
         public IActionResult CustomerAccountInfo()
         {
@@ -153,41 +78,24 @@ public class CustomerController : Controller
         }
         public IActionResult CustomerSecurity()
         {
-            return View("Main/CustomerSecurity");
+            return View("Main/Settings/CustomerSecurity");
         }
 
-        public IActionResult CustomerReviewAddress(string returnTo, int? addressId, string fullAddress)
+
+        public IActionResult CustomerReviewAddress()
         {
-            ViewBag.ReturnTo = returnTo;
-            return View("Main/CustomerReviewAddress");
+            return View("Main/Settings/CustomerReviewAddress");
+
+        }
+        public IActionResult CustomerSavedAddresses()
+        {
+            return View("Main/Settings/CustomerSavedAddresses");
         }
 
-        public IActionResult CustomerOrderHistory()
-        {
-            return View("Main/CustomerOrderHistory");
-        }
 
-        public IActionResult CustomerSavedAddresses(string mode)
-        {
-            ViewBag.IsCheckoutMode = (mode == "checkout");
-            return View("Main/CustomerSavedAddresses");
-        }
 
-        public IActionResult CustomerFoodXCart()
-        {
-            return View("FoodX/CustomerFoodXCart");
-        }
-        public IActionResult FoodXCheckOut()
-        {
-            return View("FoodX/FoodXCheckOut");
-        }
-        public IActionResult FoodXPaymentAndAddress()
-        {
-            return View("FoodX/FoodXPaymentAndAddress");
-        }
-        public IActionResult FoodXTracking()
-        {
-            return View("FoodX/FoodXTracking");
-        }
+
+
+
     }
 }
