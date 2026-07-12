@@ -1,0 +1,35 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] | SwiftX</title>
+    <link rel="stylesheet" href="~/css/output.css" asp-append-version="true" /> <!-- CDN for Tailwind CSS-->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/main.css" asp-append-version="true" />
+
+    <link rel="stylesheet" href="~/lib/phosphor-icons/regular/style.css" />
+    <link rel="stylesheet" href="~/lib/phosphor-icons/bold/style.css" />
+    <link rel="stylesheet" href="~/lib/phosphor-icons/fill/style.css" />
+    <link rel="icon" type="image/x-icon" href="~/favicon.ico">
+
+    @RenderSection("Styles", required: false)
+</head>
+<body class="__fullpage">
+
+    <main role="main" class="mt-0 __main">
+        @RenderBody()
+    </main>
+
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("PageScripts", required: false)
+</body>
+</html>

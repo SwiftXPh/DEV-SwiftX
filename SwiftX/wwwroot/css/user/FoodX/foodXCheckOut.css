@@ -1,0 +1,542 @@
+/* ==========================================================
+   foodXCheckOut.css  —  v2.0.0
+   Scoped to: foodXCheckOut.cshtml
+   Layout shell: _LayoutFoodX.cshtml
+   Tokens from: fonts.css / colors.css (via main.css)
+   ========================================================== */
+
+:root {
+    --fxco-content-max-width: 600px;
+}
+
+/* --- RESET & BODY --- */
+* {
+    box-sizing: border-box;
+}
+
+.fxco-page {
+    font-family: var(--font-secondary);
+    background: var(--dark-bg-color);
+    color: var(--light-text-color);
+    padding-bottom: 180px;
+    line-height: var(--lh-body);
+}
+
+/* --- HEADER --- */
+.fxco-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 21px 20px;
+    background: var(--primary-color);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+}
+
+.fxco-back-circle {
+    position: absolute;
+    top: 12px;
+    left: 20px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: var(--light-text-color);
+    color: var(--dark-text-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    cursor: pointer;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.fxco-back-circle:hover {
+    transform: scale(1.05);
+    background: var(--light-text-color);
+}
+
+.fxco-header h2 {
+    margin: 0;
+    font-family: var(--font-main);
+    font-size: var(--fs-h4);
+    font-weight: var(--fw-medium);
+    letter-spacing: -0.3px;
+    width: 100%;
+    text-align: center;
+}
+
+/* --- CONTAINER --- */
+.fxco-container {
+    padding: 20px 16px;
+    max-width: var(--fxco-content-max-width);
+    margin: 0 auto;
+}
+
+/* --- SECTION HEADINGS --- */
+.fxco-section-title {
+    font-family: var(--font-main);
+    font-size: var(--fs-h4);
+    margin: 20px 0 12px 0;
+    letter-spacing: -0.2px;
+}
+
+.fxco-section-subtitle {
+    font-size: var(--fs-small);
+    color: rgba(255, 255, 255, 0.45);
+    margin-top: -8px;
+    margin-bottom: 16px;
+}
+
+/* --- DELIVERY & ADDRESS CARDS --- */
+.fxco-delivery-card,
+.fxco-address-box {
+    background: var(--dark-bg-card);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+    margin-top: 10px;
+    border: 1px solid #383838;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+}
+
+.fxco-delivery-card i.ph-truck {
+    font-size: 36px;
+    color: var(--primary-color);
+}
+
+.fxco-delivery-info h4 {
+    margin: 0;
+    font-size: var(--fs-label);
+    font-weight: var(--fw-semibold);
+}
+
+.fxco-delivery-info p {
+    margin: 4px 0 0;
+    font-size: var(--fs-micro);
+    color: rgba(255, 255, 255, 0.45);
+}
+
+.fxco-change-link {
+    text-decoration: underline;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.45);
+    font-size: var(--fs-micro);
+    margin-left: 4px;
+}
+
+/* Address box inner layout */
+.fxco-address-icon-side i.ph-map-pin-area {
+    font-size: 24px;
+    color: var(--primary-color);
+}
+
+.fxco-address-content-side {
+    flex: 1;
+    min-width: 0;
+}
+
+.fxco-address-label {
+    font-size: var(--fs-label);
+    color: var(--light-text-color);
+    font-weight: var(--fw-semibold);
+    margin-bottom: 2px;
+}
+
+.fxco-address-text {
+    font-size: var(--fs-label);
+    color: var(--light-text-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.fxco-address-sub {
+    color: rgba(255, 255, 255, 0.4);
+    margin-top: 4px;
+    font-size: var(--fs-small);
+}
+
+.fxco-address-arrow-side i {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+/* --- EMPTY STATE --- */
+.fxco-empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: rgba(255, 255, 255, 0.45);
+}
+
+.fxco-empty-state p {
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+}
+
+.fxco-empty-link {
+    color: var(--primary-color);
+    font-weight: var(--fw-semibold);
+    text-decoration: none;
+}
+
+/* --- RESTAURANT NAME --- */
+.fxco-restaurant-name {
+    font-family: var(--font-main);
+    font-weight: var(--fw-semibold);
+    font-size: var(--fs-body);
+    color: var(--light-text-color);
+}
+
+/* --- ORDER SUMMARY ITEMS --- */
+.fxco-item {
+    background: var(--dark-bg-card);
+    border-radius: 12px;
+    display: flex;
+    margin-bottom: 12px;
+    overflow: hidden;
+    height: 95px;
+    border: 1px solid #383838;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2)
+}
+
+.fxco-item-img {
+    width: 105px;
+    height: 100%;
+    object-fit: cover;
+}
+
+.fxco-item-details {
+    flex: 1;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.fxco-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.fxco-item-name {
+    font-size: var(--fs-label);
+    font-weight: 550;
+    margin-bottom: 6px;
+    max-width: 75%;
+}
+
+.fxco-item-price {
+    font-size: var(--fs-small);
+    font-weight: var(--fw-semibold);
+    color: var(--light-text-color);
+}
+
+.fxco-item-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+/* Quantity Selector Pill Container */
+.fxco-qty-pill {
+    background: #e2e8f0;
+    color: var(--dark-text-color);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    padding: 3px 12px;
+    gap: 14px;
+    font-size: var(--fs-label);
+    font-weight: var(--fw-semibold);
+}
+
+.fxco-qty-btn {
+    cursor: pointer;
+    user-select: none;
+    background: none;
+    border: none;
+    color: var(--dark-text-color);
+    font-size: 16px;
+    font-weight: var(--fw-semibold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fxco-trash-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.fxco-trash-btn i {
+    font-size: 20px;
+    color: #4b5565;
+}
+
+.fxco-change-size-btn {
+    background: #444444;
+    color: var(--light-text-color);
+    border: none;
+    border-radius: 16px;
+    font-size: var(--fs-micro);
+    padding: 5px 12px;
+    font-weight: var(--fw-semibold);
+    cursor: pointer;
+}
+
+/* --- TOTALS BREAKDOWN SECTION --- */
+.fxco-totals-section {
+    border-top: 1.5px solid var(--primary-color);
+    margin-top: 24px;
+    padding-top: 16px;
+}
+
+.fxco-total-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: var(--fs-label);
+}
+
+.fxco-total-row p:first-child {
+    color: var(--light-text-color);
+}
+
+.fxco-total-row p:last-child {
+    font-weight: var(--fw-semibold);
+}
+
+.fxco-total-row.fxco-delivery-row p:first-child {
+    color: rgba(255, 255, 255, 0.45);
+    font-size: var(--fs-small);
+}
+
+/* --- FIXED FOOTER COMPONENT --- */
+.fxco-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    background: #1c1c1c;
+    padding: 16px 0 24px 0;
+    z-index: 999;
+}
+
+.fxco-footer-content {
+    max-width: var(--fxco-content-max-width);
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.fxco-grand-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.fxco-total-label {
+    color: var(--light-text-color);
+    font-size: 1.05rem;
+    font-weight: var(--fw-medium);
+}
+
+.fxco-total-price {
+    color: var(--light-text-color);
+    font-weight: var(--fw-semibold);
+    font-size: 1.2rem;
+}
+
+.fxco-review-btn {
+    background: var(--primary-color);
+    color: var(--light-text-color);
+    border: none;
+    width: 100%;
+    padding: 16px;
+    border-radius: 12px;
+    font-size: var(--fs-body);
+    font-weight: var(--fw-semibold);
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(211, 69, 2, 0.15);
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.fxco-review-btn:active {
+    transform: scale(0.99);
+    filter: brightness(1.1);
+}
+
+/* --- CROSS-SELL RECOMMENDATIONS --- */
+.fxco-cross-sell-section {
+    border-top: 1px dashed rgba(255, 255, 255, 0.15);
+    margin-top: 24px;
+    padding-top: 20px;
+}
+
+.fxco-cross-sell-title {
+    font-size: var(--fs-body);
+    font-weight: var(--fw-semibold);
+    color: rgba(255, 255, 255, 0.45);
+    margin-bottom: 14px;
+    letter-spacing: -0.1px;
+}
+
+#cross-sell-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.fxco-cross-item-card {
+    background: var(--dark-bg-card);
+    border: 1px solid #383838;
+    border-radius: 12px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.fxco-cross-item-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.fxco-cross-item-img {
+    width: 52px;
+    height: 52px;
+    border-radius: 8px;
+    object-fit: cover;
+    background: #222;
+}
+
+.fxco-cross-item-info h5 {
+    margin: 0 0 2px 0;
+    font-size: 0.7rem;
+    font-weight: 550;
+    color: var(--light-text-color);
+}
+
+.fxco-cross-item-price {
+    font-size: 0.7rem;
+    font-weight: var(--fw-semibold);
+    color: var(--light-text-color);
+}
+
+.fxco-cross-add-btn {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: var(--light-text-color);
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: var(--fw-medium);
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.fxco-cross-add-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.fxco-cross-qty-pill {
+    background: #e2e8f0;
+    color: var(--dark-text-color);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    padding: 4px 10px;
+    gap: 10px;
+    font-size: var(--fs-small);
+    font-weight: var(--fw-semibold);
+}
+
+.fxco-cross-qty-btn {
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: var(--dark-text-color);
+    font-size: 14px;
+    font-weight: var(--fw-semibold);
+    padding: 0 4px;
+}
+
+/* --- RESPONSIVE OPTIMIZATIONS --- */
+@media (max-width: 320px) {
+    .fxco-container {
+        padding: 16px 12px;
+    }
+
+    .fxco-item-name {
+        font-size: 0.65rem;
+    }
+
+    .fxco-item-price {
+        font-size: 10px;
+    }
+
+    .fxco-review-btn {
+        padding: 14px;
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 375px) {
+    .fxco-section-title {
+        font-size: 1.1rem;
+    }
+
+    .fxco-qty-pill {
+        gap: 10px;
+        padding: 3px 10px;
+    }
+
+    .fxco-item-name {
+        font-size: 0.80rem;
+    }
+
+    .fxco-item-price {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 425px) {
+    .fxco-delivery-card,
+    .fxco-address-box {
+        padding: 12px;
+    }
+
+    .fxco-item-img {
+        width: 90px;
+    }
+
+    .fxco-cross-item-img {
+        width: 45px;
+        height: 45px;
+    }
+}
+
+@media (max-height: 600px) {
+    .fxco-footer {
+        padding: 10px 0 16px 0;
+    }
+
+    .fxco-container {
+        padding-bottom: 80px;
+    }
+}

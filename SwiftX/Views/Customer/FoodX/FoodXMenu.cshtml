@@ -1,0 +1,52 @@
+@{
+    ViewData["Title"] = "Restaurant";
+    Layout = "~/Views/Shared/_LayoutCustomerSubPage.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/user/FoodX/FoodXMenu.css" asp-append-version="true" />
+}
+
+<div class="fxm-page">
+
+    @* ── Hero banner ── *@
+    <div class="fxm-hero">
+        <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=800"
+             alt="Restaurant banner" class="fxm-hero__img">
+
+        <div class="fxm-hero__nav">
+            <button type="button" class="fxm-icon-btn" id="fxmBackBtn" aria-label="Go back">
+                <i class="ph ph-arrow-left"></i>
+            </button>
+            <button type="button" class="fxm-icon-btn" id="fxmCartBtn" aria-label="View cart">
+                <i class="ph ph-shopping-cart"></i>
+                <span class="fxm-cart-badge" id="cart-count"></span>
+            </button>
+        </div>
+
+        <div class="fxm-hero__logo">
+            <img src="https://via.placeholder.com/55" alt="Restaurant logo">
+        </div>
+    </div>
+
+    @* ── Store info ── *@
+    <div class="fxm-store-info">
+        <h2 class="fxm-store-info__name">McDonald's - Bukidnon Highway</h2>
+        <p class="fxm-store-info__meta">Fast Food &bull; 2.5 km away</p>
+    </div>
+
+    @* ── Category tabs ── *@
+    <div class="fxm-tabs" id="fxm-tabs">
+        <div class="fxm-tab active" onclick="switchTab('Chicken', this)">Chicken</div>
+        <div class="fxm-tab" onclick="switchTab('Burgers', this)">Burgers</div>
+        <div class="fxm-tab" onclick="switchTab('Desserts', this)">Desserts</div>
+    </div>
+
+    @* ── Menu list — populated by JS ── *@
+    <div class="fxm-menu" id="menu-list"></div>
+
+</div>
+
+@section PageScripts {
+    <script src="~/js/user/FoodX/FoodXMenu.js" asp-append-version="true"></script>
+}

@@ -1,0 +1,121 @@
+﻿@*    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860*@
+@{
+    ViewData["Title"] = "FoodX Payment";
+    Layout = "~/Views/Shared/_LayoutCustomerSubPage.cshtml";
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/user/FoodX/foodXPayment.css" asp-append-version="true" />
+}
+<div class="fxpm-page">
+    <header class="fxpm-header">
+        <a asp-controller="Customer" asp-action="FoodXCheckOut" class="fxpm-back-circle">
+            <i class="ph ph-arrow-left" style="font-size: 20px; color: black;"> </i>
+        </a>
+        <h2>Payment and Order Summary</h2>
+    </header>
+    <main class="fxpm-dashboard">
+        <div class="fxpm-column">
+            <div class="fxpm-card">
+                <div class="fxpm-card-title">
+                    <span>Estimated Delivery</span>
+                    <span class="__text-primary">15-25 Mins</span>
+                </div>
+                <div class="fxpm-map-frame"></div>
+            </div>
+
+            <div class="fxpm-card">
+                <div class="fxpm-card-title">Delivery Method</div>
+                <div class="fxpm-delivery-option active" onclick="selectDelivery(this)">
+                    <div class="fxpm-radio-circle"></div>
+                    <div>
+                        <strong>StandardX</strong>
+                        <p>Reliable and consistent delivery window.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="fxpm-column">
+            <div class="fxpm-card">
+                <div class="fxpm-card-title">Payment Method</div>
+                <div class="fxpm-payment-option active" data-method="Cash" onclick="selectPayment(this)">
+                    <div class="fxpm-radio-circle"></div>
+                    <div>
+                        <div class="fxpm-bold-text">Cash</div>
+                        <div class="fxpm-sub-text">Pay upon arrival</div>
+                    </div>
+                </div>
+                <div class="fxpm-payment-option" data-method="GCash" onclick="selectPayment(this)">
+                    <div class="fxpm-radio-circle"></div>
+                    <div>
+                        <div class="fxpm-bold-text">GCash via Rider</div>
+                        <div class="fxpm-sub-text">Scan QR on delivery</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="fxpm-card">
+                <div class="fxpm-card-title">Note to Rider</div>
+                <textarea class="fxpm-rider-note-area" id="riderNote" rows="3" placeholder="e.g. Please leave at the guard house..."></textarea>
+                <div class="fxpm-tip-text"><span>ℹ</span> Helpful for finding your location.</div>
+            </div>
+
+            <div class="fxpm-card">
+                <div class="fxpm-card-title">Billing Preferences</div>
+                <div class="fxpm-toggle-box" onclick="toggleSwitch()">
+                    <span>With Physical Receipt</span>
+                    <div class="fxpm-switch on" id="receiptToggle"></div>
+                </div>
+            </div>
+
+            <!-- Cutlery Card -->
+            <div class="fxpm-card">
+                <div class="fxpm-card-title">Cutlery</div>
+                <div class="fxpm-toggle-box" onclick="toggleCutlery()">
+                    <span id="cutleryText">Cutlery Included</span>
+                    <div class="fxpm-switch on" id="cutleryToggle"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="fxpm-column">
+            <div class="fxpm-card fxpm-receipt-card">
+                <div class="fxpm-card-title">Final Summary</div>
+
+                <div class="fxpm-receipt-items">
+                    <div id="payment-items-list">
+                    </div>
+                    <div class="fxpm-receipt-divider"></div>
+                    <div class="fxpm-receipt-row fxpm-subtotal"><span>Subtotal</span> <span id="subtotal-val">₱ 0.00</span></div>
+                    <div class="fxpm-receipt-row fxpm-subtotal"><span>Delivery Fee</span> <span id="delivery-val">₱ 39.00</span></div>
+                </div>
+
+                <div class="fxpm-final-total">
+                    <div class="fxpm-total-amount" id="grand-total-val">₱ 0.00</div>
+                    <a asp-controller="Customer" asp-action="FoodXTracking" class="fxpm-order-btn" id="placeOrderBtn" onclick="handleOrder()">PLACE ORDER NOW</a>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+@section PageScripts {
+    <script src="~/js/user/FoodX/foodXPayment.js" asp-append-version="true"></script>
+
+    <!-- Cutlery Toggle Script handler -->
+    <script>
+        function toggleCutlery() {
+        const toggle = document.getElementById('cutleryToggle');
+        const text = document.getElementById('cutleryText');
+
+        if (toggle.classList.contains('on')) {
+        toggle.classList.remove('on');
+        // Replaced raw nature emoji with a Phosphor icon markup pattern
+        text.innerHTML = 'No thanks, saving nature! <i class="ph ph-tree" style="font-size: 18px; vertical-align: middle; color: #22c55e;"></i>';
+        } else {
+        toggle.classList.add('on');
+        text.innerHTML = 'Cutlery Included.';
+        }
+        }
+    </script>
+}

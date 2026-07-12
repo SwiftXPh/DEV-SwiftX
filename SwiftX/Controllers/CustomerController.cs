@@ -45,33 +45,32 @@ namespace SwiftX.Controllers
         // FOODX
         public IActionResult FoodXBrowse()
         {
-            return View("Main/FoodXBrowse");
+            return View("FoodX/FoodXBrowse");
         }
         public IActionResult FoodXMenu()
         {
-            return View("Main/FoodXMenu");
+            return View("FoodX/FoodXMenu");
         }
         public IActionResult FoodXCart()
         {
-            return View("Main/FoodXCart");
+            return View("FoodX/FoodXCart");
         }
         public IActionResult FoodXCheckOut()
         {
-            return View("Main/FoodXCheckOut");
+            return View("FoodX/FoodXCheckOut");
         }
         public IActionResult FoodXPayment()
         {
-            return View("Main/FoodXPayment");
+            return View("FoodX/FoodXPayment");
         }
         public IActionResult FoodXTracking()
         {
-            return View("Main/FoodXTracking");
+            return View("FoodX/FoodXTracking");
         }
 
 
 
         // ACCOUNT SETTINGS
-
         public IActionResult CustomerAccountInfo()
         {
             return View("Main/CustomerAccountInfo");
@@ -91,11 +90,6 @@ namespace SwiftX.Controllers
         {
             return View("Main/Settings/CustomerSavedAddresses");
         }
-
-
-
-
-
 
     }
 }
