@@ -1,0 +1,44 @@
+
+@* Views/Shared/_ModalMerchantAdd.cshtml*@
+
+<div id="merchant-add-modal" class="admin-modal-overlay">
+
+    <div class="mWindow">
+
+        <form id="merchantForm" class="mForm">
+            <input type="hidden" id="editIndex" value="-1">
+
+            <h2 id="formTitle" class="mTitle .__text-light" style="text-align: center; margin-bottom: 20px;">Add New Merchant</h2>
+
+            <div class="mGroup">
+                <label id="labelName" class="mLabel .__text-light">Business Name</label>
+                <input type="text" id="businessName" class="mInput" required placeholder="Mcdonalds Valencia">
+            </div>
+
+            <div class="mGroup">
+                <label id="labelLocation" class="mLabel .__text-light">Business Location</label>
+                <input type="text" id="businessLocation" class="mInput" required placeholder="Choose on Map">
+            </div>
+
+            <div class="mGroup">
+                <label id="labelCategory" class="mLabel .__text-light">Business Category</label>
+                <select id="businessCategory" class="mSelect" required>
+                    <option value="" disabled selected>Dropdown: Restaurants, Cafe etc</option>
+                    <option value="Restaurant">Restaurant</option>
+                    <option value="Cafe">Cafe</option>
+                </select>
+            </div>
+
+            <div class="mGroup">
+                <label id="labelLogo" class="mLabel .__text-light">Business Logo</label>
+                <div class="mUpload">
+                    <input type="file" id="businessLogo" class="mFile" accept="image/*">
+                    <span class=".__text-light">Upload Photo</span>
+                </div>
+            </div>
+
+            <button type="submit" class="mSaveBtn .__bg-nav .__text-light">Save</button>
+
+            <button type="button" class="mCancelBtn" onclick="closeModal('merchant-add-modal')">Cancel</button>
+        </form>
+    </div></div>

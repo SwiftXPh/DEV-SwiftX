@@ -50,6 +50,9 @@
                 <p style="font-size:11px;color:rgba(255,255,255,0.3);margin-top:3px;">71 total &middot; 54 active &middot; 6 pending</p>
             </div>
             <div class="admin-table-actions">
+<button class="admin-filter-btn" onclick="openModal('merchant-add-modal')">
+    + Add Merchant
+</button>
                 <div class="admin-search">
                     <i class="ph ph-magnifying-glass"></i>
                     <input type="text" id="merchant-search" placeholder="Search merchants..." />
@@ -224,6 +227,7 @@
 @await Html.PartialAsync("_ModalMerchantApplication")
 @await Html.PartialAsync("_ModalMerchantDetail")
 @await Html.PartialAsync("_ModalMerchantEdit")
+@await Html.PartialAsync("_ModalMerchantAdd")
 @*
     @await Html.PartialAsync("_ModalMerchantSettlement")
 
