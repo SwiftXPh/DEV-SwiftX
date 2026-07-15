@@ -1,44 +1,66 @@
-
-@* Views/Shared/_ModalMerchantAdd.cshtml*@
+@* Views/Shared/_ModalMerchantAdd.cshtml *@
 
 <div id="merchant-add-modal" class="admin-modal-overlay">
+    <div class="admin-modal admin-modal--sm">
 
-    <div class="mWindow">
-
-        <form id="merchantForm" class="mForm">
-            <input type="hidden" id="editIndex" value="-1">
-
-            <h2 id="formTitle" class="mTitle .__text-light" style="text-align: center; margin-bottom: 20px;">Add New Merchant</h2>
-
-            <div class="mGroup">
-                <label id="labelName" class="mLabel .__text-light">Business Name</label>
-                <input type="text" id="businessName" class="mInput" required placeholder="Mcdonalds Valencia">
+        <div class="admin-modal__header">
+            <div class="admin-modal__title">
+                <i class="ph ph-storefront"></i>
+                <span id="formTitle">Add New Merchant</span>
             </div>
+            <button type="button" class="admin-modal__close" onclick="closeModal('merchant-add-modal')" aria-label="Close">
+                <i class="ph ph-x"></i>
+            </button>
+        </div>
 
-            <div class="mGroup">
-                <label id="labelLocation" class="mLabel .__text-light">Business Location</label>
-                <input type="text" id="businessLocation" class="mInput" required placeholder="Choose on Map">
-            </div>
+        <div class="admin-modal__body">
+            <form id="merchantForm">
+                <input type="hidden" id="editIndex" value="-1">
 
-            <div class="mGroup">
-                <label id="labelCategory" class="mLabel .__text-light">Business Category</label>
-                <select id="businessCategory" class="mSelect" required>
-                    <option value="" disabled selected>Dropdown: Restaurants, Cafe etc</option>
-                    <option value="Restaurant">Restaurant</option>
-                    <option value="Cafe">Cafe</option>
-                </select>
-            </div>
+                <div class="emod-grid">
 
-            <div class="mGroup">
-                <label id="labelLogo" class="mLabel .__text-light">Business Logo</label>
-                <div class="mUpload">
-                    <input type="file" id="businessLogo" class="mFile" accept="image/*">
-                    <span class=".__text-light">Upload Photo</span>
+                    <div class="emod-field emod-field--full">
+                        <label id="labelName" class="emod-field__label" for="businessName">Business Name</label>
+                        <input type="text" id="businessName" class="admin-modal-input" required placeholder="Mcdonalds Valencia">
+                    </div>
+
+                    <div class="emod-field emod-field--full">
+                        <label id="labelLocation" class="emod-field__label" for="businessLocation">Business Location</label>
+                        <input type="text" id="businessLocation" class="admin-modal-input" required placeholder="Choose on Map">
+                    </div>
+
+                    <div class="emod-field emod-field--full">
+                        <label id="labelCategory" class="emod-field__label" for="businessCategory">Business Category</label>
+                        <select id="businessCategory" class="admin-modal-input" required>
+                            <option value="" disabled selected>Dropdown: Restaurants, Cafe etc</option>
+                            <option value="Restaurant">Restaurant</option>
+                            <option value="Cafe">Cafe</option>
+                        </select>
+                    </div>
+
+                    <div class="emod-field emod-field--full">
+                        <label id="labelLogo" class="emod-field__label" for="businessLogo">Business Logo</label>
+                        <div class="admin-modal-upload" id="businessLogoUpload">
+                            <input type="file" id="businessLogo" class="admin-modal-upload__input" accept="image/*">
+                            <span class="admin-modal-upload__label">
+                                <img id="businessLogoPreview" class="admin-modal-upload__preview" alt="">
+                                <i class="ph ph-upload-simple"></i>
+                                <span id="businessLogoText">Upload Photo</span>
+                            </span>
+                        </div>
+                        <span id="businessLogoError" class="admin-modal-upload-error"></span>
+                    </div>
+
                 </div>
-            </div>
 
-            <button type="submit" class="mSaveBtn .__bg-nav .__text-light">Save</button>
+                <div class="admin-modal-footer-actions">
+                    <button type="button" class="admin-modal-btn admin-modal-btn--ghost" onclick="closeModal('merchant-add-modal')">Cancel</button>
+                    <button type="submit" class="admin-modal-btn admin-modal-btn--primary">Save</button>
+                </div>
+            </form>
+        </div>
 
-            <button type="button" class="mCancelBtn" onclick="closeModal('merchant-add-modal')">Cancel</button>
-        </form>
-    </div></div>
+    </div>
+</div>
+
+

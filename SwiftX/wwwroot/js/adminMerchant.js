@@ -1,21 +1,64 @@
+﻿// ==========================================
+// ELEMENTS & VARIABLES
 // ==========================================
-// ELEMENTS & VARIABLES (Updated to match HTML/CSS)
-// ==========================================
-// Note: Kept 'merchant-add-modal' and 'closeOverlayBtn' to match preserved HTML IDs
 const overlay = document.getElementById('merchant-add-modal');
 const form = document.getElementById('merchantForm');
 const editIndexInput = document.getElementById('editIndex');
-const mainContainer = document.querySelector('.main-container');
-const closeBtn = document.getElementById('closeOverlayBtn');
+const logoInput = document.getElementById('businessLogo');
+const logoUpload = document.getElementById('businessLogoUpload');
+const logoText = document.getElementById('businessLogoText');
+const logoError = document.getElementById('businessLogoError');
+const logoPreview = document.getElementById('businessLogoPreview');
+
+const MAX_MB = 10;
+const MAX_BYTES = MAX_MB * 1024 * 1024;
+
+// Logo upload — has-file state + 10MB limit (same MAX_MB pattern as
+// rider_signup.js / merchant_signup.js)
+if (logoInput) {
+    logoInput.addEventListener('change', () => {
+        const file = logoInput.files && logoInput.files[0];
+
+        if (file && file.size > MAX_BYTES) {
+            if (logoError) {
+                logoError.textContent = `File too large — max ${MAX_MB} MB.`;
+                logoError.classList.add('visible');
+            }
+            logoInput.value = ''; // clear so the oversized file can't submit
+            logoUpload.classList.remove('has-file');
+            logoText.textContent = 'Upload Photo';
+            if (logoPreview) logoPreview.src = '';
+            return;
+        }
+
+        if (logoError) {
+            logoError.textContent = '';
+            logoError.classList.remove('visible');
+        }
+        logoUpload.classList.toggle('has-file', !!file);
+        logoText.textContent = file ? file.name : 'Upload Photo';
+
+        // Build a thumbnail preview from the picked file (image/* only,
+        // enforced by the input's accept attr + this guard)
+        if (file && logoPreview) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                logoPreview.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        } else if (logoPreview) {
+            logoPreview.src = '';
+        }
+    });
+}
 
 // ==========================================
 // OVERLAY & DYNAMIC LABELS LOGIC
 // ==========================================
 const toggleOverlay = (show, mode = 'merchant', isEdit = false) => {
-    // Toggles your short camelCase overlay class
-    overlay.classList.toggle('mOverlay', show);
-    // Toggles the hidden state class
-    overlay.classList.toggle('hidden', !show);
+    // .admin-modal-overlay is shown/hidden via the shared '.open' class
+    // (see .admin-modal-overlay.open in modal.css) — not 'mOverlay'/'hidden'.
+    overlay.classList.toggle('open', show);
 
     if (show) {
         const title = document.getElementById('formTitle');
@@ -63,12 +106,33 @@ const toggleOverlay = (show, mode = 'merchant', isEdit = false) => {
     } else {
         form.reset();
         editIndexInput.value = -1;
+        if (logoUpload) logoUpload.classList.remove('has-file');
+        if (logoText) logoText.textContent = 'Upload Photo';
+        if (logoPreview) logoPreview.src = '';
+        if (logoError) {
+            logoError.textContent = '';
+            logoError.classList.remove('visible');
+        }
     }
 };
 
-// Cancel Button Listener (Targeting Close Button inside the form)
-if (closeBtn) {
-    closeBtn.addEventListener('click', () => {
+// ==========================================
+// CLOSE HANDLING
+// The modal partial's Cancel button and header close (X) button
+// both call closeModal('merchant-add-modal') via inline onclick.
+// That function wasn't defined anywhere in the files provided,
+// so it's defined here.
+//
+// IMPORTANT: if a global closeModal() already exists in some other
+// shared/site-wide script you haven't shown me, delete this
+// definition instead — two functions with the same name will
+// silently conflict, and whichever <script> loads last wins.
+// ==========================================
+function closeModal(id) {
+    if (id === 'merchant-add-modal') {
         toggleOverlay(false);
-    });
+        return;
+    }
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('open');
 }

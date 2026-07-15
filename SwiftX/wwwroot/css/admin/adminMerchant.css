@@ -1,275 +1,135 @@
-/* ==========================================================================
-   1. Variables & Root Theme (Updated with Modal Specifics)
-   ========================================================================== */
-:root {
-    --dark-bg-color: #2b2c2e;
-    --field-bg-color: #212123;
-    --border-color: #444547;
-    --light-text-color: #ffffff;
-    --subtle-text-color: #8a8a8f;
-    --primary-color: #d84b06;
-    --modal-overlay-bg: rgba(0, 0, 0, 0.8);
-    --modal-border-high-contrast: #55575c;
-    --modal-border-subtle: #3d3e42;
-    --modal-group-bg: rgba(0, 0, 0, 0.1);
-    --modal-shadow: rgba(0, 0, 0, 0.5);
-    --save-btn-hover-bg: #e0e0e0;
-    --cancel-btn-hover-bg: rgba(255, 255, 255, 0.05);
-    --upload-zone-hover-bg: rgba(255, 255, 255, 0.02);
-}
+/* ══════════════════════════════════════════════════════════
+   MERCHANT MODAL — Logo upload zone
+   Everything else (overlay, shell, header, form fields, buttons)
+   now reuses the shared .admin-modal system defined in modal.css:
+   see .admin-modal-overlay / .admin-modal / .admin-modal__header /
+   .emod-grid / .emod-field / .admin-modal-input / .admin-modal-btn.
+   This file no longer redeclares :root variables — it uses the
+   tokens already defined in fonts.css.
+   ══════════════════════════════════════════════════════════ */
 
-/* ==========================================================================
-   5. Compact Modals (Using Root Variables)
-   ========================================================================== */
-.mOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    height: 100dvh; /* Mobile browser safe-height targeting dynamic viewport */
-    background: var(--modal-overlay-bg);
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important; /* Forces perfect vertical centering */
-    z-index: 1000;
-}
-
-/* Hidden utility state managed by your JS engine */
-.hidden {
-    display: none !important;
-}
-
-/* Main Modal Container with a distinct border */
-.mWindow {
-    background-color: var(--dark-bg-color);
-    border: 2px solid var(--modal-border-high-contrast);
-    padding: 35px 30px;
-    border-radius: 16px;
-    width: 450px;
-    max-width: 90%;
-    box-shadow: 0 10px 30px var(--modal-shadow);
-    margin: 5vh auto 0 auto !important; 
-}
-
-.mForm {
+/* Mirrors the .su-file-upload--photo pattern in signup.css:
+   wrapper (relative, overflow hidden) + a real <input> that
+   fully covers it (invisible, always clickable) + a visible
+   label underneath (pointer-events: none so clicks pass through). */
+.admin-modal-upload {
+    position: relative;
     display: flex;
     flex-direction: column;
-    gap: 16px;
-}
-
-/* Individual Form Group Divs with borders */
-.mGroup {
-    display: flex;
-    flex-direction: column;
-    border: 1px solid var(--modal-border-subtle);
-    padding: 12px;
-    border-radius: 10px;
-    background-color: var(--modal-group-bg);
-}
-
-.mLabel {
-    margin-bottom: 6px;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: var(--subtle-text-color);
-}
-
-/* Input & Select fields inside the groups */
-.mInput, .mSelect {
+    align-items: center;
+    justify-content: center;
     width: 100%;
-    padding: 10px 14px;
-    border-radius: 6px;
-    border: 1px solid var(--modal-border-high-contrast);
-    background: var(--field-bg-color);
-    color: var(--light-text-color);
-    outline: none;
-    font-size: 15px;
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-    .mInput:focus, .mSelect:focus {
-        border-color: var(--primary-color);
-        box-shadow: 0 0 5px rgba(216, 75, 6, 0.3); /* Glow using primary brand color */
-    }
-
-    .mSelect option {
-        background-color: var(--field-bg-color);
-        color: var(--light-text-color);
-    }
-
-/* Image Upload Zone with a clean dashed border */
-.mUpload {
-    border: 2px dashed var(--modal-border-high-contrast);
-    border-radius: 6px;
-    padding: 20px 15px;
+    min-height: 90px;
+    padding: 20px 14px;
     text-align: center;
     cursor: pointer;
-    position: relative;
-    background-color: var(--field-bg-color);
-    color: var(--light-text-color);
-    font-weight: 500;
-    transition: border-color 0.2s, background-color 0.2s;
+    border: 1px dashed rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.5);
+    font-family: var(--font-main);
+    font-size: var(--fs-small);
+    overflow: hidden;
+    transition: border-color 0.25s ease, background 0.25s ease, color 0.25s ease;
 }
 
-    .mUpload:hover {
+    .admin-modal-upload:hover {
         border-color: var(--primary-color);
-        background-color: var(--upload-zone-hover-bg);
+        background: var(--primary-bg-faint);
+        color: rgba(255, 255, 255, 0.8);
     }
 
-.mFile {
-    opacity: 0;
+    /* Set once a file has been picked (see adminMerchant.js) */
+    .admin-modal-upload.has-file {
+        border-style: solid;
+        border-color: var(--primary-color);
+        color: rgba(255, 255, 255, 0.85);
+    }
+
+/* Real input — covers the whole wrapper, invisible but always clickable */
+.admin-modal-upload__input {
     position: absolute;
-    top: 0;
-    left: 0;
+    inset: 0;
     width: 100%;
     height: 100%;
+    opacity: 0;
     cursor: pointer;
+    font-size: 0;
 }
 
-/* Save Button with custom contrasting border */
-.mSaveBtn {
-    padding: 14px;
-    border: 2px solid var(--light-text-color);
+/* Visible content — pointer-events: none so clicks pass to the input */
+.admin-modal-upload__label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    pointer-events: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+    .admin-modal-upload__label i {
+        font-size: 26px;
+        flex-shrink: 0;
+        transition: color 0.25s ease;
+    }
+
+/* Thumbnail preview — hidden until a file is picked, replaces the icon */
+.admin-modal-upload__preview {
+    display: none;
+    width: 44px;
+    height: 44px;
+    object-fit: cover;
     border-radius: 8px;
-    background-color: var(--light-text-color);
-    color: #000000;
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-    margin-top: 10px;
-    transition: background-color 0.2s, border-color 0.2s;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    flex-shrink: 0;
 }
 
-    .mSaveBtn:hover {
-        background-color: var(--save-btn-hover-bg);
-        border-color: var(--save-btn-hover-bg);
-    }
-
-/* Cancel Button: Styled as centered underlined link text (Image 1) */
-.mCancelBtn {
-    background: none;
-    border: none;
-    padding: 8px 16px;
-    color: var(--subtle-text-color);
-    text-decoration: underline;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 600;
-    transition: color 0.2s;
-    /* Centering controls */
-    align-self: center; /* Prevents stretch, targets center column alignment */
-    text-align: center;
+.admin-modal-upload.has-file .admin-modal-upload__preview {
+    display: block;
 }
 
-    .mCancelBtn:hover {
-        color: var(--light-text-color);
-        background: none;
-    }
-
-/* ==========================================================================
-   Mobile Modal Overrides (425px, 375px, 320px)
-   ========================================================================== */
-
-/* ── Mobile Large: 425px and down ── */
-@media (max-width: 425px) {
-    .mWindow {
-        width: 100% !important;
-        max-width: calc(100% - 32px) !important;
-        padding: 24px 20px !important;
-    }
-
-    .mForm {
-        gap: 12px !important;
-    }
-
-    .mGroup {
-        padding: 10px !important;
-    }
-
-    .mLabel {
-        font-size: 11px !important;
-    }
-
-    .mInput, .mSelect {
-        padding: 8px 12px !important;
-        font-size: 14px !important;
-    }
-
-    .mUpload {
-        padding: 16px 10px !important;
-        font-size: 13px !important;
-    }
-
-    .mSaveBtn {
-        padding: 12px !important;
-        font-size: 14px !important;
-        margin-top: 6px !important;
-    }
-
-    .mCancelBtn {
-        font-size: 13px !important;
-        padding: 6px 12px !important;
-    }
+.admin-modal-upload.has-file .admin-modal-upload__label i {
+    display: none;
 }
 
-/* ── Mobile Medium: 375px and down ── */
-@media (max-width: 375px) {
-    .mWindow {
-        max-width: calc(100% - 24px) !important;
-        padding: 20px 16px !important;
-    }
-
-    .mForm {
-        gap: 10px !important;
-    }
-
-    .mGroup {
-        padding: 8px !important;
-    }
+.admin-modal-upload.has-file .admin-modal-upload__label i {
+    color: var(--primary-color);
 }
 
-/* ── Mobile Small: 320px and down ── */
-@media (max-width: 320px) {
-    .mWindow {
-        max-width: calc(100% - 16px) !important;
-        padding: 16px 12px !important;
+/* Size-limit error message — same pattern as .field-error in signup.css,
+   rebuilt on the admin token set (var(--danger-color) etc). */
+.admin-modal-upload-error {
+    display: block;
+    min-height: 16px;
+    margin-top: 6px;
+    font-size: var(--fs-micro);
+    color: var(--danger-color);
+    line-height: 1.4;
+    text-align: left;
+    visibility: hidden;
+}
+
+    .admin-modal-upload-error.visible {
+        visibility: visible;
     }
 
-    .mForm {
-        gap: 8px !important;
+/* ── Mobile ── */
+@media (max-width: 480px) {
+    .admin-modal-upload {
+        min-height: 76px;
+        padding: 16px 10px;
+        font-size: var(--fs-micro);
     }
 
-    .mGroup {
-        padding: 6px 8px !important;
-        border-radius: 8px !important;
+    .admin-modal-upload__label i {
+        font-size: 20px;
     }
 
-    .mLabel {
-        font-size: 10px !important;
-        margin-bottom: 4px !important;
-    }
-
-    .mInput, .mSelect {
-        padding: 6px 10px !important;
-        font-size: 13px !important;
-        border-radius: 4px !important;
-    }
-
-    .mUpload {
-        padding: 12px 8px !important;
-        font-size: 11px !important;
-    }
-
-    .mSaveBtn {
-        padding: 10px !important;
-        font-size: 13px !important;
-        border-radius: 6px !important;
-    }
-
-    .mCancelBtn {
-        font-size: 12px !important;
-        padding: 4px 10px !important;
+    .admin-modal-upload__preview {
+        width: 36px;
+        height: 36px;
     }
 }
