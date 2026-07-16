@@ -32,6 +32,10 @@ namespace SwiftX.Controllers
         {
             return View();
         }
+        public IActionResult MenuInfo()
+        {
+            return View();
+        }
         public IActionResult MerchantApplications()
         {
             return View();

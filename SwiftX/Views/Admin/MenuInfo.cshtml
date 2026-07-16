@@ -1,0 +1,76 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Merchant";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+
+<main class="main-container">
+
+    <div class="view-header">
+        <button type="button" class="btn-back"
+                onclick="window.location.href='@Url.Action("Merchant", "Admin")'">
+            ← Back
+        </button>
+    </div>
+
+    <div class="grid-section">
+        <button type="button"
+        class="add-card-trigger"
+        onclick="openModal('menuitem-add-modal')">
+    Add New Item
+</button>
+    </div>
+
+    <section class="items-section">
+        <h2 class="section-title">Current Items</h2>
+
+        <div id="itemList" class="items-grid">
+
+            <article class="product-card">
+                <div class="product-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1562967914-608f82629710?w=150&auto=format&fit=crop&q=60" alt="Chicken McDo with Rice" class="product-image">
+                </div>
+                <h3 class="product-title">Chicken McDo with Rice</h3>
+                <p class="product-price">₱109.00</p>
+                <div class="product-actions">
+                    <button type="button" class="btn-action-inline" onclick="editItem(0)">Edit</button>
+                    <button type="button" class="btn-action-inline btn-danger" onclick="deleteItem(0)">Delete</button>
+                </div>
+            </article>
+
+            <article class="product-card">
+                <div class="product-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=150&auto=format&fit=crop&q=60" alt="McFloat Coca-Cola" class="product-image">
+                </div>
+                <h3 class="product-title">McFloat Coca-Cola</h3>
+                <p class="product-price">₱55.00</p>
+                <div class="product-actions">
+                    <button type="button" class="btn-action-inline" onclick="editItem(1)">Edit</button>
+                    <button type="button" class="btn-action-inline btn-danger" onclick="deleteItem(1)">Delete</button>
+                </div>
+            </article>
+
+            <article class="product-card">
+                <div class="product-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1512058564366-18510be2db19?w=150&auto=format&fit=crop&q=60" alt="Extra Rice" class="product-image">
+                </div>
+                <h3 class="product-title">Extra Rice</h3>
+                <p class="product-price">₱25.00</p>
+                <div class="product-actions">
+                    <button type="button" class="btn-action-inline" onclick="editItem(2)">Edit</button>
+                    <button type="button" class="btn-action-inline btn-danger" onclick="deleteItem(2)">Delete</button>
+                </div>
+            </article>
+
+        </div>
+    </section>
+</main>
+
+@await Html.PartialAsync("_ModalMenuItemAdd")
+
+@section Scripts {
+    <script src="~/js/MenuInfo.js" asp-append-version="true"></script>
+}

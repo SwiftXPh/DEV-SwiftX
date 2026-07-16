@@ -84,10 +84,10 @@
                         <td>
                             <div class="td-merchant">
                                 <div class="td-merchant__avatar"><i class="ph ph-storefront"></i></div>
-                                <div>
+                                <button type="button" class="td-merchant__btn" data-merchant-id="MER-001">
                                     <p class="td-merchant__name">Jollibee Malaybalay</p>
                                     <p class="td-merchant__id">MER-001</p>
-                                </div>
+                                </button>
                             </div>
                         </td>
                         <td><span class="admin-badge admin-badge--active"><span class="admin-badge-dot"></span>Active</span></td>
@@ -182,7 +182,8 @@
 
 </div>
 
-@section Scripts {
+@section Scripts { 
+    <script src="~/js/adminMerchant.js" asp-append-version="true"></script>
     <script>
         $(document).ready(function () {
             var merchantsTable = $('#merchants_table').DataTable({
@@ -232,4 +233,6 @@
     @await Html.PartialAsync("_ModalMerchantSettlement")
 
 *@
+
+
 
