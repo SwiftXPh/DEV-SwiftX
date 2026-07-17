@@ -1,11 +1,13 @@
 // ==========================================
 // ELEMENTS & VARIABLES
 // ==========================================
-const overlay = document.getElementById('overlay');
 const form = document.getElementById('merchantForm');
 const editIndexInput = document.getElementById('editIndex');
-const mainContainer = document.querySelector('.main-container');
-const closeBtn = document.getElementById('closeOverlayBtn');
+const logoInput = document.getElementById('businessLogo');
+const logoUpload = document.getElementById('businessLogoUpload');
+const logoPreview = document.getElementById('businessLogoPreview');
+const logoText = document.getElementById('businessLogoText');
+const formTitle = document.getElementById('formTitle');
 
 // Load dynamic data structure from local storage, or seed with initial fallback records
 let merchants = JSON.parse(localStorage.getItem('myMerchants'));
@@ -48,30 +50,81 @@ let currentView = 'items';
 let activeMerchantIndex = 0; // Targets the seeded merchant index on page mount
 
 // ==========================================
-// SIMPLE OVERLAY LOGIC
+// FORM RESET / POPULATE HELPERS
 // ==========================================
 /**
- * Toggles the modal overlay and resets inputs on close.
- * @param {boolean} show - True to open, false to close.
- * @param {boolean} isEdit - True if modifying an existing record.
+ * Resets the form to a blank "Add New Item" state — fields, hidden
+ * edit-index tracker, and the upload zone's preview/placeholder text.
  */
-const toggleOverlay = (show, isEdit = false) => {
-    overlay.classList.toggle('hidden', !show);
-
-    if (show) {
-        const title = document.getElementById('formTitle');
-        if (title) {
-            title.textContent = isEdit ? "Edit Item" : "Add New Item";
-        }
-    }
-
-    // Reset fields and hidden tracking parameters when closing
-    !show && (form.reset(), editIndexInput.value = -1);
+const resetItemForm = () => {
+    form.reset();
+    editIndexInput.value = -1;
+    if (formTitle) formTitle.textContent = 'Add New Menu Item';
+    if (logoUpload) logoUpload.classList.remove('has-file');
+    if (logoText) logoText.textContent = 'Upload Item Image';
+    if (logoPreview) logoPreview.src = '';
 };
 
-// Cancel Button Listener
-if (closeBtn) {
-    closeBtn.addEventListener('click', () => toggleOverlay(false));
+/**
+ * Populates the form with an existing item's data for editing, including
+ * showing its current image in the upload zone's preview.
+ */
+const populateItemForm = (item, itemIndex) => {
+    document.getElementById('businessName').value = item.name;
+    document.getElementById('businessLocation').value = item.price;
+    document.getElementById('businessCategory').value = item.category;
+    editIndexInput.value = itemIndex;
+
+    if (formTitle) formTitle.textContent = 'Edit Item';
+
+    if (item.image && logoPreview && logoUpload && logoText) {
+        logoPreview.src = item.image;
+        logoUpload.classList.add('has-file');
+        logoText.textContent = 'Current image (choose a file to replace)';
+    }
+};
+
+// ==========================================
+// ITEM IMAGE UPLOAD — preview + 10MB limit
+// (same pattern as adminMerchant.js)
+// ==========================================
+const logoError = document.getElementById('businessLogoError');
+const MAX_MB = 10;
+const MAX_BYTES = MAX_MB * 1024 * 1024;
+
+if (logoInput) {
+    logoInput.addEventListener('change', () => {
+        const file = logoInput.files && logoInput.files[0];
+
+        if (file && file.size > MAX_BYTES) {
+            if (logoError) {
+                logoError.textContent = `File too large — max ${MAX_MB} MB.`;
+                logoError.classList.add('visible');
+            }
+            logoInput.value = '';
+            logoUpload.classList.remove('has-file');
+            logoText.textContent = 'Upload Item Image';
+            logoPreview.src = '';
+            return;
+        }
+
+        if (logoError) {
+            logoError.textContent = '';
+            logoError.classList.remove('visible');
+        }
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => { logoPreview.src = e.target.result; };
+            reader.readAsDataURL(file);
+            logoUpload.classList.add('has-file');
+            logoText.textContent = file.name;
+        } else {
+            logoUpload.classList.remove('has-file');
+            logoText.textContent = 'Upload Item Image';
+            logoPreview.src = '';
+        }
+    });
 }
 // ==========================================
 // VIEW: ITEMS LIST DISPLAY
@@ -102,23 +155,21 @@ window.showItemsView = () => {
                 <h3 class="product-title">${item.name}</h3>
                 <p class="product-price">₱${parseFloat(item.price).toFixed(2)}</p>
                 <div class="product-actions">
-                    <button type="button" class="btn-action-inline" onclick="editItem(${itemIndex})">Edit</button>
-                    <button type="button" class="btn-action-inline btn-danger" onclick="deleteItem(${itemIndex})">Delete</button>
+                    <button type="button" class="admin-modal-btn admin-modal-btn--ghost" onclick="editItem(${itemIndex})">Edit</button>
+                    <button type="button" class="admin-modal-btn admin-modal-btn--danger" onclick="deleteItem(${itemIndex})">Delete</button>
                 </div>
             `;
             itemList.appendChild(card);
         });
     } else {
-        itemList.innerHTML = `<p class=".__text-light" style="grid-column: 1/-1; text-align: center; opacity: 0.6;">No items found. Click 'Add New Item' to begin.</p>`;
+        itemList.innerHTML = `<p class="__text-light" style="grid-column: 1/-1; text-align: center; opacity: 0.6;">No items found. Click 'Add New Item' to begin.</p>`;
     }
 };
 
-// Bind Add Item action hook
-const addItemBtn = document.getElementById('addItemBtn');
-
-if (addItemBtn) {
-    addItemBtn.onclick = () => openModal('menuitem-add-modal');
-}
+window.openAddItemModal = () => {
+    resetItemForm();
+    openModal('menuitem-add-modal');
+};
 // ==========================================
 // FORM SUBMIT (SAVE / UPDATE)
 // ==========================================
@@ -128,7 +179,6 @@ form.addEventListener('submit', (e) => {
     const name = document.getElementById('businessName').value;
     const price = document.getElementById('businessLocation').value;
     const category = document.getElementById('businessCategory').value;
-    const logoInput = document.getElementById('businessLogo');
     const editIndex = parseInt(editIndexInput.value);
 
     const saveChanges = (fileUrl) => {
@@ -170,17 +220,10 @@ form.addEventListener('submit', (e) => {
 const saveData = () => localStorage.setItem('myMerchants', JSON.stringify(merchants));
 
 window.editItem = (itemIndex) => {
-    console.log("Edit clicked");
-
     openModal('menuitem-add-modal');
 
     const item = merchants[activeMerchantIndex].items[itemIndex];
-
-    document.getElementById('businessName').value = item.name;
-    document.getElementById('businessLocation').value = item.price;
-    document.getElementById('businessCategory').value = item.category;
-
-    editIndexInput.value = itemIndex;
+    populateItemForm(item, itemIndex);
 };
 
 // ==========================================

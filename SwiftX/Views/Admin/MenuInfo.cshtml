@@ -10,18 +10,19 @@
 <main class="main-container">
 
     <div class="view-header">
-        <button type="button" class="btn-back"
+        <button type="button" class="admin-modal-btn admin-modal-btn--ghost"
                 onclick="window.location.href='@Url.Action("Merchant", "Admin")'">
             ← Back
         </button>
+        <h1 id="merchantTitleHeader" class="__h2 __text-light" style="margin-top: 16px;">Merchant</h1>
     </div>
 
     <div class="grid-section">
         <button type="button"
-        class="add-card-trigger"
-        onclick="openModal('menuitem-add-modal')">
-    Add New Item
-</button>
+                class="add-card-trigger"
+                onclick="openAddItemModal()">
+            Add New Item
+        </button>
     </div>
 
     <section class="items-section">
@@ -36,8 +37,8 @@
                 <h3 class="product-title">Chicken McDo with Rice</h3>
                 <p class="product-price">₱109.00</p>
                 <div class="product-actions">
-                    <button type="button" class="btn-action-inline" onclick="editItem(0)">Edit</button>
-                    <button type="button" class="btn-action-inline btn-danger" onclick="deleteItem(0)">Delete</button>
+                    <button type="button" class="admin-modal-btn admin-modal-btn--ghost" onclick="editItem(0)">Edit</button>
+                    <button type="button" class="admin-modal-btn admin-modal-btn--danger" onclick="deleteItem(0)">Delete</button>
                 </div>
             </article>
 
@@ -48,8 +49,8 @@
                 <h3 class="product-title">McFloat Coca-Cola</h3>
                 <p class="product-price">₱55.00</p>
                 <div class="product-actions">
-                    <button type="button" class="btn-action-inline" onclick="editItem(1)">Edit</button>
-                    <button type="button" class="btn-action-inline btn-danger" onclick="deleteItem(1)">Delete</button>
+                    <button type="button" class="admin-modal-btn admin-modal-btn--ghost" onclick="editItem(1)">Edit</button>
+                    <button type="button" class="admin-modal-btn admin-modal-btn--danger" onclick="deleteItem(1)">Delete</button>
                 </div>
             </article>
 
@@ -60,8 +61,8 @@
                 <h3 class="product-title">Extra Rice</h3>
                 <p class="product-price">₱25.00</p>
                 <div class="product-actions">
-                    <button type="button" class="btn-action-inline" onclick="editItem(2)">Edit</button>
-                    <button type="button" class="btn-action-inline btn-danger" onclick="deleteItem(2)">Delete</button>
+                    <button type="button" class="admin-modal-btn admin-modal-btn--ghost" onclick="editItem(2)">Edit</button>
+                    <button type="button" class="admin-modal-btn admin-modal-btn--danger" onclick="deleteItem(2)">Delete</button>
                 </div>
             </article>
 
