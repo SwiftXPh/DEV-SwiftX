@@ -84,7 +84,7 @@
                         var isActive = merchant.Status == "Active";
                         var badgeClass = isActive ? "admin-badge--active" : "admin-badge--inactive";
                         var avatarDim = isActive ? "" : " td-merchant__avatar--dim";
-                        var nameDim = isActive ? "" : " style=\"color:rgba(255,255,255,0.35);\"";
+                        var nameStyle = isActive ? null : "color:rgba(255,255,255,0.35);";
                         var phoneDim = isActive ? "" : " style=\"opacity:.4;\"";
                         var catDim = isActive ? "" : " td-category--dim";
 
@@ -92,7 +92,7 @@
                             <td>
                                 <div class="td-merchant">
                                     <div class="td-merchant__avatar@(avatarDim)"><i class="ph ph-storefront"></i></div>
-                                    <a asp-controller="Admin" asp-action="MenuInfo" class="td-merchant__btn" data-merchant-id="MER-@merchant.Id.ToString("D3")" @Html.Raw(nameDim)>
+                                    <a asp-controller="Admin" asp-action="MenuInfo" class="td-merchant__btn" data-merchant-id="MER-@merchant.Id.ToString("D3")" style="@nameStyle">
                                         <p class="td-merchant__name">@merchant.BusinessName</p>
                                         <p class="td-merchant__id">MER-@merchant.Id.ToString("D3")</p>
                                     </a>

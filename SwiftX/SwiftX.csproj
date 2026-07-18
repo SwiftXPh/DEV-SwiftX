@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -11,7 +11,7 @@
 	     returns and hangs dotnet build / publish / ef. For live rebuilding during dev,
 	     run the tailwind watcher in a separate terminal. Skip with -p:BuildCss=false. -->
 	<Target Name="BuildCss" BeforeTargets="Compile" Condition="'$(BuildCss)' != 'false'">
-		<Exec Command="npx tailwindcss -i ./wwwroot/css/site.css -o ./wwwroot/output.css --minify" />
+		<Exec Command="npx.cmd tailwindcss -i ./wwwroot/css/site.css -o ./wwwroot/output.css --minify" />
 	</Target>
 
 	<ItemGroup>
