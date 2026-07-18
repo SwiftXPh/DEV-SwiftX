@@ -79,7 +79,7 @@ function selectService(element) {
     setTimeout(() => {
         switch (serviceName) {
             case 'FoodX':
-                window.location.href = '/Customer/CustomerFoodXHome';
+                window.location.href = 'FoodXBrowse';
                 break;
             case 'ItemX':
                 window.location.href = '/Customer/CustomerItemXHome';

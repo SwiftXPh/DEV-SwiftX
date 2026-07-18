@@ -1362,6 +1362,10 @@ video {
   text-decoration-line: none;
 }
 
+.opacity-100 {
+  opacity: 1;
+}
+
 .opacity-40 {
   opacity: 0.4;
 }

@@ -234,6 +234,10 @@ namespace SwiftX.Controllers
                 .ToList();
             return View(merchants);
         }
+        public IActionResult MenuInfo()
+        {
+            return View();
+        }
         public IActionResult MerchantApplications()
         {
             var merchants = _db.Merchants.Include(m => m.User).ToList();

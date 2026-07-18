@@ -1,0 +1,400 @@
+/* ==========================================================
+   foodXTracking.css  —  v2.0.0
+   Scoped to: foodXTracking.cshtml
+   Layout shell: _LayoutFoodX.cshtml
+   Tokens from: fonts.css / colors.css (via main.css)
+   ========================================================== */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-secondary);
+}
+
+.fxtk-page {
+    background-color: var(--dark-bg-color);
+    color: var(--light-text-color);
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 40px 20px;
+}
+
+/* MAIN LAYOUT: 2-column desktop view */
+.fxtk-container {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 24px;
+    width: 100%;
+    max-width: 1600px;
+    max-height: 100vh;
+}
+
+/* CARD COMPONENT: shared building block */
+.fxtk-card {
+    background-color: var(--dark-bg-card);
+    border-radius: 16px;
+    padding: 32px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    width: 100%;
+    overflow-y: auto;
+}
+
+/* HEADER: logo + "Order Confirmed!" row */
+.fxtk-header-section {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 40px;
+}
+
+.fxtk-logo-box {
+    width: 60px;
+    height: 60px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fxtk-logo-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* PROGRESS STEPPER */
+.fxtk-progress-stepper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 30px 0;
+    padding: 0 10px;
+    position: relative;
+}
+
+.fxtk-node {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #3d3d3d;
+    color: #666;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: var(--fw-semibold);
+    font-size: 14px;
+    transition: all 0.4s ease;
+    flex-shrink: 0;
+}
+
+.fxtk-node.active {
+    background: var(--primary-color);
+    color: var(--dark-text-color);
+    box-shadow: 0 0 15px var(--primary-color);
+}
+
+.fxtk-step-line {
+    flex: 1;
+    height: 6px;
+    background: #3d3d3d;
+    transition: all 0.4s ease;
+}
+
+.fxtk-step-line.active {
+    background: var(--primary-color);
+    box-shadow: 0 0 10px var(--primary-color);
+}
+
+/* STATUS BOX: the large "Waiting for Rider" panel */
+.fxtk-tracking-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--dark-bg-hero);
+    padding: 25px;
+    border-radius: 15px;
+    min-height: 250px;
+    overflow: hidden;
+    position: relative;
+}
+
+.fxtk-tracking-card h3 {
+    font-size: 1.8rem;
+    margin-bottom: 5px;
+}
+
+.fxtk-rider-box {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    height: 100%;
+}
+
+.fxtk-rider-hero-img {
+    height: 200px;
+    width: auto;
+    max-height: 100%;
+    transition: transform 0.3s ease;
+}
+
+.fxtk-rider-hero-img:hover {
+    transform: scale(1.05);
+}
+
+/* LOCATION TEXT: footer of the left section */
+.fxtk-location-info {
+    margin-top: 30px;
+    padding-left: 5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.45);
+}
+
+.fxtk-location-icon {
+    font-size: 30px;
+}
+
+/* ORDER SUMMARY STYLES */
+.fxtk-order-id-label {
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 0.85rem;
+    font-weight: var(--fw-semibold);
+    letter-spacing: 1.5px;
+    margin-bottom: 15px;
+}
+
+.fxtk-item-row,
+.fxtk-fee-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    font-size: 0.95rem;
+}
+
+.fxtk-fee-row--muted {
+    color: rgba(255, 255, 255, 0.45);
+}
+
+/* TOTALS SECTION */
+.fxtk-total-display {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 2px solid rgba(255, 255, 255, 0.06);
+}
+
+.fxtk-total-label {
+    font-size: var(--fs-body);
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.fxtk-total-amount {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--primary-color);
+}
+
+/* ACTION BUTTONS: Cancel and Home */
+.fxtk-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 30px;
+}
+
+.fxtk-btn {
+    padding: 18px;
+    border-radius: 12px;
+    border: none;
+    font-size: 1rem;
+    font-weight: var(--fw-semibold);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-align: center;
+    text-decoration: none;
+}
+
+.fxtk-btn:hover {
+    filter: brightness(1.2);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.fxtk-btn-cancel {
+    background-color: var(--danger-color);
+    color: var(--light-text-color);
+}
+
+.fxtk-btn-home {
+    background-color: var(--primary-color);
+    color: var(--light-text-color);
+}
+
+/* RIDER INFORMATION BAR */
+.fxtk-rider-info-bar {
+    background: var(--dark-bg-card);
+    border: 1px solid var(--primary-border-faint);
+    border-radius: 12px;
+    padding: 18px;
+    margin-top: 20px;
+    animation: fxtkFadeInRider 0.4s ease-in-out forwards;
+}
+
+.fxtk-rider-profile-flex {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.fxtk-rider-avatar {
+    width: 55px;
+    height: 55px;
+    background: var(--dark-bg-hero);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: rgba(255, 255, 255, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.fxtk-rider-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.fxtk-rider-name {
+    font-size: 16px;
+    font-weight: var(--fw-semibold);
+    color: var(--light-text-color);
+}
+
+.fxtk-rider-contact {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.45);
+}
+
+.fxtk-rider-contact i {
+    color: var(--primary-color);
+}
+
+.fxtk-rider-plate {
+    font-size: 13px;
+    color: var(--light-text-color);
+    font-weight: var(--fw-semibold);
+    margin-top: 2px;
+}
+
+.fxtk-rider-plate .fxtk-badge {
+    background: var(--primary-color);
+    color: var(--light-text-color);
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: var(--fw-semibold);
+    margin-right: 5px;
+    letter-spacing: 0.5px;
+}
+
+@keyframes fxtkFadeInRider {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ==========================================================
+   📱 MOBILE OPTIMIZATION (320px - 425px)
+   ========================================================== */
+@media (max-width: 950px) {
+    .fxtk-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 425px) {
+    .fxtk-page {
+        padding: 15px 10px;
+    }
+
+    .fxtk-card {
+        padding: 20px;
+    }
+
+    .fxtk-header-section {
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .fxtk-node {
+        width: 30px;
+        height: 30px;
+        font-size: 12px;
+    }
+
+    .fxtk-tracking-card {
+        min-height: 180px;
+        padding: 15px;
+    }
+
+    .fxtk-rider-hero-img {
+        height: 120px;
+    }
+}
+
+@media (max-width: 375px) {
+    .fxtk-total-amount {
+        font-size: 1.3rem;
+    }
+
+    .fxtk-tracking-card h3 {
+        font-size: 1.4rem;
+    }
+
+    .fxtk-rider-info-bar {
+        padding: 12px;
+    }
+
+    .fxtk-rider-avatar {
+        width: 45px;
+        height: 45px;
+    }
+}
+
+@media (max-width: 320px) {
+    .fxtk-btn {
+        padding: 14px;
+        font-size: 0.9rem;
+    }
+
+    .fxtk-progress-stepper {
+        margin: 20px 0;
+    }
+
+    .fxtk-node {
+        width: 25px;
+        height: 25px;
+    }
+
+    .fxtk-rider-name {
+        font-size: 14px;
+    }
+
+    .fxtk-location-icon {
+        font-size: 20px;
+    }
+}

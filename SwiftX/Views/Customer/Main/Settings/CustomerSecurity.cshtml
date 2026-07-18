@@ -1,0 +1,224 @@
+@{
+    ViewData["Title"] = "Security & Privacy";
+    Layout = "~/Views/Shared/_LayoutCustomerSubPage.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/user/customerMain/CustomerSecurity.css" asp-append-version="true" />
+}
+
+<div class="sec-page">
+
+    @* ── Orange header ── *@
+    <header class="sec-header">
+        <div class="sec-header__left">
+            <button type="button" class="sec-back-btn" id="btnCloseSecurity" aria-label="Go back">
+                <i class="ph ph-arrow-left"></i>
+            </button>
+            <div class="sec-header__text">
+                <h2>Security &amp; Privacy</h2>
+                <p>Manage your account protection and data privacy settings</p>
+            </div>
+        </div>
+        <button type="button" class="sec-done-btn" id="btnDone">Done</button>
+    </header>
+
+    @* ── Settings cards ── *@
+    <main class="sec-content">
+
+        <div class="sec-cards">
+
+            <div class="sec-card" data-action="email">
+                <div class="sec-card__left">
+                    <div class="sec-card__icon">
+                        <i class="ph ph-envelope"></i>
+                    </div>
+                    <div class="sec-card__info">
+                        <h3>Change Email</h3>
+                        <p>Update your primary email address for notifications and recovery.</p>
+                    </div>
+                </div>
+                <i class="ph ph-caret-right sec-card__arrow"></i>
+            </div>
+
+            <div class="sec-card" data-action="password">
+                <div class="sec-card__left">
+                    <div class="sec-card__icon">
+                        <i class="ph ph-lock"></i>
+                    </div>
+                    <div class="sec-card__info">
+                        <h3>Change Password</h3>
+                        <p>Strengthen your account by updating your login password regularly.</p>
+                    </div>
+                </div>
+                <i class="ph ph-caret-right sec-card__arrow"></i>
+            </div>
+
+            <div class="sec-card" data-action="phone">
+                <div class="sec-card__left">
+                    <div class="sec-card__icon">
+                        <i class="ph ph-phone"></i>
+                    </div>
+                    <div class="sec-card__info">
+                        <h3>Change Phone Number</h3>
+                        <p>Keep your mobile number active for security verifications.</p>
+                    </div>
+                </div>
+                <i class="ph ph-caret-right sec-card__arrow"></i>
+            </div>
+
+        </div>
+
+        @* ── Danger zone ── *@
+        <div class="sec-danger">
+            <div class="sec-danger__text">
+                <h3>Delete This Account</h3>
+                <p>Once you delete your account, there is no going back. Please be certain.</p>
+            </div>
+            <button type="button" class="sec-delete-btn" id="btnDeleteAccount">
+                <i class="ph ph-trash"></i> Delete Account
+            </button>
+        </div>
+
+    </main>
+
+</div>
+
+@* ══════════════════════════════════════════════════════════
+   EMAIL OVERLAY
+   ══════════════════════════════════════════════════════════ *@
+<div id="emailOverlay" class="sec-overlay">
+    <div class="sec-overlay__box">
+        <div class="sec-overlay__header">
+            <h3>Update Email Address</h3>
+            <p>Modify your platform notification email.</p>
+        </div>
+
+        <div class="sec-overlay__field">
+            <label>Current Registered Email</label>
+            <input type="text" id="currentEmailDisplay"
+                   value="user.sample@@swiftx.com" disabled
+                   class="sec-overlay__input sec-overlay__input--disabled">
+        </div>
+        <div class="sec-overlay__field">
+            <label>New Email Address</label>
+            <input type="email" id="newEmailInput"
+                   class="sec-overlay__input"
+                   placeholder="Enter your new email">
+        </div>
+        <div class="sec-overlay__field">
+            <label>Confirm Your Password</label>
+            <input type="password" id="emailConfirmPasswordInput"
+                   class="sec-overlay__input"
+                   placeholder="Enter password to verify" required>
+        </div>
+
+        <div class="sec-overlay__forgot">
+            <button type="button" class="sec-overlay__forgot-btn"
+                    onclick="window.location.href='@Url.Action("ChangePassEnterEmail", "Customer")'">
+                Forgot Password?
+            </button>
+        </div>
+
+        <div class="sec-overlay__actions">
+            <button type="button" class="sec-overlay__btn sec-overlay__btn--ghost"
+                    data-target="emailOverlay">Cancel</button>
+            <button type="button" class="sec-overlay__btn sec-overlay__btn--save"
+                    id="btnConfirmEmailChange">Update</button>
+        </div>
+    </div>
+</div>
+
+@* ══════════════════════════════════════════════════════════
+   PASSWORD OVERLAY
+   ══════════════════════════════════════════════════════════ *@
+<div id="passwordOverlay" class="sec-overlay">
+    <div class="sec-overlay__box">
+        <div class="sec-overlay__header">
+            <h3>Change Password</h3>
+            <p>Ensure your account remains safe from unauthorized access.</p>
+        </div>
+
+        <div class="sec-overlay__field">
+            <label>Current Password</label>
+            <input type="password" id="currentPasswordInput"
+                   class="sec-overlay__input"
+                   placeholder="Enter your current password">
+        </div>
+        <div class="sec-overlay__field">
+            <label>New Password</label>
+            <input type="password" id="newPasswordInput"
+                   class="sec-overlay__input"
+                   placeholder="Enter new password">
+        </div>
+        <div class="sec-overlay__field">
+            <label>Confirm New Password</label>
+            <input type="password" id="confirmNewPasswordInput"
+                   class="sec-overlay__input"
+                   placeholder="Re-type new password">
+        </div>
+
+        <div class="sec-overlay__forgot">
+            <button type="button" class="sec-overlay__forgot-btn"
+                    onclick="window.location.href='@Url.Action("ChangePassEnterEmail", "Customer")'">
+                Forgot Password?
+            </button>
+        </div>
+
+        <div class="sec-overlay__actions">
+            <button type="button" class="sec-overlay__btn sec-overlay__btn--ghost"
+                    data-target="passwordOverlay">Cancel</button>
+            <button type="button" class="sec-overlay__btn sec-overlay__btn--save"
+                    id="btnConfirmPasswordChange">Update</button>
+        </div>
+    </div>
+</div>
+
+@* ══════════════════════════════════════════════════════════
+   PHONE OVERLAY
+   ══════════════════════════════════════════════════════════ *@
+<div id="phoneOverlay" class="sec-overlay">
+    <div class="sec-overlay__box">
+        <div class="sec-overlay__header">
+            <h3>Change Phone Number</h3>
+            <p>Keep your mobile contact details up to date.</p>
+        </div>
+
+        <div class="sec-overlay__field">
+            <label>Current Phone Number</label>
+            <input type="text" id="currentPhoneDisplay"
+                   value="+63 912 345 6789" disabled
+                   class="sec-overlay__input sec-overlay__input--disabled">
+        </div>
+        <div class="sec-overlay__field">
+            <label>New Phone Number</label>
+            <input type="tel" id="newPhoneInput"
+                   class="sec-overlay__input"
+                   placeholder="e.g. 9XXXXXXXXX">
+        </div>
+        <div class="sec-overlay__field">
+            <label>Confirm Your Password</label>
+            <input type="password" id="phoneConfirmPasswordInput"
+                   class="sec-overlay__input"
+                   placeholder="Enter password to verify" required>
+        </div>
+
+        <div class="sec-overlay__forgot">
+            <button type="button" class="sec-overlay__forgot-btn"
+                    onclick="window.location.href='@Url.Action("ChangePassEnterEmail", "Customer")'">
+                Forgot Password?
+            </button>
+        </div>
+
+        <div class="sec-overlay__actions">
+            <button type="button" class="sec-overlay__btn sec-overlay__btn--ghost"
+                    data-target="phoneOverlay">Cancel</button>
+            <button type="button" class="sec-overlay__btn sec-overlay__btn--save"
+                    id="btnConfirmPhoneChange">Update</button>
+        </div>
+    </div>
+</div>
+
+@section PageScripts {
+    <script src="~/js/user/customerMain/CustomerSecurity.js" asp-append-version="true"></script>
+}

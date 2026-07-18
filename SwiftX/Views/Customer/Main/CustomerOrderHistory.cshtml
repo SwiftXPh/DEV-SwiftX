@@ -1,0 +1,27 @@
+@{
+    ViewData["Title"] = "Order History";
+    Layout = "~/Views/Shared/_LayoutCustomerSubPage.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/user/customerMain/CustomerOrderHistory.css" asp-append-version="true" />
+}
+
+<div class="oh-page">
+
+    <header class="oh-header">
+        <button type="button" class="oh-back-btn" id="btnCloseHistory" aria-label="Go back">
+            <i class="ph ph-arrow-left"></i>
+        </button>
+        <h1 class="oh-header__title">Order History</h1>
+    </header>
+
+    <main class="oh-feed" id="order-history-feed" role="feed" aria-label="Order history">
+        @* Cards injected by CustomerOrderHistory.js *@
+    </main>
+
+</div>
+
+@section PageScripts {
+    <script src="~/js/user/customerMain/CustomerOrderHistory.js" asp-append-version="true"></script>
+}

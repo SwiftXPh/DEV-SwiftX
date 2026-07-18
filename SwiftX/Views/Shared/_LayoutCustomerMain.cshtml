@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="~/lib/phosphor-icons/fill/style.css" />
 
     @RenderSection("Styles", required: false)
+    @await RenderSectionAsync("HeadScripts", required: false)
     @await Html.PartialAsync("_ModalAlert")
 </head>
 <body class="cust-body">

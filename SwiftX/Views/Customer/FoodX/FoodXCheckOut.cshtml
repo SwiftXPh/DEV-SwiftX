@@ -1,0 +1,80 @@
+﻿@* For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860*@
+@{
+    ViewData["Title"] = "FoodX CheckOut";
+    Layout = "~/Views/Shared/_LayoutCustomerSubPage.cshtml";
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/user/FoodX/FoodXCheckOut.css" asp-append-version="true" />
+}
+<div class="fxco-page">
+    <div class="fxco-header">
+        <a asp-controller="Customer" asp-action="foodXCart" class="fxco-back-circle">
+            <i class="ph ph-arrow-left" style="font-size: 20px; color: black;"></i>
+        </a>
+        <h2>Check-Out</h2>
+    </div>
+    <div class="fxco-container">
+        <div class="fxco-delivery-card">
+            <i class="ph ph-truck"></i>
+            <div class="fxco-delivery-info">
+                <h4>Estimated Delivery Time</h4>
+                <h4 class="__text-primary">(15-25 Mins)</h4>
+                <p>Standard Delivery <span class="fxco-change-link" id="change-delivery">Change</span></p>
+            </div>
+        </div>
+
+        <div class="fxco-section-header-row">
+            <span class="fxco-section-title">Delivery Address</span>
+        </div>
+
+        <a asp-controller="Customer" asp-action="CustomerSavedAddresses" style="text-decoration: none; color: inherit; display: block;">
+            <div class="fxco-address-box" id="address-box">
+                <div class="fxco-address-icon-side">
+                    <i class="ph ph-map-pin-area" id="address-icon"></i>
+                </div>
+
+                <div class="fxco-address-content-side">
+                    <div class="fxco-address-label" id="checkout-address-label">No Address Selected</div>
+                    <div class="fxco-address-text" id="checkout-address-text">Tap to select or add your delivery location context</div>
+
+                    <div class="fxco-address-sub" id="checkout-address-sub" style="display: none;">
+                        <span id="checkout-address-unit"></span> • <span id="checkout-address-contact"></span>
+                    </div>
+                </div>
+
+                <div class="fxco-address-arrow-side">
+                    <i class="ph ph-caret-right"></i>
+                </div>
+            </div>
+        </a>
+
+        <div class="fxco-section-title">Order Summary</div><br>
+        <div class="fxco-restaurant-name">Mcdonald's-Valencia</div><br>
+
+        <div id="items-list"></div>
+
+        <div class="fxco-totals-section">
+            <div class="fxco-total-row"><span>Subtotal</span> <span id="subtotal-val">₱ 0.00</span></div>
+            <div class="fxco-total-row fxco-delivery-row"><span>Standard Delivery</span> <span>₱ 39.00</span></div>
+
+            <div class="fxco-cross-sell-section">
+                <div class="fxco-cross-sell-title">You might also like...</div>
+                <div id="cross-sell-list">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="fxco-footer">
+        <div class="fxco-footer-content">
+            <div class="fxco-grand-total">
+                <span class="fxco-total-label">Total</span>
+                <span id="grand-total-val" class="fxco-total-price">₱ 0.00</span>
+            </div>
+            <a asp-controller="Customer" asp-action="FoodXPayment" class="fxco-review-btn" id="review-btn">Review Payment and Order</a>
+        </div>
+    </div>
+</div>
+
+@section PageScripts {
+    <script src="~/js/user/FoodX/FoodXCheckout.js" asp-append-version="true"></script>
+}

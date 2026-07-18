@@ -1,0 +1,135 @@
+/* ══════════════════════════════════════════════════════════
+   MERCHANT MODAL — Logo upload zone
+   Everything else (overlay, shell, header, form fields, buttons)
+   now reuses the shared .admin-modal system defined in modal.css:
+   see .admin-modal-overlay / .admin-modal / .admin-modal__header /
+   .emod-grid / .emod-field / .admin-modal-input / .admin-modal-btn.
+   This file no longer redeclares :root variables — it uses the
+   tokens already defined in fonts.css.
+   ══════════════════════════════════════════════════════════ */
+
+/* Mirrors the .su-file-upload--photo pattern in signup.css:
+   wrapper (relative, overflow hidden) + a real <input> that
+   fully covers it (invisible, always clickable) + a visible
+   label underneath (pointer-events: none so clicks pass through). */
+.admin-modal-upload {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 90px;
+    padding: 20px 14px;
+    text-align: center;
+    cursor: pointer;
+    border: 1px dashed rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.5);
+    font-family: var(--font-main);
+    font-size: var(--fs-small);
+    overflow: hidden;
+    transition: border-color 0.25s ease, background 0.25s ease, color 0.25s ease;
+}
+
+    .admin-modal-upload:hover {
+        border-color: var(--primary-color);
+        background: var(--primary-bg-faint);
+        color: rgba(255, 255, 255, 0.8);
+    }
+
+    /* Set once a file has been picked (see adminMerchant.js) */
+    .admin-modal-upload.has-file {
+        border-style: solid;
+        border-color: var(--primary-color);
+        color: rgba(255, 255, 255, 0.85);
+    }
+
+/* Real input — covers the whole wrapper, invisible but always clickable */
+.admin-modal-upload__input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    font-size: 0;
+}
+
+/* Visible content — pointer-events: none so clicks pass to the input */
+.admin-modal-upload__label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    pointer-events: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+    .admin-modal-upload__label i {
+        font-size: 26px;
+        flex-shrink: 0;
+        transition: color 0.25s ease;
+    }
+
+/* Thumbnail preview — hidden until a file is picked, replaces the icon */
+.admin-modal-upload__preview {
+    display: none;
+    width: 44px;
+    height: 44px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    flex-shrink: 0;
+}
+
+.admin-modal-upload.has-file .admin-modal-upload__preview {
+    display: block;
+}
+
+.admin-modal-upload.has-file .admin-modal-upload__label i {
+    display: none;
+}
+
+.admin-modal-upload.has-file .admin-modal-upload__label i {
+    color: var(--primary-color);
+}
+
+/* Size-limit error message — same pattern as .field-error in signup.css,
+   rebuilt on the admin token set (var(--danger-color) etc). */
+.admin-modal-upload-error {
+    display: block;
+    min-height: 16px;
+    margin-top: 6px;
+    font-size: var(--fs-micro);
+    color: var(--danger-color);
+    line-height: 1.4;
+    text-align: left;
+    visibility: hidden;
+}
+
+    .admin-modal-upload-error.visible {
+        visibility: visible;
+    }
+
+/* ── Mobile ── */
+@media (max-width: 480px) {
+    .admin-modal-upload {
+        min-height: 76px;
+        padding: 16px 10px;
+        font-size: var(--fs-micro);
+    }
+
+    .admin-modal-upload__label i {
+        font-size: 20px;
+    }
+
+    .admin-modal-upload__preview {
+        width: 36px;
+        height: 36px;
+    }
+}

@@ -1,0 +1,355 @@
+/* ==========================================================
+   CustomerOrderHistory.css  —  v2.0.0
+   Scoped to: CustomerOrderHistory.cshtml
+   Layout shell: _LayoutCustomerSubPage.cshtml
+   Tokens from: fonts.css / colors.css (via main.css)
+   ========================================================== */
+
+
+/* ==========================================================
+   PAGE WRAPPER
+   ========================================================== */
+.oh-page {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--dark-bg-color);
+    color: var(--light-text-color);
+    font-family: var(--font-secondary);
+}
+
+
+/* ==========================================================
+   ORANGE HEADER
+   ========================================================== */
+.oh-header {
+    background: linear-gradient(to top, var(--primary-color), #f15a10);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 24px;
+    height: 90px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    width: 100%;
+    border-bottom-left-radius: 24px;
+    border-bottom-right-radius: 24px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+    flex-shrink: 0;
+}
+
+.oh-back-btn {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: none;
+    background: var(--light-text-color);
+    color: var(--dark-text-color);
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+    transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.oh-back-btn:hover {
+    background: rgba(255, 255, 255, 0.85);
+    transform: scale(1.05);
+}
+
+.oh-header__title {
+    font-family: var(--font-main);
+    font-size: var(--fs-h4);
+    font-weight: var(--fw-semibold);
+    color: var(--light-text-color);
+    margin: 0;
+    line-height: 1;
+}
+
+
+/* ==========================================================
+   FEED CONTAINER
+   ========================================================== */
+.oh-feed {
+    max-width: 680px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 28px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    flex: 1;
+}
+
+/* Empty state */
+.oh-empty {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.35);
+    font-family: var(--font-secondary);
+    font-size: var(--fs-small);
+    padding: 48px 20px;
+}
+
+
+/* ==========================================================
+   ORDER CARD — accordion
+   ========================================================== */
+.order-card {
+    background: var(--dark-bg-card);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    transition: border-color 0.25s ease;
+}
+
+.order-card.expanded {
+    border-color: var(--primary-border-subtle);
+}
+
+/* Clickable toggle header */
+.card-toggle-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 20px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.2s ease;
+}
+
+.card-toggle-header:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.header-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.order-id {
+    font-family: var(--font-secondary);
+    font-size: var(--fs-micro);
+    font-weight: var(--fw-semibold);
+    color: var(--primary-color);
+}
+
+.restaurant-title {
+    font-family: var(--font-main);
+    font-size: var(--fs-body);
+    font-weight: var(--fw-semibold);
+    color: var(--light-text-color);
+}
+
+.order-date {
+    font-family: var(--font-secondary);
+    font-size: var(--fs-micro);
+    color: rgba(255, 255, 255, 0.4);
+}
+
+/* Chevron */
+.expansion-arrow {
+    font-size: 18px;
+    color: rgba(255, 255, 255, 0.3);
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                color 0.25s ease;
+}
+
+.order-card.expanded .expansion-arrow {
+    transform: rotate(180deg);
+    color: var(--primary-color);
+}
+
+
+/* ==========================================================
+   COLLAPSIBLE DRAWER
+   ========================================================== */
+.card-collapsible-drawer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.drawer-inner-padding {
+    padding: 0 20px 20px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.07);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+/* Items list */
+.items-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-top: 16px;
+}
+
+.item-row {
+    font-family: var(--font-secondary);
+    font-size: var(--fs-small);
+    color: rgba(255, 255, 255, 0.5);
+    line-height: var(--lh-compact);
+}
+
+.item-row strong {
+    color: var(--light-text-color);
+}
+
+/* Pricing summary */
+.pricing-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.07);
+    padding-top: 16px;
+}
+
+.price-line {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-secondary);
+    font-size: var(--fs-small);
+    color: rgba(255, 255, 255, 0.45);
+}
+
+.price-line.subtotal {
+    font-size: var(--fs-label);
+    font-weight: var(--fw-semibold);
+    color: var(--light-text-color);
+    margin-bottom: 2px;
+}
+
+/* Card footer */
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 14px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.07);
+}
+
+.payment-method {
+    font-family: var(--font-secondary);
+    font-size: var(--fs-small);
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.total-amount {
+    font-family: var(--font-main);
+    font-size: var(--fs-body);
+    font-weight: var(--fw-semibold);
+    color: var(--light-text-color);
+}
+
+
+/* ==========================================================
+   RESPONSIVE
+   ========================================================== */
+@media (max-width: 425px) {
+    .oh-header {
+        padding: 0 16px;
+        height: 76px;
+        border-bottom-left-radius: 18px;
+        border-bottom-right-radius: 18px;
+    }
+
+    .oh-header__title {
+        font-size: 20px;
+    }
+
+    .oh-feed {
+        padding: 20px 16px;
+        gap: 14px;
+    }
+
+    .card-toggle-header {
+        padding: 15px 16px;
+    }
+
+    .drawer-inner-padding {
+        padding: 0 16px 16px;
+    }
+
+    .restaurant-title {
+        font-size: var(--fs-label);
+    }
+}
+
+@media (max-width: 375px) {
+    .oh-header__title {
+        font-size: 18px;
+    }
+
+    .oh-feed {
+        padding: 18px 14px;
+    }
+
+    .order-id,
+    .order-date,
+    .item-row,
+    .price-line,
+    .payment-method {
+        font-size: var(--fs-micro);
+    }
+
+    .price-line.subtotal {
+        font-size: var(--fs-small);
+    }
+
+    .total-amount {
+        font-size: var(--fs-label);
+    }
+}
+
+@media (max-width: 320px) {
+    .oh-header {
+        height: 64px;
+        padding: 0 12px;
+        gap: 12px;
+        border-bottom-left-radius: 14px;
+        border-bottom-right-radius: 14px;
+    }
+
+    .oh-back-btn {
+        width: 34px;
+        height: 34px;
+        font-size: 15px;
+    }
+
+    .oh-header__title {
+        font-size: 16px;
+    }
+
+    .oh-feed {
+        padding: 14px 12px;
+        gap: 12px;
+    }
+
+    .card-toggle-header,
+    .drawer-inner-padding {
+        padding: 12px;
+    }
+
+    .items-list {
+        gap: 6px;
+    }
+}

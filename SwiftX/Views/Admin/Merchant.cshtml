@@ -51,6 +51,9 @@
                 <p style="font-size:11px;color:rgba(255,255,255,0.3);margin-top:3px;">@totalMerchants total &middot; @activeMerchants active &middot; @inactiveMerchants inactive</p>
             </div>
             <div class="admin-table-actions">
+<button class="admin-filter-btn" onclick="openModal('merchant-add-modal')">
+    + Add Merchant
+</button>
                 <div class="admin-search">
                     <i class="ph ph-magnifying-glass"></i>
                     <input type="text" id="merchant-search" placeholder="Search merchants..." />
@@ -89,10 +92,10 @@
                             <td>
                                 <div class="td-merchant">
                                     <div class="td-merchant__avatar@(avatarDim)"><i class="ph ph-storefront"></i></div>
-                                    <div>
-                                        <p class="td-merchant__name" @Html.Raw(nameDim)>@merchant.BusinessName</p>
+                                    <a asp-controller="Admin" asp-action="MenuInfo" class="td-merchant__btn" data-merchant-id="MER-@merchant.Id.ToString("D3")" @Html.Raw(nameDim)>
+                                        <p class="td-merchant__name">@merchant.BusinessName</p>
                                         <p class="td-merchant__id">MER-@merchant.Id.ToString("D3")</p>
-                                    </div>
+                                    </a>
                                 </div>
                             </td>
                             <td><span class="admin-badge @badgeClass"><span class="admin-badge-dot"></span>@merchant.Status</span></td>
@@ -151,7 +154,8 @@
 
 </div>
 
-@section Scripts {
+@section Scripts { 
+    <script src="~/js/adminMerchant.js" asp-append-version="true"></script>
     <script>
         $(document).ready(function () {
             var merchantsTable = $('#merchants_table').DataTable({
@@ -197,3 +201,8 @@
 @await Html.PartialAsync("_ModalMerchantApplication")
 @await Html.PartialAsync("_ModalMerchantDetail")
 @await Html.PartialAsync("_ModalMerchantEdit")
+@await Html.PartialAsync("_ModalMerchantAdd")
+@*
+    @await Html.PartialAsync("_ModalMerchantSettlement")
+
+*@

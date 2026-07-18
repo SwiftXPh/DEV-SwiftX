@@ -1,0 +1,103 @@
+@* Views/Shared/_ModalMenuItemAdd.cshtml *@
+
+<div id="menuitem-add-modal" class="admin-modal-overlay">
+    <div class="admin-modal admin-modal--sm">
+
+        <div class="admin-modal__header">
+            <div class="admin-modal__title">
+                <i class="ph ph-bowl-food"></i>
+                <span id="formTitle">Add New Menu Item</span>
+            </div>
+
+            <button type="button"
+                    class="admin-modal__close"
+                    onclick="closeModal('menuitem-add-modal')"
+                    aria-label="Close">
+                <i class="ph ph-x"></i>
+            </button>
+        </div>
+
+        <div class="admin-modal__body">
+
+            <form id="merchantForm">
+                <input type="hidden" id="editIndex" value="-1" />
+
+                <div class="emod-grid">
+
+                    <div class="emod-field emod-field--full">
+                        <label class="emod-field__label" for="businessName">Item Name</label>
+                        <input type="text"
+                               id="businessName"
+                               class="admin-modal-input"
+                               placeholder="Chicken McDo with Rice"
+                               required />
+                    </div>
+
+                    <div class="emod-field emod-field--full">
+                        <label class="emod-field__label" for="businessLocation">Price</label>
+                        <input type="number"
+                               id="businessLocation"
+                               class="admin-modal-input"
+                               placeholder="109.00"
+                               step="0.01"
+                               min="0"
+                               required />
+                    </div>
+
+                    <div class="emod-field emod-field--full">
+                        <label class="emod-field__label" for="businessCategory">Category</label>
+                        <select id="businessCategory"
+                                class="admin-modal-input"
+                                required>
+                            <option value="" disabled selected>Select Category</option>
+                            <option value="Meals">Meals</option>
+                            <option value="Drinks">Drinks</option>
+                            <option value="Desserts">Desserts</option>
+                            <option value="Snacks">Snacks</option>
+                            <option value="Add Ons">Add Ons</option>
+                        </select>
+                    </div>
+
+                    <div class="emod-field emod-field--full">
+                        <label class="emod-field__label" for="businessLogo">Item Image</label>
+
+                        <div class="admin-modal-upload" id="businessLogoUpload">
+                            <input type="file"
+                                   id="businessLogo"
+                                   class="admin-modal-upload__input"
+                                   accept="image/*">
+
+                            <span class="admin-modal-upload__label">
+                                <img id="businessLogoPreview"
+                                     class="admin-modal-upload__preview"
+                                     alt="">
+
+                                <i class="ph ph-image"></i>
+                                <span id="businessLogoText">Upload Item Image</span>
+                            </span>
+                        </div>
+
+                        <span id="businessLogoError"
+                              class="admin-modal-upload-error"></span>
+                    </div>
+
+                </div>
+
+                <div class="admin-modal-footer-actions">
+                    <button type="button"
+                            class="admin-modal-btn admin-modal-btn--ghost"
+                            onclick="closeModal('menuitem-add-modal')">
+                        Cancel
+                    </button>
+
+                    <button type="submit"
+                            class="admin-modal-btn admin-modal-btn--primary">
+                        Save
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>

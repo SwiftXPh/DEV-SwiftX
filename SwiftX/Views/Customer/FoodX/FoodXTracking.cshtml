@@ -1,0 +1,109 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Tracking";
+    Layout = "/Views/Shared/_LayoutCustomerSubPage.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/user/FoodX/foodXTracking.css" asp-append-version="true" />
+}
+
+<div class="fxtk-page">
+    <div class="fxtk-container">
+        <section>
+            <div class="fxtk-card">
+                <div class="fxtk-header-section">
+                    <div class="fxtk-logo-box">
+                        <img src="~/Assets/images/swiftX_logo.png" alt="SwiftX Logo" class="logo-img" />
+                    </div>
+                    <h2>Order Confirmed!</h2>
+                </div>
+
+                <div class="fxtk-progress-stepper" id="progressStepper">
+                    <div class="fxtk-node">1</div>
+                    <div class="fxtk-step-line"></div>
+
+                    <div class="fxtk-node">2</div>
+                    <div class="fxtk-step-line"></div>
+
+                    <div class="fxtk-node">3</div>
+                    <div class="fxtk-step-line"></div>
+
+                    <div class="fxtk-node">4</div>
+                </div>
+
+                <div class="fxtk-tracking-card">
+                    <div>
+                        <h3 id="trackingStatus">Waiting for a Rider</h3>
+                        <p id="trackingSubtext">StandardX Delivery</p>
+                    </div>
+
+                    <div class="fxtk-rider-box">
+                        <img src="../images/waiting.png" id="statusImage" class="fxtk-rider-hero-img" alt="Rider">
+                    </div>
+                </div>
+
+                <div class="fxtk-rider-info-bar" id="riderInfoBar" style="display: none;">
+                    <div class="fxtk-rider-profile-flex">
+                        <div class="fxtk-rider-avatar">
+                            <i class="ph ph-user"></i>
+                        </div>
+                        <div class="fxtk-rider-meta">
+                            <div class="fxtk-rider-name">Josh Carlou Ycaro</div>
+                            <div class="fxtk-rider-contact"><i class="ph ph-phone"></i> +63 912 345 6789</div>
+                            <div class="fxtk-rider-plate"><span class="fxtk-badge">PLATE</span> MFD-8879</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="fxtk-location-info" id="locationInfo">
+                <div class="fxtk-location-icon">
+                    <i class="ph ph-map-pin-area"></i>
+                </div>Don Carlos Poblacion, Bukidnon
+            </div>
+        </section>
+
+        <aside>
+            <div class="fxtk-card">
+                <div class="fxtk-order-id-label" id="orderIdLabel">ORDER #123</div>
+                <h3 style="margin-bottom: 20px;">Order Summary</h3>
+
+                <div class="fxtk-item-list" id="itemList"></div>
+
+                <hr>
+
+                <div class="fxtk-fees">
+                    <div class="fxtk-fee-row">
+                        <span>Subtotal</span>
+                        <span id="subtotalDisplay">₱ 0.00</span>
+                    </div>
+                    <div class="fxtk-fee-row fxtk-fee-row--muted">
+                        <span>StandardX Delivery</span>
+                        <span id="deliveryFee">₱ 69.00</span>
+                    </div>
+                    <div class="fxtk-fee-row fxtk-fee-row--muted">
+                        <span>Service Fee</span>
+                        <span id="serviceFee">₱ 5.00</span>
+                    </div>
+                </div>
+
+                <div class="fxtk-total-display">
+                    <div class="fxtk-total-label">Payment (Cash)</div>
+                    <div class="fxtk-total-amount" id="totalAmount">₱ 0.00</div>
+                </div>
+
+                <div class="fxtk-actions">
+                    <button id="cancelBtn" class="fxtk-btn fxtk-btn-cancel" onclick="cancelOrder()">Cancel Order</button>
+                    <button class="fxtk-btn fxtk-btn-home" onclick="goHome()">Return to Home Page</button>
+                </div>
+            </div>
+        </aside>
+    </div>
+</div>
+@section PageScripts {
+    <script src="~/js/user/FoodX/foodXTracking.js" asp-append-version="true"></script>
+}

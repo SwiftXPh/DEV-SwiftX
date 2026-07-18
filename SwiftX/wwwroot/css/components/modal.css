@@ -1,12 +1,4 @@
-﻿/*
-    v1.0.3
-
-    Modal system: overlay, shell, shared
-    inner parts, and all page-specific
-    modal styles (rider, order, application,
-    payout, doc-preview)
-*/
-
+﻿
 
 /* ════════════════════════════════
    OVERLAY & ANIMATION
@@ -1553,6 +1545,18 @@
     font-size: var(--fs-small);
     outline: none;
     transition: border-color 0.2s ease;
+    /* Hints the browser to render native UI (like the <select> popup below)
+       in a dark theme, instead of falling back to a light system default
+       while still inheriting this element's light text color. */
+    color-scheme: dark;
+}
+
+/* Without this, a <select class="admin-modal-input"> inherits light text
+   color into its <option> list, but the popup background stays whatever
+   the OS/browser default is (often white) — white-on-white options. */
+select.admin-modal-input option {
+    background: var(--dark-bg-hero);
+    color: rgba(255, 255, 255, 0.85);
 }
 
 .admin-modal-input:focus {
@@ -1609,9 +1613,9 @@
     gap: 7px;
 }
 
-.emod-section-title i {
-    color: var(--primary-color);
-}
+    .emod-section-title i {
+        color: var(--primary-color);
+    }
 
 .emod-footer {
     display: flex;
