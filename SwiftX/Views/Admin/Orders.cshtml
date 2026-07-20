@@ -96,8 +96,8 @@
                     <tbody>
                         @foreach (var order in Model)
                         {
-                            var customerName = order.Customer != null
-                                ? $"{order.Customer.FirstName} {order.Customer.LastName}" : "—";
+                            var customerName = order.Customer?.User != null
+                                ? $"{order.Customer.User.FirstName} {order.Customer.User.LastName}" : "—";
                             var merchantName = order.Merchant?.BusinessName ?? "—";
                             var riderName = order.Rider?.User != null
                                 ? $"{order.Rider.User.FirstName} {order.Rider.User.LastName}" : "—";

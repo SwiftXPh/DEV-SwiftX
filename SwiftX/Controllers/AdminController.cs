@@ -120,7 +120,7 @@ namespace SwiftX.Controllers
                 .Sum(o => (decimal?)o.TotalAmount) ?? 0m;
 
             ViewBag.RecentOrders = _db.Orders
-                .Include(o => o.Customer)
+                .Include(o => o.Customer).ThenInclude(c => c.User)
                 .Include(o => o.Merchant)
                 .OrderByDescending(o => o.CreatedAt)
                 .Take(5)
@@ -166,7 +166,7 @@ namespace SwiftX.Controllers
         {
             // Data-driven order list. Empty until the ordering flow is integrated.
             var orders = _db.Orders
-                .Include(o => o.Customer)
+                .Include(o => o.Customer).ThenInclude(c => c.User)
                 .Include(o => o.Merchant)
                 .Include(o => o.Rider).ThenInclude(r => r.User)
                 .OrderByDescending(o => o.CreatedAt)

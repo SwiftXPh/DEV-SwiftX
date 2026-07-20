@@ -25,7 +25,11 @@ namespace SwiftX.Models
         [Required]
         public string Password { get; set; }
 
-        // Authorization role: "Customer" (default) or "Admin".
+        // Authorization role: "Customer" (default), "Rider", "Merchant", or "Admin".
         public string Role { get; set; } = "Customer";
+
+        public string? ProfileImagePath { get; set; }
+        public bool IsActive { get; set; } = true;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }

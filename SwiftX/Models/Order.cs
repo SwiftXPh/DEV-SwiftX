@@ -9,7 +9,7 @@ namespace SwiftX.Models
 
         // Relationships
         public int CustomerId { get; set; }
-        public UserModel Customer { get; set; }
+        public Customer Customer { get; set; }
 
         public int? RiderId { get; set; }
         public Rider Rider { get; set; }
@@ -40,8 +40,13 @@ namespace SwiftX.Models
 
         // Timestamps
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime? AcceptedAt { get; set; }   // when rider accepts
+        public DateTime? PickedUpAt { get; set; }   // when rider picks up from merchant
         public DateTime? DeliveredAt { get; set; }
         public DateTime? CancelledAt { get; set; }
+
+        // Notes
+        public string? RiderNotes { get; set; }
 
         // Navigation property for order items
         public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();

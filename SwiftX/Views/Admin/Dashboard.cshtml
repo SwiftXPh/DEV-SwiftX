@@ -162,8 +162,8 @@
                                 "cancelled" => "admin-badge--cancelled",
                                 _ => "admin-badge--pending"
                             };
-                            var customerName = order.Customer != null
-                                ? $"{order.Customer.FirstName} {order.Customer.LastName}"
+                            var customerName = order.Customer?.User != null
+                                ? $"{order.Customer.User.FirstName} {order.Customer.User.LastName}"
                                 : "—";
                             var merchantName = order.Merchant?.BusinessName ?? "—";
 

@@ -23,5 +23,15 @@ namespace SwiftX.Models
         public string AgreementStatus { get; set; } = "Pending";
         public string FrontVehicleStatus { get; set; } = "Pending";
         public string SideVehicleStatus { get; set; } = "Pending";
+
+        // Real-time operational fields
+        public bool IsOnline { get; set; } = false;
+        public double? CurrentLatitude { get; set; }
+        public double? CurrentLongitude { get; set; }
+        public string VehicleType { get; set; } = "Motorcycle"; // Motorcycle, Bicycle, Car
+
+        // Navigation — orders assigned to this rider
+        public List<Order> AssignedOrders { get; set; } = new();
     }
 }
+

@@ -62,7 +62,7 @@ namespace SwiftX.Controllers
             {
                 // 1. Save the user first to get the UserId (used for the storage folder)
                 var user = rider.User;
-                user.Role = "Customer";
+                user.Role = "Rider";
                 user.Password = _passwordHasher.HashPassword(user, user.Password);
                 _db.Users.Add(user);
                 await _db.SaveChangesAsync();
@@ -123,7 +123,7 @@ namespace SwiftX.Controllers
                 user.LastName = merchant.OwnerLastName;
                 user.Contact = merchant.BusinessContact;
                 user.Address = merchant.BusinessAddress;
-                user.Role = "Customer";
+                user.Role = "Merchant";
                 user.Password = _passwordHasher.HashPassword(user, user.Password);
                 _db.Users.Add(user);
                 await _db.SaveChangesAsync();
