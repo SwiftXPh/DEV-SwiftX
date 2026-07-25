@@ -25,6 +25,9 @@ RUN dotnet publish SwiftX.csproj -c Release -o /app/publish /p:UseAppHost=false
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
 ENV ASPNETCORE_ENVIRONMENT=Production
+# Disable config-file reloading — Render Free has a low inotify limit (128) and
+# ASP.NET's FileSystemWatcher exhausts it on startup. Config comes from env vars.
+ENV DOTNET_HOSTBUILDER__RELOADCONFIGONCHANGE=false
 # Render/Railway inject PORT at runtime; Program.cs binds 0.0.0.0:$PORT.
 COPY --from=build /app/publish .
 ENTRYPOINT ["dotnet", "SwiftX.dll"]
