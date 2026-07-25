@@ -1,13 +1,13 @@
 name: CI
 
-# Gate every PR into main (and pushes to main) on a successful build.
+# Gate every PR and push to staging/main on a successful build.
 # There are no unit tests yet, so "build compiles" + "Docker image builds"
 # is the gate — the Docker job mirrors exactly what Render does on deploy.
 on:
   push:
-    branches: [ main ]
+    branches: [ main, staging ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, staging ]
 
 jobs:
   build:

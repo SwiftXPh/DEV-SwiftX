@@ -9,9 +9,13 @@
 
 	<!-- One-shot CSS build. Do not use the tailwind watch flag here: a watch never
 	     returns and hangs dotnet build / publish / ef. For live rebuilding during dev,
-	     run the tailwind watcher in a separate terminal. Skip with -p:BuildCss=false. -->
-	<Target Name="BuildCss" BeforeTargets="Compile" Condition="'$(BuildCss)' != 'false'">
+	     run the tailwind watcher in a separate terminal. Skip with -p:BuildCss=false.
+	     Two targets handle Windows (npx.cmd) vs Linux/macOS (npx). -->
+	<Target Name="BuildCss" BeforeTargets="Compile" Condition="'$(BuildCss)' != 'false' AND '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))' == 'true'">
 		<Exec Command="npx.cmd tailwindcss -i ./wwwroot/css/site.css -o ./wwwroot/output.css --minify" />
+	</Target>
+	<Target Name="BuildCssLinux" BeforeTargets="Compile" Condition="'$(BuildCss)' != 'false' AND '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))' != 'true'">
+		<Exec Command="npx tailwindcss -i ./wwwroot/css/site.css -o ./wwwroot/output.css --minify" />
 	</Target>
 
 	<ItemGroup>
