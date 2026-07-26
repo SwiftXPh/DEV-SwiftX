@@ -1,8 +1,7 @@
 name: CI
 
 # Gate every PR and push to staging/main on a successful build.
-# There are no unit tests yet, so "build compiles" + "Docker image builds"
-# is the gate — the Docker job mirrors exactly what Render does on deploy.
+# Deploy jobs only run on pushes (not PRs) and only after CI passes.
 on:
   push:
     branches: [ main, staging ]
@@ -10,6 +9,7 @@ on:
     branches: [ main, staging ]
 
 jobs:
+  # ── CI: Build & Verify ─────────────────────────────────────────────────────
   build:
     name: Build & verify (.NET + Tailwind)
     runs-on: ubuntu-latest
@@ -48,3 +48,32 @@ jobs:
       # green build on Render.
       - name: Build Docker image
         run: docker build -f SwiftX/Dockerfile SwiftX
+
+  # ── Deploy: Only after CI passes, only on push (not PRs) ───────────────────
+  deploy-staging:
+    name: Deploy to Staging
+    if: github.event_name == 'push' && github.ref == 'refs/heads/staging'
+    needs: [ build, docker ]
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - name: Trigger Render deploy (staging)
+        run: |
+          curl -s -o /dev/null -w "%{http_code}" \
+            "${{ secrets.RENDER_DEPLOY_HOOK_STAGING }}"
+        env:
+          RENDER_DEPLOY_HOOK_STAGING: ${{ secrets.RENDER_DEPLOY_HOOK_STAGING }}
+
+  deploy-production:
+    name: Deploy to Production
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [ build, docker ]
+    runs-on: ubuntu-latest
+    environment: production  # GitHub environment protection rules gate this
+    steps:
+      - name: Trigger Render deploy (production)
+        run: |
+          curl -s -o /dev/null -w "%{http_code}" \
+            "${{ secrets.RENDER_DEPLOY_HOOK_PRODUCTION }}"
+        env:
+          RENDER_DEPLOY_HOOK_PRODUCTION: ${{ secrets.RENDER_DEPLOY_HOOK_PRODUCTION }}
