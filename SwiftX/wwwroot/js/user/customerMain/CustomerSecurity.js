@@ -13,6 +13,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const passwordOverlay = document.getElementById('passwordOverlay');
     const phoneOverlay = document.getElementById('phoneOverlay');
 
+    // ══════════════════════════════════════════════════════════
+    // 0. LOAD CURRENT INFO
+    // ══════════════════════════════════════════════════════════
+    fetch('/Customer/GetProfile')
+        .then(res => res.json())
+        .then(data => {
+            const emailDisplay = document.getElementById('currentEmailDisplay');
+            const phoneDisplay = document.getElementById('currentPhoneDisplay');
+            if (emailDisplay && data.email) emailDisplay.value = data.email;
+            if (phoneDisplay && data.phone) phoneDisplay.value = data.phone;
+        })
+        .catch(console.error);
 
     // ══════════════════════════════════════════════════════════
     // 1. BACK / DONE BUTTONS — navigate home
@@ -249,7 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     callback: async () => {
                         const success = await sendRequest('/Customer/DeleteAccount', {}, btnDeleteAccount);
                         if (success) {
-                            window.location.href = '/Auth/Login';
+                            window.location.href = '/Customer/UserLogin';
                         }
                     }
                 }

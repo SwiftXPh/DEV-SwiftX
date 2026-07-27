@@ -11,5 +11,6 @@ namespace SwiftX.Services
         public string ServiceRoleKey { get; set; } = string.Empty;
         public string RiderBucket { get; set; } = "rider-documents";
         public string MerchantBucket { get; set; } = "merchant-documents";
+        public string CustomerBucket { get; set; } = "customer-avatars";
     }
 }

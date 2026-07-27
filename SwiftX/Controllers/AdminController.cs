@@ -13,7 +13,7 @@ using SwiftX.Services;
 
 namespace SwiftX.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(AuthenticationSchemes = "AdminScheme", Roles = "Admin")]
     public class AdminController : Controller
     {
         private readonly AppDbContext _db;
@@ -88,8 +88,8 @@ namespace SwiftX.Controllers
                 new Claim(ClaimTypes.Name, user.Username),
                 new Claim(ClaimTypes.Role, "Admin")
             };
-            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
+            var identity = new ClaimsIdentity(claims, "AdminScheme");
+            await HttpContext.SignInAsync("AdminScheme", new ClaimsPrincipal(identity));
 
             if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
                 return Redirect(returnUrl);
@@ -100,7 +100,7 @@ namespace SwiftX.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignOutAsync("AdminScheme");
             return RedirectToAction(nameof(Index));
         }
 

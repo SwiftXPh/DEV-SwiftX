@@ -13,7 +13,7 @@ namespace SwiftX.Models
         public string? BirthMonth { get; set; }
         public string? BirthDate { get; set; }
         public string? BirthYear { get; set; }
-
+        public string? Gender { get; set; }
         // Login credentials — posted by every signup form, so safe to require here.
         [Required]
         public string Username { get; set; }

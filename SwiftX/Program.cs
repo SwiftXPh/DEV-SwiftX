@@ -32,14 +32,25 @@ builder.Services.AddHttpClient<ISupabaseStorageService, SupabaseStorageService>(
 // Password hashing (PBKDF2 via the framework's PasswordHasher — no extra package).
 builder.Services.AddSingleton<IPasswordHasher<UserModel>, PasswordHasher<UserModel>>();
 
-// Cookie authentication. The admin portal is gated behind [Authorize(Roles="Admin")].
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
+builder.Services.AddAuthentication()
+    .AddCookie("AdminScheme", options =>
     {
         options.LoginPath = "/Admin";
         options.AccessDeniedPath = "/Admin";
         options.ExpireTimeSpan = TimeSpan.FromHours(8);
         options.SlidingExpiration = true;
+        options.Cookie.Name = "SwiftX.Admin";
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+        options.Cookie.SameSite = SameSiteMode.Lax;
+    })
+    .AddCookie("CustomerScheme", options =>
+    {
+        options.LoginPath = "/Customer/UserLogin";
+        options.AccessDeniedPath = "/Customer/UserLogin";
+        options.ExpireTimeSpan = TimeSpan.FromDays(30);
+        options.SlidingExpiration = true;
+        options.Cookie.Name = "SwiftX.Customer";
         options.Cookie.HttpOnly = true;
         options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
         options.Cookie.SameSite = SameSiteMode.Lax;
