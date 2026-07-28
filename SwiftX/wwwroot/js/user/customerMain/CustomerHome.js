@@ -1,4 +1,4 @@
-﻿
+
 // ══════════════════════════════════════════════════════════
 // SIDEBAR TOGGLE
 // ══════════════════════════════════════════════════════════
@@ -18,6 +18,27 @@ function toggleMenu() {
 // (sidebar links open these — available on all pages)
 // ══════════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
+
+    // ── Load User Profile (Hamburger Menu & Greeting) ──
+    fetch('/Customer/GetProfile')
+        .then(res => res.json())
+        .then(data => {
+            if (data.profileImageUrl) {
+                const profilePics = document.querySelectorAll('.cust-profile-pic');
+                profilePics.forEach(pic => pic.src = data.profileImageUrl);
+            }
+            if (data.fullName) {
+                const sidebarName = document.getElementById('sidebarUserName');
+                if (sidebarName) sidebarName.textContent = data.fullName;
+
+                const greetingName = document.getElementById('customerName');
+                if (greetingName) {
+                    const firstName = data.fullName.split(' ')[0];
+                    greetingName.textContent = firstName;
+                }
+            }
+        })
+        .catch(console.error);
 
     // ── Help Center ──
     const helpModal = document.getElementById('helpCenterModalHome');
