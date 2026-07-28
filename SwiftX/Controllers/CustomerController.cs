@@ -137,7 +137,9 @@ namespace SwiftX.Controllers
                 birthdate = (!string.IsNullOrEmpty(user.BirthYear) && !string.IsNullOrEmpty(user.BirthMonth) && !string.IsNullOrEmpty(user.BirthDate))
                             ? $"{user.BirthYear}-{user.BirthMonth.PadLeft(2, '0')}-{user.BirthDate.PadLeft(2, '0')}"
                             : null,
-                profileImagePath = user.ProfileImagePath
+                profileImageUrl = !string.IsNullOrEmpty(user.ProfileImagePath) 
+                    ? await _storage.CreateSignedUrlAsync(_supabase.CustomerBucket, user.ProfileImagePath)
+                    : null
             });
         }
 

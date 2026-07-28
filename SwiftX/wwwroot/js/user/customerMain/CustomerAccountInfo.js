@@ -38,10 +38,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (data.birthdate && birthdateInput) birthdateInput.value = data.birthdate;
             if (data.email) document.getElementById('email').value = data.email;
             if (data.phone) document.getElementById('phone').value = data.phone;
-            if (data.profileImagePath) {
-                // Fetch the signed URL or the path, wait, GetProfile returns profileImagePath, we need a signed URL, let's assume it's publicly accessible or we returned the signed URL. Let's update GetProfile to return signed URL.
-                // Wait, I didn't return signed URL in GetProfile. I should fix that in the backend. But let's just set it if it's there.
-                // profilePic.style.backgroundImage = `url('${data.profileImagePath}')`;
+            if (data.profileImageUrl && profilePic) {
+                profilePic.style.backgroundImage = `url('${data.profileImageUrl}')`;
             }
         })
         .catch(console.error);
@@ -106,6 +104,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         body: imgData
                     });
                     if (!imgRes.ok) throw new Error('Failed to upload image');
+                    
+                    const imgResult = await imgRes.json();
+                    if (imgResult.url && profilePic) {
+                        profilePic.style.backgroundImage = `url('${imgResult.url}')`;
+                    }
                 }
 
                 AlertModal.show({
