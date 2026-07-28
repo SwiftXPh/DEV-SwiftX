@@ -1,4 +1,4 @@
-﻿@*
+@*
 
 *@
 @{
@@ -46,7 +46,12 @@
                  src="~/Assets/images/profile.jpg"
                  alt="Profile">
             <div class="cust-profile-info">
-                <h3 id="sidebarUserName">@(ViewData["FullName"] ?? "Customer")</h3>
+                @{
+                    var givenName = User.FindFirst(System.Security.Claims.ClaimTypes.GivenName)?.Value;
+                    var surname = User.FindFirst(System.Security.Claims.ClaimTypes.Surname)?.Value;
+                    var fullName = !string.IsNullOrEmpty(givenName) || !string.IsNullOrEmpty(surname) ? $"{givenName} {surname}".Trim() : "Customer";
+                }
+                <h3 id="sidebarUserName">@fullName</h3>
                 <span>Customer</span>
             </div>
         </div>
@@ -113,7 +118,7 @@
                 </button>
                 @* Greeting *@
                 <div class="cust-greeting">
-                    <h1>Hi, <span id="customerName">@(ViewData["FirstName"] ?? "there")</span></h1>
+                    <h1>Hi, <span id="customerName">@(User.FindFirst(System.Security.Claims.ClaimTypes.GivenName)?.Value ?? "there")</span></h1>
                     <p><b>Welcome To SwiftX</b></p>
                 </div>
             </div>

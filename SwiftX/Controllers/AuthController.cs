@@ -46,7 +46,9 @@ namespace SwiftX.Controllers
                 new Claim(ClaimTypes.NameIdentifier, user!.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Username),
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, "Customer")
+                new Claim(ClaimTypes.Role, "Customer"),
+                new Claim(ClaimTypes.GivenName, user.FirstName ?? ""),
+                new Claim(ClaimTypes.Surname, user.LastName ?? "")
             };
             var identity = new ClaimsIdentity(claims, "CustomerScheme");
             await HttpContext.SignInAsync("CustomerScheme", new ClaimsPrincipal(identity));
