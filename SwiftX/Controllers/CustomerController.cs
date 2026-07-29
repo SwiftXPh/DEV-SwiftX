@@ -223,6 +223,12 @@ namespace SwiftX.Controllers
             var user = await _db.Users.FindAsync(userId);
             if (user == null) return NotFound();
 
+            // Google-only users have no local password to verify.
+            if (string.IsNullOrEmpty(user.Password))
+            {
+                return BadRequest(new { message = "Google-linked accounts cannot change email here. Please manage your email through Google." });
+            }
+
             if (_passwordHasher.VerifyHashedPassword(user, user.Password, request.CurrentPassword) == PasswordVerificationResult.Failed)
             {
                 return BadRequest(new { message = "Incorrect password." });
@@ -248,6 +254,12 @@ namespace SwiftX.Controllers
             var user = await _db.Users.FindAsync(userId);
             if (user == null) return NotFound();
 
+            // Google-only users have no local password.
+            if (string.IsNullOrEmpty(user.Password))
+            {
+                return BadRequest(new { message = "Google-linked accounts don't have a password. You sign in with Google." });
+            }
+
             if (_passwordHasher.VerifyHashedPassword(user, user.Password, request.CurrentPassword) == PasswordVerificationResult.Failed)
             {
                 return BadRequest(new { message = "Incorrect current password." });
@@ -267,6 +279,12 @@ namespace SwiftX.Controllers
 
             var user = await _db.Users.FindAsync(userId);
             if (user == null) return NotFound();
+
+            // Google-only users have no local password to verify.
+            if (string.IsNullOrEmpty(user.Password))
+            {
+                return BadRequest(new { message = "Google-linked accounts cannot change phone number here. Please update your profile instead." });
+            }
 
             if (_passwordHasher.VerifyHashedPassword(user, user.Password, request.CurrentPassword) == PasswordVerificationResult.Failed)
             {

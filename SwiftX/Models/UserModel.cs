@@ -22,11 +22,14 @@ namespace SwiftX.Models
         [EmailAddress]
         public string Email { get; set; }
 
-        [Required]
-        public string Password { get; set; }
+        // Nullable for Google-only users who authenticate via OAuth and have no local password.
+        public string? Password { get; set; }
 
         // Authorization role: "Customer" (default), "Rider", "Merchant", or "Admin".
         public string Role { get; set; } = "Customer";
+
+        // Google OAuth — stores the Google "sub" claim for external login lookup.
+        public string? GoogleId { get; set; }
 
         public string? ProfileImagePath { get; set; }
         public bool IsActive { get; set; } = true;

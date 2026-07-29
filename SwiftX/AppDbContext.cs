@@ -28,6 +28,9 @@ namespace SwiftX
                 .HasIndex(u => u.Username).IsUnique();
             modelBuilder.Entity<UserModel>()
                 .HasIndex(u => u.Email).IsUnique();
+            modelBuilder.Entity<UserModel>()
+                .HasIndex(u => u.GoogleId).IsUnique()
+                .HasFilter("\"GoogleId\" IS NOT NULL");
 
             // One User → One profile (1:1 enforcement)
             modelBuilder.Entity<Rider>()

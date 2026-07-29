@@ -1,4 +1,4 @@
-﻿
+
 @{
     ViewData["Title"] = "Register";
     Layout = "~/Views/Shared/_LayoutCustomerLogin.cshtml";
@@ -161,6 +161,17 @@
                     Registering...
                 </span>
             </button>
+
+            @* Divider *@
+            <div class="auth-divider">
+                <span>Or continue with</span>
+            </div>
+
+            @* Google *@
+            <a href="/Auth/GoogleLogin" class="auth-social-btn" style="text-decoration:none;">
+                <img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" alt="Google" class="w-5 h-5">
+                Continue with Google
+            </a>
 
         </div>
     </form>

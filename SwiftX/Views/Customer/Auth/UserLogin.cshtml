@@ -26,6 +26,13 @@
         <span class="__pill">Customer Portal</span>
     </div>
 
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="mb-4 p-3 rounded-lg text-sm bg-red-500/10 border border-red-500/20 text-red-500 text-center __fade-up">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
     @* ── Login form ── *@
     <form id="loginForm" class="__fade-up __fade-up--d3" novalidate>
         <div class="login-card">
@@ -83,10 +90,10 @@
             </div>
 
             @* Google *@
-            <button type="button" class="auth-social-btn">
+            <a href="/Auth/GoogleLogin" class="auth-social-btn" style="text-decoration:none;">
                 <img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" alt="Google" class="w-5 h-5">
                 Continue with Google
-            </button>
+            </a>
 
         </div>
     </form>

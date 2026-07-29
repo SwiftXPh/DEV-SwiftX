@@ -54,6 +54,28 @@ builder.Services.AddAuthentication()
         options.Cookie.HttpOnly = true;
         options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
         options.Cookie.SameSite = SameSiteMode.Lax;
+    })
+    .AddGoogle("Google", options =>
+    {
+        options.ClientId = builder.Configuration["Google:ClientId"]!;
+        options.ClientSecret = builder.Configuration["Google:ClientSecret"]!;
+        options.CallbackPath = "/signin-google";
+        options.Scope.Add("email");
+        options.Scope.Add("profile");
+        // Issue the cookie into CustomerScheme so the rest of the app sees the user.
+        options.SignInScheme = "CustomerScheme";
+        
+        // Force the account selection screen every time the user clicks "Continue with Google"
+        options.Events = new Microsoft.AspNetCore.Authentication.OAuth.OAuthEvents
+        {
+            OnRedirectToAuthorizationEndpoint = context =>
+            {
+                var uri = context.RedirectUri;
+                uri += uri.Contains("?") ? "&prompt=select_account" : "?prompt=select_account";
+                context.Response.Redirect(uri);
+                return Task.CompletedTask;
+            }
+        };
     });
 
 // Throttle admin login attempts per client IP to blunt brute-force / credential stuffing.
