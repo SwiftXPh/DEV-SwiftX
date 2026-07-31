@@ -66,6 +66,7 @@ builder.Services.AddAuthentication()
         options.SignInScheme = "CustomerScheme";
         
         // Force the account selection screen every time the user clicks "Continue with Google"
+        // Also handle the case where the user cancels the login prompt gracefully
         options.Events = new Microsoft.AspNetCore.Authentication.OAuth.OAuthEvents
         {
             OnRedirectToAuthorizationEndpoint = context =>
@@ -73,6 +74,13 @@ builder.Services.AddAuthentication()
                 var uri = context.RedirectUri;
                 uri += uri.Contains("?") ? "&prompt=select_account" : "?prompt=select_account";
                 context.Response.Redirect(uri);
+                return Task.CompletedTask;
+            },
+            OnRemoteFailure = context =>
+            {
+                // User cancelled the login or something went wrong at Google's end
+                context.Response.Redirect("/Customer/UserLogin");
+                context.HandleResponse();
                 return Task.CompletedTask;
             }
         };

@@ -9,6 +9,7 @@ namespace SwiftX
         public DbSet<UserModel> Users { get; set; }
         public DbSet<Rider> Riders { get; set; }
         public DbSet<Merchant> Merchants { get; set; }
+        public DbSet<Store> Stores { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<CustomerAddress> CustomerAddresses { get; set; }
         public DbSet<Order> Orders { get; set; }

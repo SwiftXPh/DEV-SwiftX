@@ -234,6 +234,42 @@ namespace SwiftX.Controllers
                 .ToList();
             return View(merchants);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddMerchant(
+            string BusinessName,
+            string BusinessLocation,
+            string BusinessCategory,
+            IFormFile? BusinessLogo)
+        {
+            if (string.IsNullOrWhiteSpace(BusinessName) || string.IsNullOrWhiteSpace(BusinessLocation) || string.IsNullOrWhiteSpace(BusinessCategory))
+            {
+                TempData["Error"] = "Please fill in all required fields.";
+                return RedirectToAction("Merchant");
+            }
+
+            var store = new Store
+            {
+                BusinessName = BusinessName,
+                BusinessAddress = BusinessLocation,
+                Category = BusinessCategory,
+                Status = "Unassigned"
+            };
+
+            if (BusinessLogo != null && BusinessLogo.Length > 0)
+            {
+                var fileName = $"{Guid.NewGuid()}_{BusinessLogo.FileName}";
+                var path = await _storage.UploadAsync(BusinessLogo, _supabase.MerchantBucket, fileName);
+                store.LogoPath = path;
+            }
+
+            _db.Stores.Add(store);
+            await _db.SaveChangesAsync();
+
+            TempData["Success"] = "Store successfully created! It is currently Unassigned.";
+            return RedirectToAction("Merchant");
+        }
         public IActionResult MenuInfo()
         {
             return View();

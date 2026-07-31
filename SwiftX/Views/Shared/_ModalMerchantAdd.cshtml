@@ -14,34 +14,36 @@
         </div>
 
         <div class="admin-modal__body">
-            <form id="merchantForm">
+            <form id="merchantForm" method="post" enctype="multipart/form-data" asp-controller="Admin" asp-action="AddMerchant">
+                @Html.AntiForgeryToken()
                 <input type="hidden" id="editIndex" value="-1">
 
                 <div class="emod-grid">
 
                     <div class="emod-field emod-field--full">
                         <label id="labelName" class="emod-field__label" for="businessName">Business Name</label>
-                        <input type="text" id="businessName" class="admin-modal-input" required placeholder="Mcdonalds Valencia">
+                        <input type="text" id="businessName" name="BusinessName" class="admin-modal-input" required placeholder="Mcdonalds Valencia">
                     </div>
 
                     <div class="emod-field emod-field--full">
                         <label id="labelLocation" class="emod-field__label" for="businessLocation">Business Location</label>
-                        <input type="text" id="businessLocation" class="admin-modal-input" required placeholder="Choose on Map">
+                        <input type="text" id="businessLocation" name="BusinessLocation" class="admin-modal-input" required placeholder="Choose on Map">
                     </div>
 
                     <div class="emod-field emod-field--full">
                         <label id="labelCategory" class="emod-field__label" for="businessCategory">Business Category</label>
-                        <select id="businessCategory" class="admin-modal-input" required>
+                        <select id="businessCategory" name="BusinessCategory" class="admin-modal-input" required>
                             <option value="" disabled selected>Dropdown: Restaurants, Cafe etc</option>
                             <option value="Restaurant">Restaurant</option>
                             <option value="Cafe">Cafe</option>
+                            <option value="Fastfood">Fastfood</option>
                         </select>
                     </div>
 
                     <div class="emod-field emod-field--full">
                         <label id="labelLogo" class="emod-field__label" for="businessLogo">Business Logo</label>
                         <div class="admin-modal-upload" id="businessLogoUpload">
-                            <input type="file" id="businessLogo" class="admin-modal-upload__input" accept="image/*">
+                            <input type="file" id="businessLogo" name="BusinessLogo" class="admin-modal-upload__input" accept="image/*">
                             <span class="admin-modal-upload__label">
                                 <img id="businessLogoPreview" class="admin-modal-upload__preview" alt="">
                                 <i class="ph ph-upload-simple"></i>
