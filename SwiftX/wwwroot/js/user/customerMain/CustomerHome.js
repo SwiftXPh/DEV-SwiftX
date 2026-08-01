@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const profilePics = document.querySelectorAll('.cust-profile-pic');
                 profilePics.forEach(pic => pic.src = data.profileImageUrl);
             }
+
             if (data.fullName) {
                 const sidebarName = document.getElementById('sidebarUserName');
                 if (sidebarName) sidebarName.textContent = data.fullName;
