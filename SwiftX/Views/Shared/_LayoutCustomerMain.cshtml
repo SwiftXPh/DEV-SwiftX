@@ -86,7 +86,6 @@
         @* ── Logout ── *@
         <div class="cust-sidebar-logout">
             <form id="logoutForm" asp-controller="Auth" asp-action="Logout" method="post" style="display: none;">
-                @Html.AntiForgeryToken()
             </form>
             <a href="#" class="cust-logout-btn"
                onclick="event.preventDefault(); AlertModal.show({
@@ -96,14 +95,7 @@
                         buttons: [
                             { label: 'Cancel',  variant: 'ghost' },
                             { label: 'Log Out', variant: 'danger', callback: function() {
-                                fetch('/Auth/Logout', {
-                                    method: 'POST',
-                                    headers: {
-                                        'RequestVerificationToken': document.querySelector('#logoutForm input[name=__RequestVerificationToken]').value
-                                    }
-                                }).then(res => res.json()).then(data => {
-                                    if(data.success) window.location.href = '/Customer/UserLogin';
-                                }).catch(err => console.error('Logout error:', err));
+                                document.getElementById('logoutForm').submit();
                             }}
                         ]
                     })">

@@ -300,10 +300,11 @@ namespace SwiftX.Controllers
         }
 
         [HttpPost]
+        [IgnoreAntiforgeryToken]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync("CustomerScheme");
-            return Json(new { success = true });
+            return RedirectToAction("UserLogin", "Customer");
         }
     }
 
