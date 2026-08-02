@@ -21,8 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(data => {
             const emailDisplay = document.getElementById('currentEmailDisplay');
             const phoneDisplay = document.getElementById('currentPhoneDisplay');
-            if (emailDisplay && data.email) emailDisplay.value = data.email;
-            if (phoneDisplay && data.phone) phoneDisplay.value = data.phone;
+            if (emailDisplay) emailDisplay.value = data.email || 'Not set';
+            if (phoneDisplay) phoneDisplay.value = data.phone || 'Not set';
         })
         .catch(console.error);
 
