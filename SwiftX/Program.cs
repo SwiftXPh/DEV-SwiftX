@@ -134,6 +134,13 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 
 var app = builder.Build();
 
+// Automatically apply pending EF Core migrations on startup
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await dbContext.Database.MigrateAsync();
+}
+
 // Seed the admin account from configuration (AdminSeed:Username / AdminSeed:Password).
 await SeedAdmin.RunAsync(app.Services);
 
