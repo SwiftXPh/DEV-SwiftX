@@ -1,4 +1,4 @@
-﻿
+
 document.addEventListener('DOMContentLoaded', () => {
 
     // ══════════════════════════════════════════════════════════
@@ -58,9 +58,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
+            const csrfToken = document.querySelector('input[name="__RequestVerificationToken"]')?.value || '';
             const response = await fetch('/Auth/Login', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': csrfToken
+                },
                 body: JSON.stringify({ Username: username, Password: password })
             });
 

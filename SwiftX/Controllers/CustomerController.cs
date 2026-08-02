@@ -145,7 +145,7 @@ namespace SwiftX.Controllers
         }
 
         [HttpPost]
-        [IgnoreAntiforgeryToken] // If the JS frontend doesn't send CSRF tokens yet
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileRequest request)
         {
             if (request == null) return BadRequest();
@@ -179,7 +179,7 @@ namespace SwiftX.Controllers
         }
 
         [HttpPost]
-        [IgnoreAntiforgeryToken]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> UploadProfileImage(IFormFile file)
         {
             if (file == null || file.Length == 0) return BadRequest(new { success = false, message = "No file uploaded." });

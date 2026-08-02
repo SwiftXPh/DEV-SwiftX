@@ -10,7 +10,6 @@ using System.Security.Claims;
 namespace SwiftX.Controllers
 {
     [AllowAnonymous]
-    [IgnoreAntiforgeryToken]
     public class AuthController : Controller
     {
         private readonly AppDbContext _db;
@@ -33,6 +32,15 @@ namespace SwiftX.Controllers
 
             var user = await _db.Users.FirstOrDefaultAsync(u => u.Username == request.Username && u.Role == "Customer" && u.IsActive);
 
+            if (user != null)
+            {
+                if (user.LockoutEnd.HasValue && user.LockoutEnd.Value > DateTime.UtcNow)
+                {
+                    var waitMinutes = (int)Math.Ceiling((user.LockoutEnd.Value - DateTime.UtcNow).TotalMinutes);
+                    return Json(new { success = false, message = $"Account temporarily locked. Try again in {waitMinutes} minute(s)." });
+                }
+            }
+
             // Guard: Google-only users (no local password) get a helpful message.
             if (user != null && string.IsNullOrEmpty(user.Password))
             {
@@ -44,7 +52,26 @@ namespace SwiftX.Controllers
 
             if (!ok)
             {
+                if (user != null && !string.IsNullOrEmpty(user.Password))
+                {
+                    user.FailedLoginAttempts++;
+                    if (user.FailedLoginAttempts >= 5)
+                    {
+                        user.LockoutEnd = DateTime.UtcNow.AddMinutes(15);
+                        await _db.SaveChangesAsync();
+                        return Json(new { success = false, message = "Account temporarily locked due to too many failed attempts. Try again in 15 minutes." });
+                    }
+                    await _db.SaveChangesAsync();
+                }
                 return Json(new { success = false, message = "Invalid username or password." });
+            }
+            
+            // Successful login, reset lockout
+            if (user != null)
+            {
+                user.FailedLoginAttempts = 0;
+                user.LockoutEnd = null;
+                await _db.SaveChangesAsync();
             }
 
             var claims = new List<Claim>

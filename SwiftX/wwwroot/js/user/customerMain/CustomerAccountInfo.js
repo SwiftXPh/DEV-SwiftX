@@ -86,9 +86,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
 
                 // Save profile details
+                const csrfToken = document.querySelector('input[name="__RequestVerificationToken"]')?.value || '';
                 const res = await fetch('/Customer/UpdateProfile', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': csrfToken
+                    },
                     body: JSON.stringify(formData)
                 });
                 
@@ -101,6 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     imgData.append('file', file);
                     const imgRes = await fetch('/Customer/UploadProfileImage', {
                         method: 'POST',
+                        headers: { 'RequestVerificationToken': csrfToken },
                         body: imgData
                     });
                     if (!imgRes.ok) throw new Error('Failed to upload image');

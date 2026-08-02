@@ -35,6 +35,7 @@
 
     @* ── Login form ── *@
     <form id="loginForm" class="__fade-up __fade-up--d3" novalidate>
+        @Html.AntiForgeryToken()
         <div class="login-card">
 
             @* Username *@

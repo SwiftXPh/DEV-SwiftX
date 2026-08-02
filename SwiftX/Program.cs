@@ -22,6 +22,16 @@ builder.Services.AddControllersWithViews(options =>
     options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
 });
 
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(20);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Cookie.SameSite = SameSiteMode.Lax;
+    options.Cookie.Name = "SwiftX.Session";
+    options.Cookie.IsEssential = true;
+});
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -48,12 +58,25 @@ builder.Services.AddAuthentication()
     {
         options.LoginPath = "/Customer/UserLogin";
         options.AccessDeniedPath = "/Customer/UserLogin";
-        options.ExpireTimeSpan = TimeSpan.FromDays(30);
+        options.ExpireTimeSpan = TimeSpan.FromDays(7);
         options.SlidingExpiration = true;
         options.Cookie.Name = "SwiftX.Customer";
         options.Cookie.HttpOnly = true;
         options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
         options.Cookie.SameSite = SameSiteMode.Lax;
+        options.Events = new CookieAuthenticationEvents
+        {
+            OnValidatePrincipal = context =>
+            {
+                if (context.Properties.IssuedUtc.HasValue && 
+                    DateTimeOffset.UtcNow.Subtract(context.Properties.IssuedUtc.Value) > TimeSpan.FromDays(30))
+                {
+                    context.RejectPrincipal();
+                    return Task.CompletedTask;
+                }
+                return Task.CompletedTask;
+            }
+        };
     })
     .AddGoogle("Google", options =>
     {
@@ -136,6 +159,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseSession();
 
 app.UseRateLimiter();
 
