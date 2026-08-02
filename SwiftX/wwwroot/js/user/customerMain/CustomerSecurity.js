@@ -13,6 +13,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const passwordOverlay = document.getElementById('passwordOverlay');
     const phoneOverlay = document.getElementById('phoneOverlay');
 
+    let isGoogleUser = false;
+
     // ══════════════════════════════════════════════════════════
     // 0. LOAD CURRENT INFO
     // ══════════════════════════════════════════════════════════
@@ -23,6 +25,30 @@ document.addEventListener('DOMContentLoaded', () => {
             const phoneDisplay = document.getElementById('currentPhoneDisplay');
             if (emailDisplay) emailDisplay.value = data.email || 'Not set';
             if (phoneDisplay) phoneDisplay.value = data.phone || 'Not set';
+
+            isGoogleUser = data.isGoogleUser === true;
+
+            if (isGoogleUser) {
+                // Show SSO banner
+                const banner = document.getElementById('googleSsoBanner');
+                if (banner) banner.style.display = 'flex';
+
+                // Disable email and password cards
+                const emailCard = document.getElementById('emailCard');
+                const passwordCard = document.getElementById('passwordCard');
+                if (emailCard) {
+                    emailCard.classList.add('sec-card--disabled');
+                    emailCard.setAttribute('data-disabled', 'true');
+                }
+                if (passwordCard) {
+                    passwordCard.classList.add('sec-card--disabled');
+                    passwordCard.setAttribute('data-disabled', 'true');
+                }
+
+                // Hide password field in phone update overlay
+                const phonePassContainer = document.getElementById('phoneConfirmPasswordContainer');
+                if (phonePassContainer) phonePassContainer.style.display = 'none';
+            }
         })
         .catch(console.error);
 
@@ -58,6 +84,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!card || !overlay) return;
 
         card.addEventListener('click', () => {
+            if (card.getAttribute('data-disabled') === 'true') return; // Do not open if disabled
+
             overlay.classList.add('active');
             document.getElementById(focusId)?.focus();
         });
@@ -214,11 +242,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const newPhone = document.getElementById('newPhoneInput')?.value.trim() ?? '';
         const password = document.getElementById('phoneConfirmPasswordInput')?.value ?? '';
 
-        if (!newPhone || !password) {
+        if (!newPhone || (!isGoogleUser && !password)) {
             AlertModal.show({
                 type: 'warning',
                 title: 'Missing Fields',
-                message: 'Please enter both the new phone number and your current password.',
+                message: isGoogleUser 
+                    ? 'Please enter your new phone number.' 
+                    : 'Please enter both the new phone number and your current password.',
                 buttons: [{ label: 'OK', variant: 'ghost' }]
             });
             return;

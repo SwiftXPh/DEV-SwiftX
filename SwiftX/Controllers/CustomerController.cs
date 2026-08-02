@@ -139,7 +139,8 @@ namespace SwiftX.Controllers
                             : null,
                 profileImageUrl = !string.IsNullOrEmpty(user.ProfileImagePath) 
                     ? await _storage.CreateSignedUrlAsync(_supabase.CustomerBucket, user.ProfileImagePath)
-                    : null
+                    : null,
+                isGoogleUser = !string.IsNullOrEmpty(user.GoogleId)
             });
         }
 
@@ -280,15 +281,14 @@ namespace SwiftX.Controllers
             var user = await _db.Users.FindAsync(userId);
             if (user == null) return NotFound();
 
-            // Google-only users have no local password to verify.
-            if (string.IsNullOrEmpty(user.Password))
+            // Only verify password for non-Google users (Google users have no local password).
+            if (!string.IsNullOrEmpty(user.Password))
             {
-                return BadRequest(new { message = "Google-linked accounts cannot change phone number here. Please update your profile instead." });
-            }
-
-            if (_passwordHasher.VerifyHashedPassword(user, user.Password, request.CurrentPassword) == PasswordVerificationResult.Failed)
-            {
-                return BadRequest(new { message = "Incorrect password." });
+                if (string.IsNullOrEmpty(request.CurrentPassword) ||
+                    _passwordHasher.VerifyHashedPassword(user, user.Password, request.CurrentPassword) == PasswordVerificationResult.Failed)
+                {
+                    return BadRequest(new { message = "Incorrect password." });
+                }
             }
 
             user.Contact = request.NewPhone;
