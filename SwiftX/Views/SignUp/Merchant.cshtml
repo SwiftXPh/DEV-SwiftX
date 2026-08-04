@@ -296,4 +296,25 @@
 
 @section PageScripts {
     <script src="~/js/merchant_signup.js"></script>
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                @if (ViewData.ModelState.TryGetValue("Username", out var uname) && uname.Errors.Count > 0)
+                {
+                    <text>
+                    var eU = document.getElementById('err-username');
+                    if(eU) { eU.textContent = '@Html.Raw(uname.Errors[0].ErrorMessage)'; eU.classList.add('visible'); document.getElementById('inp-username').style.borderColor = '#ef4444'; }
+                    </text>
+                }
+                @if (ViewData.ModelState.TryGetValue("Email", out var email) && email.Errors.Count > 0)
+                {
+                    <text>
+                    var eE = document.getElementById('err-email');
+                    if(eE) { eE.textContent = '@Html.Raw(email.Errors[0].ErrorMessage)'; eE.classList.add('visible'); document.getElementById('inp-email').style.borderColor = '#ef4444'; }
+                    </text>
+                }
+            });
+        </script>
+    }
 }
