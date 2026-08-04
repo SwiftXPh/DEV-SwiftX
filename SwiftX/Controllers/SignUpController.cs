@@ -43,6 +43,11 @@ namespace SwiftX.Controllers
         {
             // Reject invalid input (missing fields, bad email, disallowed/oversized files)
             // before touching the database or storage.
+            if (await _db.Users.AnyAsync(u => u.Username == rider.Username))
+                ModelState.AddModelError("Username", "Username is already taken.");
+            if (await _db.Users.AnyAsync(u => u.Email == rider.Email))
+                ModelState.AddModelError("Email", "Email is already registered.");
+
             ValidateUpload(rider.License, nameof(rider.License));
             ValidateUpload(rider.ID, nameof(rider.ID));
             ValidateUpload(rider.ORCR, nameof(rider.ORCR));
@@ -60,10 +65,22 @@ namespace SwiftX.Controllers
 
             try
             {
-                // 1. Save the user first to get the UserId (used for the storage folder)
-                var user = rider.User;
-                user.Role = "Rider";
-                user.Password = _passwordHasher.HashPassword(user, user.Password);
+                // 1. Build the UserModel from flat ViewModel properties
+                var user = new UserModel
+                {
+                    Username   = rider.Username,
+                    Email      = rider.Email,
+                    FirstName  = rider.FirstName,
+                    LastName   = rider.LastName,
+                    MiddleName = rider.MiddleName,
+                    Contact    = rider.Contact,
+                    Address    = rider.Address,
+                    BirthMonth = rider.BirthMonth,
+                    BirthDate  = rider.BirthDate,
+                    BirthYear  = rider.BirthYear,
+                    Role       = "Rider"
+                };
+                user.Password = _passwordHasher.HashPassword(user, rider.Password);
                 _db.Users.Add(user);
                 await _db.SaveChangesAsync();
 
@@ -102,6 +119,11 @@ namespace SwiftX.Controllers
         public async Task<IActionResult> SignUpMerchant(MerchantModel merchant)
         {
             // Reject invalid input before touching the database or storage.
+            if (await _db.Users.AnyAsync(u => u.Username == merchant.Username))
+                ModelState.AddModelError("Username", "Username is already taken.");
+            if (await _db.Users.AnyAsync(u => u.Email == merchant.Email))
+                ModelState.AddModelError("Email", "Email is already registered.");
+            
             ValidateUpload(merchant.BIRForm, nameof(merchant.BIRForm));
             ValidateUpload(merchant.DTICertificate, nameof(merchant.DTICertificate));
             ValidateUpload(merchant.BarangayClearance, nameof(merchant.BarangayClearance));
@@ -116,15 +138,18 @@ namespace SwiftX.Controllers
 
             try
             {
-                // 1. Save the user first to get the UserId (used for the storage folder)
-                var user = merchant.User;
-                // Populate User fields from merchant form data (form doesn't bind these directly)
-                user.FirstName = merchant.OwnerFirstName;
-                user.LastName = merchant.OwnerLastName;
-                user.Contact = merchant.BusinessContact;
-                user.Address = merchant.BusinessAddress;
-                user.Role = "Merchant";
-                user.Password = _passwordHasher.HashPassword(user, user.Password);
+                // 1. Build the UserModel from flat ViewModel properties
+                var user = new UserModel
+                {
+                    Username  = merchant.Username,
+                    Email     = merchant.Email,
+                    FirstName = merchant.OwnerFirstName,
+                    LastName  = merchant.OwnerLastName,
+                    Contact   = merchant.BusinessContact,
+                    Address   = merchant.BusinessAddress,
+                    Role      = "Merchant"
+                };
+                user.Password = _passwordHasher.HashPassword(user, merchant.Password);
                 _db.Users.Add(user);
                 await _db.SaveChangesAsync();
 

@@ -5,8 +5,6 @@ namespace SwiftX.Models
 {
     public class MerchantModel
     {
-        public UserModel User { get; set; } = new UserModel();
-
         [Required(ErrorMessage = "Business name is required.")]
         public string BusinessName { get; set; }
 
@@ -29,13 +27,23 @@ namespace SwiftX.Models
         [Required(ErrorMessage = "BIR form is required.")]
         public IFormFile BIRForm { get; set; }
 
-        [Required(ErrorMessage = "DTI certificate is required.")]
-        public IFormFile DTICertificate { get; set; }
+        public IFormFile? DTICertificate { get; set; }
 
         [Required(ErrorMessage = "Barangay clearance is required.")]
         public IFormFile BarangayClearance { get; set; }
 
         [Required(ErrorMessage = "GCash contact number is required.")]
         public string GCContact { get; set; }
+
+        // ── Account credentials (previously nested in UserModel) ──
+        [Required(ErrorMessage = "Username is required.")]
+        public string Username { get; set; }
+
+        [Required(ErrorMessage = "Email is required.")]
+        [EmailAddress]
+        public string Email { get; set; }
+
+        [Required(ErrorMessage = "Password is required.")]
+        public string Password { get; set; }
     }
 }

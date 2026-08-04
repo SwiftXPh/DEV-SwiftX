@@ -4,7 +4,35 @@ namespace SwiftX.Models
 {
     public class RiderModel
     {
-        public UserModel User { get; set; } = new UserModel();
+        // ── Personal info (previously nested in UserModel) ──
+        [Required(ErrorMessage = "First name is required.")]
+        public string FirstName { get; set; }
+
+        public string? MiddleName { get; set; }
+
+        [Required(ErrorMessage = "Last name is required.")]
+        public string LastName { get; set; }
+
+        [Required(ErrorMessage = "Address is required.")]
+        public string Address { get; set; }
+
+        [Required(ErrorMessage = "Contact number is required.")]
+        public string Contact { get; set; }
+
+        public string? BirthMonth { get; set; }
+        public string? BirthDate { get; set; }
+        public string? BirthYear { get; set; }
+
+        // ── Account credentials (previously nested in UserModel) ──
+        [Required(ErrorMessage = "Username is required.")]
+        public string Username { get; set; }
+
+        [Required(ErrorMessage = "Email is required.")]
+        [EmailAddress]
+        public string Email { get; set; }
+
+        [Required(ErrorMessage = "Password is required.")]
+        public string Password { get; set; }
 
         [Required(ErrorMessage = "Driver's license is required.")]
         public IFormFile License { get; set; }
