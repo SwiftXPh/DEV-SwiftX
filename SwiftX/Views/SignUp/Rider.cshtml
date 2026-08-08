@@ -105,39 +105,12 @@
                         <span class="field-error" id="err-contact"></span>
                     </div>
 
-                    <div class="mb-2">
+                    <div class="mb-4">
                         <label class="__label block mb-1.5">*Date of Birth</label>
-                        <div class="grid grid-cols-3 gap-3">
-                            <div>
-                                <span class="block text-xs opacity-60 mb-1">Month</span>
-                                <select class="signup-select" id="inp-dob-month" asp-for="BirthMonth">
-                                    <option value="" disabled selected>—</option>
-                                    <option value="1">January</option>
-                                    <option value="2">February</option>
-                                    <option value="3">March</option>
-                                    <option value="4">April</option>
-                                    <option value="5">May</option>
-                                    <option value="6">June</option>
-                                    <option value="7">July</option>
-                                    <option value="8">August</option>
-                                    <option value="9">September</option>
-                                    <option value="10">October</option>
-                                    <option value="11">November</option>
-                                    <option value="12">December</option>
-                                </select>
-                            </div>
-                            <div>
-                                <span class="block text-xs opacity-60 mb-1">Day</span>
-                                <select class="signup-select" id="inp-dob-date" asp-for="BirthDate">
-                                    <option value="" disabled selected>—</option>
-                                </select>
-                            </div>
-                            <div>
-                                <span class="block text-xs opacity-60 mb-1">Year</span>
-                                <select class="signup-select" id="inp-dob-year" asp-for="BirthYear">
-                                    <option value="" disabled selected>—</option>
-                                </select>
-                            </div>
+                        <div class="input-icon-wrap">
+                            <input type="date" class="signup-input" id="inp-dob"
+                                   asp-for="Birthdate" />
+                            <span class="input-icon"><i class="ph ph-calendar"></i></span>
                         </div>
                         <span class="field-error" id="err-dob"></span>
                     </div>

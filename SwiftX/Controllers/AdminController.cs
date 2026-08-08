@@ -309,7 +309,7 @@ namespace SwiftX.Controllers
         [HttpGet]
         public IActionResult GetRiderJson(int id)
         {
-            var rider = _db.Riders.Include(r => r.User).FirstOrDefault(r => r.Id == id);
+            var rider = _db.Riders.Include(r => r.User).Include(r => r.Documents).FirstOrDefault(r => r.Id == id);
             if (rider == null) return NotFound();
 
             return Json(new
@@ -324,19 +324,19 @@ namespace SwiftX.Controllers
                 plateNumber = rider.PlateNumber ?? "—",
                 gcContact = rider.GCContact,
                 createdAt = rider.CreatedAt.ToString("MMMM dd, yyyy"),
-                licensePath = rider.LicensePath,
-                idPath = rider.IDPath,
-                orcrPath = rider.ORCRPath,
-                agreementPath = rider.AgreementPath,
-                frontVehiclePath = rider.FrontVehiclePath,
-                sideVehiclePath = rider.SideVehiclePath,
+                licensePath = rider.Documents.FirstOrDefault(d => d.DocumentType == "License")?.FilePath,
+                idPath = rider.Documents.FirstOrDefault(d => d.DocumentType == "ID")?.FilePath,
+                orcrPath = rider.Documents.FirstOrDefault(d => d.DocumentType == "ORCR")?.FilePath,
+                agreementPath = rider.Documents.FirstOrDefault(d => d.DocumentType == "Agreement")?.FilePath,
+                frontVehiclePath = rider.Documents.FirstOrDefault(d => d.DocumentType == "FrontVehicle")?.FilePath,
+                sideVehiclePath = rider.Documents.FirstOrDefault(d => d.DocumentType == "SideVehicle")?.FilePath,
                 // Document review statuses
-                licenseStatus = rider.LicenseStatus,
-                idStatus = rider.IDStatus,
-                orcrStatus = rider.ORCRStatus,
-                agreementStatus = rider.AgreementStatus,
-                frontVehicleStatus = rider.FrontVehicleStatus,
-                sideVehicleStatus = rider.SideVehicleStatus
+                licenseStatus = rider.Documents.FirstOrDefault(d => d.DocumentType == "License")?.Status,
+                idStatus = rider.Documents.FirstOrDefault(d => d.DocumentType == "ID")?.Status,
+                orcrStatus = rider.Documents.FirstOrDefault(d => d.DocumentType == "ORCR")?.Status,
+                agreementStatus = rider.Documents.FirstOrDefault(d => d.DocumentType == "Agreement")?.Status,
+                frontVehicleStatus = rider.Documents.FirstOrDefault(d => d.DocumentType == "FrontVehicle")?.Status,
+                sideVehicleStatus = rider.Documents.FirstOrDefault(d => d.DocumentType == "SideVehicle")?.Status
             });
         }
 
@@ -368,19 +368,23 @@ namespace SwiftX.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult UpdateDocStatus(int id, string docType, string status)
         {
-            var rider = _db.Riders.Find(id);
+            var rider = _db.Riders.Include(r => r.Documents).FirstOrDefault(r => r.Id == id);
             if (rider == null) return NotFound();
 
-            switch (docType)
+            string mappedDocType = docType switch
             {
-                case "license": rider.LicenseStatus = status; break;
-                case "id": rider.IDStatus = status; break;
-                case "orcr": rider.ORCRStatus = status; break;
-                case "agreement": rider.AgreementStatus = status; break;
-                case "front": rider.FrontVehicleStatus = status; break;
-                case "side": rider.SideVehicleStatus = status; break;
-                default: return BadRequest();
-            }
+                "license" => "License",
+                "id" => "ID",
+                "orcr" => "ORCR",
+                "agreement" => "Agreement",
+                "front" => "FrontVehicle",
+                "side" => "SideVehicle",
+                _ => null
+            };
+            if (mappedDocType == null) return BadRequest();
+
+            var doc = rider.Documents.FirstOrDefault(d => d.DocumentType == mappedDocType);
+            if (doc != null) { doc.Status = status; }
 
             _db.SaveChanges();
             return Ok();

@@ -24,13 +24,7 @@ namespace SwiftX.Models
         public string DTICertificateStatus { get; set; } = "Pending";
         public string BarangayClearanceStatus { get; set; } = "Pending";
 
-        // Operating details
-        public string? OpeningTime { get; set; }
-        public string? ClosingTime { get; set; }
-        public string? LogoPath { get; set; }
-        public string? CoverImagePath { get; set; }
-        public double? Latitude { get; set; }
-        public double? Longitude { get; set; }
+        public List<Store> Stores { get; set; } = new();
     }
 }
 

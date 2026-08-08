@@ -270,9 +270,7 @@ namespace SwiftX.Controllers
 
                 if (!string.IsNullOrWhiteSpace(request.Birthdate) && DateTime.TryParse(request.Birthdate, out var dob))
                 {
-                    user.BirthYear = dob.Year.ToString();
-                    user.BirthMonth = dob.Month.ToString();
-                    user.BirthDate = dob.Day.ToString();
+                    user.DateOfBirth = dob;
                 }
 
                 user.Password = _passwordHasher.HashPassword(user, request.Password);

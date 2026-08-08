@@ -6,10 +6,7 @@ namespace SwiftX.Models
         public int UserId { get; set; }
         public UserModel User { get; set; }
 
-        // Preferences
-        public string? DefaultDeliveryAddress { get; set; }
-        public double? DefaultLatitude { get; set; }
-        public double? DefaultLongitude { get; set; }
+        // Preferences (Managed via CustomerAddress)
 
         // Timestamps
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

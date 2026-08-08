@@ -75,11 +75,13 @@ namespace SwiftX.Controllers
                     MiddleName = rider.MiddleName,
                     Contact    = rider.Contact,
                     Address    = rider.Address,
-                    BirthMonth = rider.BirthMonth,
-                    BirthDate  = rider.BirthDate,
-                    BirthYear  = rider.BirthYear,
                     Role       = "Rider"
                 };
+                
+                if (!string.IsNullOrWhiteSpace(rider.Birthdate) && DateTime.TryParse(rider.Birthdate, out var dob))
+                {
+                    user.DateOfBirth = dob;
+                }
                 user.Password = _passwordHasher.HashPassword(user, rider.Password);
                 _db.Users.Add(user);
                 await _db.SaveChangesAsync();
@@ -88,15 +90,16 @@ namespace SwiftX.Controllers
                 var riderEntity = new Rider
                 {
                     UserId = user.Id,
-                    LicensePath = await UploadDoc(rider.License, bucket, user.Id, uploaded),
-                    IDPath = await UploadDoc(rider.ID, bucket, user.Id, uploaded),
-                    ORCRPath = await UploadDoc(rider.ORCR, bucket, user.Id, uploaded),
-                    AgreementPath = await UploadDoc(rider.Agreement, bucket, user.Id, uploaded),
-                    FrontVehiclePath = await UploadDoc(rider.Front_Vehicle, bucket, user.Id, uploaded),
-                    SideVehiclePath = await UploadDoc(rider.Side_Vehicle, bucket, user.Id, uploaded),
                     GCContact = rider.GCContact,
                     PlateNumber = rider.PlateNumber
                 };
+
+                riderEntity.Documents.Add(new RiderDocument { DocumentType = "License", FilePath = await UploadDoc(rider.License, bucket, user.Id, uploaded) });
+                riderEntity.Documents.Add(new RiderDocument { DocumentType = "ID", FilePath = await UploadDoc(rider.ID, bucket, user.Id, uploaded) });
+                riderEntity.Documents.Add(new RiderDocument { DocumentType = "ORCR", FilePath = await UploadDoc(rider.ORCR, bucket, user.Id, uploaded) });
+                riderEntity.Documents.Add(new RiderDocument { DocumentType = "Agreement", FilePath = await UploadDoc(rider.Agreement, bucket, user.Id, uploaded) });
+                riderEntity.Documents.Add(new RiderDocument { DocumentType = "FrontVehicle", FilePath = await UploadDoc(rider.Front_Vehicle, bucket, user.Id, uploaded) });
+                riderEntity.Documents.Add(new RiderDocument { DocumentType = "SideVehicle", FilePath = await UploadDoc(rider.Side_Vehicle, bucket, user.Id, uploaded) });
 
                 // 3. Save rider entity and commit.
                 _db.Riders.Add(riderEntity);
@@ -168,6 +171,13 @@ namespace SwiftX.Controllers
                     BarangayClearancePath = await UploadDoc(merchant.BarangayClearance, bucket, user.Id, uploaded),
                     GCContact = merchant.GCContact
                 };
+
+                var storeEntity = new Store
+                {
+                    BusinessName = merchant.BusinessName,
+                    BusinessAddress = merchant.BusinessAddress
+                };
+                merchantEntity.Stores.Add(storeEntity);
 
                 // 3. Save merchant entity and commit.
                 _db.Merchants.Add(merchantEntity);

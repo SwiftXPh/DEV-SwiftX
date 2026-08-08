@@ -8,21 +8,9 @@ namespace SwiftX.Models
         public string Status { get; set; } = "Pending"; // Pending, Active, Inactive, Rejected
         public string? PlateNumber { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public string LicensePath { get; set; }
-        public string IDPath { get; set; }
-        public string ORCRPath { get; set; }
-        public string AgreementPath { get; set; }
-        public string FrontVehiclePath { get; set; }
-        public string SideVehiclePath { get; set; }
+        // Documents (License, ID, ORCR, Agreement, Vehicle photos)
+        public List<RiderDocument> Documents { get; set; } = new();
         public string GCContact { get; set; }
-
-        // Per-document review statuses
-        public string LicenseStatus { get; set; } = "Pending";
-        public string IDStatus { get; set; } = "Pending";
-        public string ORCRStatus { get; set; } = "Pending";
-        public string AgreementStatus { get; set; } = "Pending";
-        public string FrontVehicleStatus { get; set; } = "Pending";
-        public string SideVehicleStatus { get; set; } = "Pending";
 
         // Real-time operational fields
         public bool IsOnline { get; set; } = false;

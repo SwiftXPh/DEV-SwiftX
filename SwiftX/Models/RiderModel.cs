@@ -19,9 +19,7 @@ namespace SwiftX.Models
         [Required(ErrorMessage = "Contact number is required.")]
         public string Contact { get; set; }
 
-        public string? BirthMonth { get; set; }
-        public string? BirthDate { get; set; }
-        public string? BirthYear { get; set; }
+        public string? Birthdate { get; set; }
 
         // ── Account credentials (previously nested in UserModel) ──
         [Required(ErrorMessage = "Username is required.")]
