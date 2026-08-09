@@ -156,6 +156,8 @@
 
 @section Scripts { 
     <script src="~/js/adminMerchant.js" asp-append-version="true"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=@ViewBag.GoogleMapsApiKey&callback=initLocationMap" async defer></script>
+    <script src="~/js/placesAutocomplete.js" asp-append-version="true"></script>
     <script>
         $(document).ready(function () {
             var merchantsTable = $('#merchants_table').DataTable({

@@ -25,9 +25,14 @@
                         <input type="text" id="businessName" name="BusinessName" class="admin-modal-input" required placeholder="Mcdonalds Valencia">
                     </div>
 
-                    <div class="emod-field emod-field--full">
+                    <div class="emod-field emod-field--full" style="position: relative;">
                         <label id="labelLocation" class="emod-field__label" for="businessLocation">Business Location</label>
-                        <input type="text" id="businessLocation" name="BusinessLocation" class="admin-modal-input" required placeholder="Choose on Map">
+                        <input type="text" id="businessLocation" name="BusinessLocation" class="admin-modal-input" required placeholder="Choose on Map" autocomplete="off">
+                        <input type="hidden" id="latitude" name="Latitude">
+                        <input type="hidden" id="longitude" name="Longitude">
+                        <div id="places-dropdown" class="places-dropdown" style="display: none;"></div>
+                        <div id="location-map"></div>
+                        <small class="admin-modal-help-text" style="display: block; margin-top: 8px; color: rgba(255,255,255,0.5); font-size: 12px;">Click the map to drop a pin, or drag the pin to adjust.</small>
                     </div>
 
                     <div class="emod-field emod-field--full">

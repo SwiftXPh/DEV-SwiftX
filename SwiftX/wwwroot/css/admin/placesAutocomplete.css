@@ -1,0 +1,56 @@
+.places-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background-color: #212121; /* Match admin modal dark theme */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    margin-top: 4px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    max-height: 250px;
+    overflow-y: auto;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.places-dropdown-item {
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition: background-color 0.2s;
+}
+
+.places-dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.places-dropdown-item i {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 18px;
+}
+
+.places-dropdown-item:hover,
+.places-dropdown-item-active {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.admin-modal-input.loading {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" width="24" height="24" style="shape-rendering: auto; display: block; background: transparent;"><circle stroke-dasharray="164.93361431346415 56.97787143782138" r="35" stroke-width="10" stroke="%23ffffff" fill="none" cy="50" cx="50"><animateTransform keyTimes="0;1" values="0 50 50;360 50 50" dur="1s" repeatCount="indefinite" type="rotate" attributeName="transform"></animateTransform></circle></svg>');
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+}
+
+#location-map {
+    height: 250px;
+    width: 100%;
+    margin-top: 8px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: #1a1a1a;
+    transition: opacity 0.3s ease;
+}

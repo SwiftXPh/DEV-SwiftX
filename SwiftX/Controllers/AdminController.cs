@@ -20,13 +20,17 @@ namespace SwiftX.Controllers
         private readonly ISupabaseStorageService _storage;
         private readonly SupabaseOptions _supabase;
         private readonly IPasswordHasher<UserModel> _passwordHasher;
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly GoogleMapsOptions _googleMaps;
 
-        public AdminController(AppDbContext db, ISupabaseStorageService storage, IOptions<SupabaseOptions> supabase, IPasswordHasher<UserModel> passwordHasher)
+        public AdminController(AppDbContext db, ISupabaseStorageService storage, IOptions<SupabaseOptions> supabase, IPasswordHasher<UserModel> passwordHasher, IHttpClientFactory httpClientFactory, IOptions<GoogleMapsOptions> googleMaps)
         {
             _db = db;
             _storage = storage;
             _supabase = supabase.Value;
             _passwordHasher = passwordHasher;
+            _httpClientFactory = httpClientFactory;
+            _googleMaps = googleMaps.Value;
         }
 
         /// <summary>
@@ -232,6 +236,9 @@ namespace SwiftX.Controllers
                 .Include(m => m.User)
                 .Where(m => m.Status == "Active" || m.Status == "Inactive")
                 .ToList();
+            
+            ViewBag.GoogleMapsApiKey = _googleMaps.ApiKey;
+            
             return View(merchants);
         }
 
@@ -241,6 +248,8 @@ namespace SwiftX.Controllers
             string BusinessName,
             string BusinessLocation,
             string BusinessCategory,
+            double? Latitude,
+            double? Longitude,
             IFormFile? BusinessLogo)
         {
             if (string.IsNullOrWhiteSpace(BusinessName) || string.IsNullOrWhiteSpace(BusinessLocation) || string.IsNullOrWhiteSpace(BusinessCategory))
@@ -254,6 +263,8 @@ namespace SwiftX.Controllers
                 BusinessName = BusinessName,
                 BusinessAddress = BusinessLocation,
                 Category = BusinessCategory,
+                Latitude = Latitude,
+                Longitude = Longitude,
                 Status = "Unassigned"
             };
 
@@ -270,6 +281,61 @@ namespace SwiftX.Controllers
             TempData["Success"] = "Store successfully created! It is currently Unassigned.";
             return RedirectToAction("Merchant");
         }
+
+        [HttpGet]
+        public async Task<IActionResult> PlacesAutocomplete(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input) || string.IsNullOrWhiteSpace(_googleMaps.ApiKey))
+                return Json(new { suggestions = Array.Empty<object>() });
+
+            var client = _httpClientFactory.CreateClient("GoogleMaps");
+            var requestBody = new
+            {
+                input = input,
+                locationRestriction = new
+                {
+                    rectangle = new
+                    {
+                        low = new { latitude = 7.3912, longitude = 124.5126 },
+                        high = new { latitude = 8.5615, longitude = 125.4660 }
+                    }
+                }
+            };
+            
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://places.googleapis.com/v1/places:autocomplete");
+            request.Headers.Add("X-Goog-Api-Key", _googleMaps.ApiKey);
+            request.Content = new StringContent(System.Text.Json.JsonSerializer.Serialize(requestBody), System.Text.Encoding.UTF8, "application/json");
+
+            var response = await client.SendAsync(request);
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                return Content(content, "application/json");
+            }
+            
+            return Json(new { suggestions = Array.Empty<object>() });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> PlaceDetails(string placeId)
+        {
+            if (string.IsNullOrWhiteSpace(placeId) || string.IsNullOrWhiteSpace(_googleMaps.ApiKey))
+                return BadRequest();
+
+            var client = _httpClientFactory.CreateClient("GoogleMaps");
+            var request = new HttpRequestMessage(HttpMethod.Get, $"https://places.googleapis.com/v1/places/{placeId}?fields=formattedAddress,location");
+            request.Headers.Add("X-Goog-Api-Key", _googleMaps.ApiKey);
+
+            var response = await client.SendAsync(request);
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                return Content(content, "application/json");
+            }
+
+            return BadRequest();
+        }
+
         public IActionResult MenuInfo()
         {
             return View();
