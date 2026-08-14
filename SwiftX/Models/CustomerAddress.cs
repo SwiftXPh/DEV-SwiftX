@@ -12,6 +12,11 @@ namespace SwiftX.Models
         public double? Longitude { get; set; }
         public bool IsDefault { get; set; }
 
+        public string? FloorUnit { get; set; }
+        public string? ContactName { get; set; }
+        public string? ContactPhone { get; set; }
+        public string? Notes { get; set; }
+
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }

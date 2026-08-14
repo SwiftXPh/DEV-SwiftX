@@ -17,13 +17,15 @@ namespace SwiftX.Controllers
         private readonly IPasswordHasher<UserModel> _passwordHasher;
         private readonly ISupabaseStorageService _storage;
         private readonly SupabaseOptions _supabase;
+        private readonly GoogleMapsOptions _googleMaps;
 
-        public CustomerController(AppDbContext db, IPasswordHasher<UserModel> passwordHasher, ISupabaseStorageService storage, IOptions<SupabaseOptions> supabase)
+        public CustomerController(AppDbContext db, IPasswordHasher<UserModel> passwordHasher, ISupabaseStorageService storage, IOptions<SupabaseOptions> supabase, IOptions<GoogleMapsOptions> googleMaps)
         {
             _db = db;
             _passwordHasher = passwordHasher;
             _storage = storage;
             _supabase = supabase.Value;
+            _googleMaps = googleMaps.Value;
         }
 
         // AUTH LEVEL (Allow Anonymous)
@@ -54,8 +56,17 @@ namespace SwiftX.Controllers
         }
 
         // CUSTOMER MAIN
-        public IActionResult CustomerHome()
+        public async Task<IActionResult> CustomerHome()
         {
+            var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!string.IsNullOrEmpty(userIdStr) && int.TryParse(userIdStr, out var userId))
+            {
+                var customer = await _db.Customers.Include(c => c.SavedAddresses).FirstOrDefaultAsync(c => c.UserId == userId);
+                if (customer != null && !customer.SavedAddresses.Any())
+                {
+                    return RedirectToAction("CustomerReviewAddress", new { firstTime = true });
+                }
+            }
             return View("Main/CustomerHome");
         }
 
@@ -106,6 +117,7 @@ namespace SwiftX.Controllers
 
         public IActionResult CustomerReviewAddress()
         {
+            ViewBag.GoogleMapsApiKey = _googleMaps.ApiKey;
             return View("Main/Settings/CustomerReviewAddress");
 
         }
@@ -117,6 +129,170 @@ namespace SwiftX.Controllers
         // ══════════════════════════════════════════════════════════
         // CUSTOMER API ENDPOINTS
         // ══════════════════════════════════════════════════════════
+
+        [HttpGet]
+        public async Task<IActionResult> GetAddresses()
+        {
+            var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdStr) || !int.TryParse(userIdStr, out var userId)) return Unauthorized();
+
+            var customer = await _db.Customers.Include(c => c.SavedAddresses).FirstOrDefaultAsync(c => c.UserId == userId);
+            if (customer == null) return NotFound();
+
+            var addresses = customer.SavedAddresses.OrderByDescending(a => a.IsDefault).ThenByDescending(a => a.CreatedAt).Select(a => new
+            {
+                id = a.Id,
+                label = a.Label,
+                fullAddress = a.FullAddress,
+                lat = a.Latitude,
+                lng = a.Longitude,
+                isDefault = a.IsDefault,
+                unit = a.FloorUnit,
+                name = a.ContactName,
+                phone = a.ContactPhone,
+                note = a.Notes
+            });
+
+            return Json(addresses);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetDefaultAddress()
+        {
+            var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdStr) || !int.TryParse(userIdStr, out var userId)) return Unauthorized();
+
+            var customer = await _db.Customers.Include(c => c.SavedAddresses).FirstOrDefaultAsync(c => c.UserId == userId);
+            if (customer == null) return NotFound();
+
+            var defaultAddress = customer.SavedAddresses.FirstOrDefault(a => a.IsDefault) ?? customer.SavedAddresses.OrderByDescending(a => a.CreatedAt).FirstOrDefault();
+
+            if (defaultAddress == null) return Json(null);
+
+            return Json(new
+            {
+                id = defaultAddress.Id,
+                label = defaultAddress.Label,
+                fullAddress = defaultAddress.FullAddress,
+                lat = defaultAddress.Latitude,
+                lng = defaultAddress.Longitude,
+                isDefault = defaultAddress.IsDefault,
+                unit = defaultAddress.FloorUnit,
+                name = defaultAddress.ContactName,
+                phone = defaultAddress.ContactPhone,
+                note = defaultAddress.Notes
+            });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SaveAddress([FromBody] SaveAddressRequest request)
+        {
+            if (request == null || string.IsNullOrWhiteSpace(request.FullAddress)) return BadRequest();
+
+            var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdStr) || !int.TryParse(userIdStr, out var userId)) return Unauthorized();
+
+            var customer = await _db.Customers.Include(c => c.SavedAddresses).FirstOrDefaultAsync(c => c.UserId == userId);
+            if (customer == null) return NotFound();
+
+            CustomerAddress address;
+            if (request.Id.HasValue && request.Id.Value > 0)
+            {
+                address = customer.SavedAddresses.FirstOrDefault(a => a.Id == request.Id.Value);
+                if (address == null) return NotFound();
+            }
+            else
+            {
+                address = new CustomerAddress { CustomerId = customer.Id };
+                // If it's the first address, make it default
+                if (!customer.SavedAddresses.Any())
+                {
+                    address.IsDefault = true;
+                }
+                _db.CustomerAddresses.Add(address);
+            }
+
+            address.Label = request.Label ?? "Saved Location";
+            address.FullAddress = request.FullAddress;
+            address.Latitude = request.Lat;
+            address.Longitude = request.Lng;
+            address.FloorUnit = request.Unit;
+            address.ContactName = request.Name;
+            address.ContactPhone = request.Phone;
+            address.Notes = request.Note;
+
+            await _db.SaveChangesAsync();
+            return Json(new { success = true, id = address.Id });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteAddress([FromBody] DeleteAddressRequest request)
+        {
+            var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdStr) || !int.TryParse(userIdStr, out var userId)) return Unauthorized();
+
+            var customer = await _db.Customers.Include(c => c.SavedAddresses).FirstOrDefaultAsync(c => c.UserId == userId);
+            if (customer == null) return NotFound();
+
+            var address = customer.SavedAddresses.FirstOrDefault(a => a.Id == request.Id);
+            if (address == null) return NotFound();
+
+            bool wasDefault = address.IsDefault;
+            _db.CustomerAddresses.Remove(address);
+            await _db.SaveChangesAsync();
+            
+            // If we deleted the default, set a new default if there are other addresses
+            if (wasDefault)
+            {
+                var newDefault = await _db.CustomerAddresses
+                    .Where(a => a.CustomerId == customer.Id)
+                    .OrderByDescending(a => a.CreatedAt)
+                    .FirstOrDefaultAsync();
+                if (newDefault != null)
+                {
+                    newDefault.IsDefault = true;
+                    await _db.SaveChangesAsync();
+                }
+            }
+
+            return Json(new { success = true });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SetDefaultAddress([FromBody] SetDefaultAddressRequest request)
+        {
+            var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdStr) || !int.TryParse(userIdStr, out var userId)) return Unauthorized();
+
+            var customer = await _db.Customers.Include(c => c.SavedAddresses).FirstOrDefaultAsync(c => c.UserId == userId);
+            if (customer == null) return NotFound();
+
+            var addressToSet = customer.SavedAddresses.FirstOrDefault(a => a.Id == request.Id);
+            if (addressToSet == null) return NotFound();
+
+            foreach (var addr in customer.SavedAddresses)
+            {
+                addr.IsDefault = (addr.Id == request.Id);
+            }
+
+            await _db.SaveChangesAsync();
+            return Json(new { success = true });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> HasAddresses()
+        {
+            var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdStr) || !int.TryParse(userIdStr, out var userId)) return Unauthorized();
+
+            var customer = await _db.Customers.Include(c => c.SavedAddresses).FirstOrDefaultAsync(c => c.UserId == userId);
+            if (customer == null) return NotFound();
+
+            return Json(new { hasAddresses = customer.SavedAddresses.Any() });
+        }
 
         [HttpGet]
         public async Task<IActionResult> GetProfile()
@@ -333,7 +509,30 @@ namespace SwiftX.Controllers
 
     public class UpdatePhoneRequest
     {
-        public string NewPhone { get; set; }
-        public string CurrentPassword { get; set; }
+        public string? NewPhone { get; set; }
+        public string? CurrentPassword { get; set; }
+    }
+
+    public class SaveAddressRequest
+    {
+        public int? Id { get; set; }
+        public string? Label { get; set; }
+        public string? FullAddress { get; set; }
+        public double? Lat { get; set; }
+        public double? Lng { get; set; }
+        public string? Unit { get; set; }
+        public string? Name { get; set; }
+        public string? Phone { get; set; }
+        public string? Note { get; set; }
+    }
+
+    public class DeleteAddressRequest
+    {
+        public int Id { get; set; }
+    }
+
+    public class SetDefaultAddressRequest
+    {
+        public int Id { get; set; }
     }
 }

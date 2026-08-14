@@ -301,3 +301,39 @@
 
     .ra-form-section { padding: 24px 12px 36px; }
 }
+
+/* ==========================================================
+   LABEL SELECTOR CHIPS
+   ========================================================== */
+.ra-label-selector {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+.ra-label-chip {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 12px;
+    background: var(--dark-bg-hero);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    color: rgba(255, 255, 255, 0.45);
+    font-family: var(--font-secondary);
+    font-size: var(--fs-small);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.ra-label-chip:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+.ra-label-chip.selected {
+    background: rgba(211, 69, 2, 0.1);
+    border-color: var(--primary-color);
+    color: var(--light-text-color);
+}
+.ra-label-chip.selected i {
+    color: var(--primary-color);
+}

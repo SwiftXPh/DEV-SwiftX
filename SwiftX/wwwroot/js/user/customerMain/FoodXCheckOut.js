@@ -4,7 +4,6 @@
 
 // STORAGE KEYS & SYSTEM PARAMETERS
 const CART_STORAGE_KEY = 'swiftx_cart_data'; // 🎯 Matched perfectly with Restaurant Storage key!
-const ADDRESS_STORAGE_KEY = 'foodx_selected_address';
 const DELIVERY_FEE = 39.00;
 
 // Dynamic url distance setup mapping
@@ -52,8 +51,6 @@ function setupInitialRecommendations() {
  * 🎯 SYNC SELECTED ADDRESS INFRASTRUCTURE 
  */
 function updateCheckoutAddressDisplay() {
-    const savedAddressData = localStorage.getItem(ADDRESS_STORAGE_KEY);
-
     const labelNode = document.getElementById('checkout-address-label');
     const textNode = document.getElementById('checkout-address-text');
     const subNode = document.getElementById('checkout-address-sub');
@@ -61,46 +58,53 @@ function updateCheckoutAddressDisplay() {
     const contactNode = document.getElementById('checkout-address-contact');
     const iconNode = document.getElementById('address-icon');
 
-    if (savedAddressData) {
-        try {
-            const address = JSON.parse(savedAddressData);
+    fetch('/Customer/GetDefaultAddress')
+        .then(res => {
+            if (res.status === 401) return null;
+            return res.json();
+        })
+        .then(address => {
+            if (address && address.id) {
+                window.currentCheckoutAddress = address;
 
-            if (labelNode) labelNode.innerText = address.label || 'Saved Location';
+                if (labelNode) labelNode.innerText = address.label || 'Saved Location';
 
-            if (iconNode) {
-                const labelLower = (address.label || "").toLowerCase();
-                iconNode.className = "ph ph-map-pin-area";
-                if (labelLower.includes("home")) iconNode.className = "ph ph-house";
-                else if (labelLower.includes("work") || labelLower.includes("office")) iconNode.className = "ph ph-briefcase";
-            }
-
-            if (textNode) textNode.innerText = address.fullAddress || '';
-
-            if (subNode && unitNode && contactNode) {
-                const hasUnit = !!address.unit;
-                const hasContact = !!address.name || !!address.phone;
-
-                if (hasUnit || hasContact) {
-                    unitNode.innerText = address.unit ? `Floor/Unit: ${address.unit}` : '';
-                    contactNode.innerText = address.name ? `${address.name} (${address.phone || ''})` : (address.phone || '');
-
-                    if (!hasUnit) unitNode.innerText = '';
-                    if (!hasContact) contactNode.innerText = '';
-
-                    subNode.style.display = 'block';
-                } else {
-                    subNode.style.display = 'none';
+                if (iconNode) {
+                    const labelLower = (address.label || "").toLowerCase();
+                    iconNode.className = "ph ph-map-pin-area";
+                    if (labelLower.includes("home")) iconNode.className = "ph ph-house";
+                    else if (labelLower.includes("work") || labelLower.includes("office")) iconNode.className = "ph ph-briefcase";
                 }
+
+                if (textNode) textNode.innerText = address.fullAddress || '';
+
+                if (subNode && unitNode && contactNode) {
+                    const hasUnit = !!address.unit;
+                    const hasContact = !!address.name || !!address.phone;
+
+                    if (hasUnit || hasContact) {
+                        unitNode.innerText = address.unit ? `Floor/Unit: ${address.unit}` : '';
+                        contactNode.innerText = address.name ? `${address.name} (${address.phone || ''})` : (address.phone || '');
+
+                        if (!hasUnit) unitNode.innerText = '';
+                        if (!hasContact) contactNode.innerText = '';
+
+                        subNode.style.display = 'block';
+                    } else {
+                        subNode.style.display = 'none';
+                    }
+                }
+            } else {
+                window.currentCheckoutAddress = null;
+                if (labelNode) labelNode.innerText = 'No Address Selected';
+                if (textNode) textNode.innerText = 'Tap to select or add your delivery location context';
+                if (subNode) subNode.style.display = 'none';
+                if (iconNode) iconNode.className = "ph ph-map-pin-area";
             }
-        } catch (e) {
-            console.error("Failed to parse cached address state parameters:", e);
-        }
-    } else {
-        if (labelNode) labelNode.innerText = 'No Address Selected';
-        if (textNode) textNode.innerText = 'Tap to select or add your delivery location context';
-        if (subNode) subNode.style.display = 'none';
-        if (iconNode) iconNode.className = "ph ph-map-pin-area";
-    }
+        })
+        .catch(e => {
+            console.error("Failed to fetch default address:", e);
+        });
 }
 
 /**
@@ -259,7 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (reviewBtn) {
         reviewBtn.onclick = () => {
             const cart = loadCart();
-            const hasAddress = localStorage.getItem(ADDRESS_STORAGE_KEY);
+            const hasAddress = window.currentCheckoutAddress != null;
 
             if (Object.keys(cart).length === 0) {
                 alert("Your checkout cart is completely empty!");

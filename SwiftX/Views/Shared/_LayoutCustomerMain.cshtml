@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="~/css/main.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/output.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/user/customerMain/customer.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/user/customerMain/AddressBottomSheet.css" asp-append-version="true" />
 
     <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
 
@@ -124,6 +125,20 @@
                     <p><b>Welcome To SwiftX</b></p>
                 </div>
             </div>
+
+            @* ── Delivery Location Bar ── *@
+            <div class="cust-delivery-bar" onclick="openAddressBottomSheet()">
+                <div class="cust-delivery-bar__icon">
+                    <i class="ph-fill ph-map-pin"></i>
+                </div>
+                <div class="cust-delivery-bar__text">
+                    <span class="cust-delivery-bar__label">Delivery Location</span>
+                    <span class="cust-delivery-bar__address" id="headerDeliveryAddress">Loading...</span>
+                </div>
+                <div class="cust-delivery-bar__chevron">
+                    <i class="ph ph-caret-down"></i>
+                </div>
+            </div>
         </header>
 
         @* ── Page content ── *@
@@ -131,6 +146,29 @@
             @RenderBody()
         </main>
 
+    </div>
+
+    @* ══════════════════════════════════════════════════════════
+       ADDRESS BOTTOM SHEET
+       ══════════════════════════════════════════════════════════ *@
+    @Html.AntiForgeryToken()
+    <div class="address-bottom-sheet-overlay" id="addressBottomSheetOverlay" onclick="closeAddressBottomSheet()"></div>
+    <div class="address-bottom-sheet" id="addressBottomSheet">
+        <div class="address-bottom-sheet__header">
+            <h3>Select Delivery Location</h3>
+            <button type="button" class="address-bottom-sheet__close" aria-label="Close" onclick="closeAddressBottomSheet()">
+                <i class="ph ph-x"></i>
+            </button>
+        </div>
+        <div class="address-bottom-sheet__content" id="addressBottomSheetContent">
+            <!-- Addresses will be injected here via JS -->
+            <div class="address-bottom-sheet__loading">Loading addresses...</div>
+        </div>
+        <div class="address-bottom-sheet__footer">
+            <a href="/Customer/CustomerReviewAddress" class="address-bottom-sheet__add-btn">
+                <i class="ph ph-plus"></i> Add New Address
+            </a>
+        </div>
     </div>
 
     @* ══════════════════════════════════════════════════════════
@@ -200,6 +238,7 @@
     <script src="~/js/modal-alert.js" asp-append-version="true"></script>
     <script src="~/js/user/Home/CustomerHome.js" asp-append-version="true"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/user/customerMain/AddressBottomSheet.js" asp-append-version="true"></script>
     
     @await RenderSectionAsync("PageScripts", required: false)
 

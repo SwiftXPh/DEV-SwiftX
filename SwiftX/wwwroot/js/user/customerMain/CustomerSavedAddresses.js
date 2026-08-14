@@ -1,45 +1,4 @@
-// CustomerSavedAddresses.js — v2.0.0
-
-// ══════════════════════════════════════════════════════════
-// STORAGE LAYER
-// TODO: replace localStorage with real backend API calls
-//       once the controller endpoints are ready.
-// ══════════════════════════════════════════════════════════
-const SAVED_ADDRESSES_KEY = 'foodx_saved_addresses';
-const CHECKOUT_FLOW_FLAG  = 'is_checkout_flow';
-
-const defaultAddresses = [
-    {
-        id: 1, label: 'Home',
-        fullAddress : 'Blk 4 Lot 8 Tierra Vista Subdivision, Barangay Santiago, General Trias, Cavite',
-        unit: 'Floor 1', phone: '09602161220', name: 'Kelvin Jimenez',
-        note: 'Near 7/11', lat: 14.3833, lng: 120.9333
-    },
-    {
-        id: 2, label: 'Work',
-        fullAddress : '456 Tech Tower, 32nd St, Bonifacio Global City, Taguig',
-        unit: 'Room 404', phone: '09187654321', name: 'Juan Dela Cruz',
-        note: 'Next to Lobby Entrance', lat: 14.5548, lng: 121.0476
-    },
-    {
-        id: 3, label: "Mom's House",
-        fullAddress : 'Apartment 7B, Greenview Villas, Dasmariñas, Cavite',
-        unit: '7B', phone: '09228889999', name: 'Maria Dela Cruz',
-        note: 'Gate is painted green', lat: 14.3294, lng: 120.9361
-    }
-];
-
-if (!localStorage.getItem(SAVED_ADDRESSES_KEY)) {
-    localStorage.setItem(SAVED_ADDRESSES_KEY, JSON.stringify(defaultAddresses));
-}
-
-function getSavedAddresses() {
-    return JSON.parse(localStorage.getItem(SAVED_ADDRESSES_KEY)) || [];
-}
-
-function saveAddresses(array) {
-    localStorage.setItem(SAVED_ADDRESSES_KEY, JSON.stringify(array));
-}
+// CustomerSavedAddresses.js — Backend API Integration
 
 function escapeHtml(str) {
     if (!str) return '';
@@ -51,7 +10,6 @@ function escapeHtml(str) {
         .replace(/'/g, '&#039;');
 }
 
-
 // ══════════════════════════════════════════════════════════
 // RENDER
 // ══════════════════════════════════════════════════════════
@@ -59,142 +17,178 @@ function loadSavedAddresses() {
     const feed = document.getElementById('saved-addresses-feed');
     if (!feed) return;
 
-    // Resolve checkout mode from data attribute (set by Razor)
-    const isCheckoutMode = feed.getAttribute('data-checkout-mode') === 'true'
-        || localStorage.getItem(CHECKOUT_FLOW_FLAG) === 'true';
+    const isCheckoutMode = feed.getAttribute('data-checkout-mode') === 'true';
 
-    if (isCheckoutMode) {
-        localStorage.setItem(CHECKOUT_FLOW_FLAG, 'true');
-    }
+    feed.innerHTML = '<div style="text-align: center; padding: 20px;">Loading addresses...</div>';
 
-    const addresses = getSavedAddresses();
+    fetch('/Customer/GetAddresses')
+        .then(res => {
+            if (res.status === 401) throw new Error('Unauthorized');
+            return res.json();
+        })
+        .then(addresses => {
+            feed.innerHTML = '';
 
-    feed.innerHTML = '';
-
-    if (!addresses.length) {
-        feed.innerHTML = `
-            <div class="sa-empty">
-                <i class="ph ph-map-pin"></i>
-                <p>No saved addresses found. Add one below!</p>
-            </div>`;
-        return;
-    }
-
-    const fragment = document.createDocumentFragment();
-
-    addresses.forEach(addr => {
-        let iconClass = 'ph ph-map-pin';
-        const labelLower = (addr.label || '').toLowerCase();
-        if (labelLower.includes('home'))                          iconClass = 'ph ph-house';
-        else if (labelLower.includes('work') || labelLower.includes('office')) iconClass = 'ph ph-briefcase';
-
-        const card = document.createElement('div');
-        card.className         = 'address-card';
-        card.setAttribute('data-id', addr.id);
-        card.setAttribute('role', 'listitem');
-
-        if (isCheckoutMode) card.classList.add('selectable-checkout-card');
-
-        card.innerHTML = `
-            <div class="address-details">
-                <span class="address-label">
-                    <i class="${iconClass}"></i>
-                    ${escapeHtml(addr.label || 'Saved Location')}
-                </span>
-                <p class="address-text">${escapeHtml(addr.fullAddress || addr.address)}</p>
-            </div>
-            <div class="address-actions">
-                <button type="button" class="action-btn edit-btn" aria-label="Edit address">
-                    <i class="ph ph-pencil-simple"></i>
-                </button>
-                <button type="button" class="action-btn delete-btn" aria-label="Delete address">
-                    <i class="ph ph-trash"></i>
-                </button>
-            </div>
-        `;
-
-        fragment.appendChild(card);
-    });
-
-    feed.appendChild(fragment);
-
-
-    // ── Event delegation on feed (single listener, no clone hack) ──
-    feed.addEventListener('click', (e) => {
-        const card = e.target.closest('.address-card');
-        if (!card) return;
-
-        const id = parseInt(card.getAttribute('data-id'), 10);
-
-        if (e.target.closest('.edit-btn')) {
-            editAddress(id);
-            return;
-        }
-
-        if (e.target.closest('.delete-btn')) {
-            deleteAddress(id, card);
-            return;
-        }
-
-        // Checkout selection
-        if (localStorage.getItem(CHECKOUT_FLOW_FLAG) === 'true') {
-            const selected = getSavedAddresses().find(a => a.id === id);
-            if (selected) {
-                localStorage.setItem('foodx_selected_address', JSON.stringify(selected));
-                localStorage.removeItem(CHECKOUT_FLOW_FLAG);
-                window.location.href = '/Customer/FoodXCheckOut';
+            if (!addresses || !addresses.length) {
+                feed.innerHTML = `
+                    <div class="sa-empty">
+                        <i class="ph ph-map-pin"></i>
+                        <p>No saved addresses found. Add one below!</p>
+                    </div>`;
+                return;
             }
-        }
-    }, { once: false });
-}
 
+            const fragment = document.createDocumentFragment();
+
+            addresses.forEach(addr => {
+                let iconClass = 'ph-map-pin';
+                const labelLower = (addr.label || '').toLowerCase();
+                if (labelLower.includes('home')) iconClass = 'ph-house';
+                else if (labelLower.includes('work') || labelLower.includes('office')) iconClass = 'ph-briefcase';
+
+                const card = document.createElement('div');
+                card.className = 'address-card';
+                if (addr.isDefault) {
+                    card.classList.add('is-default');
+                }
+                card.setAttribute('data-id', addr.id);
+                card.setAttribute('role', 'listitem');
+
+                if (isCheckoutMode) card.classList.add('selectable-checkout-card');
+                
+                const defaultBadge = addr.isDefault ? '<span style="font-size: 10px; background: #d34502; color: white; padding: 2px 4px; border-radius: 4px; margin-left: 8px;">ACTIVE</span>' : '';
+
+                card.innerHTML = `
+                    <div class="address-details">
+                        <span class="address-label">
+                            <i class="ph ${iconClass}"></i>
+                            ${escapeHtml(addr.label || 'Saved Location')}
+                            ${defaultBadge}
+                        </span>
+                        <p class="address-text">${escapeHtml(addr.fullAddress)}</p>
+                    </div>
+                    <div class="address-actions">
+                        <button type="button" class="action-btn edit-btn" aria-label="Edit address">
+                            <i class="ph ph-pencil-simple"></i>
+                        </button>
+                        <button type="button" class="action-btn delete-btn" aria-label="Delete address">
+                            <i class="ph ph-trash"></i>
+                        </button>
+                    </div>
+                `;
+
+                fragment.appendChild(card);
+            });
+
+            feed.appendChild(fragment);
+        })
+        .catch(err => {
+            console.error('Failed to load addresses:', err);
+            feed.innerHTML = '<div style="text-align: center; color: red;">Failed to load addresses.</div>';
+        });
+
+    // ── Event delegation on feed ──
+    if (!feed.dataset.listenerAttached) {
+        feed.addEventListener('click', (e) => {
+            const card = e.target.closest('.address-card');
+            if (!card) return;
+
+            const id = parseInt(card.getAttribute('data-id'), 10);
+
+            if (e.target.closest('.edit-btn')) {
+                editAddress(id, isCheckoutMode);
+                return;
+            }
+
+            if (e.target.closest('.delete-btn')) {
+                deleteAddress(id, card);
+                return;
+            }
+
+            // Checkout selection
+            if (isCheckoutMode) {
+                const tokenElement = document.querySelector('input[name="__RequestVerificationToken"]');
+                const token = tokenElement ? tokenElement.value : '';
+
+                fetch('/Customer/SetDefaultAddress', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': token
+                    },
+                    body: JSON.stringify({ id: id })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = '/Customer/FoodXCheckOut';
+                    }
+                })
+                .catch(err => console.error('Error setting default address:', err));
+            }
+        });
+        feed.dataset.listenerAttached = 'true';
+    }
+}
 
 // ══════════════════════════════════════════════════════════
 // EDIT
 // ══════════════════════════════════════════════════════════
-function editAddress(id) {
-    const addr          = getSavedAddresses().find(a => a.id === id);
-    const isCheckout    = localStorage.getItem(CHECKOUT_FLOW_FLAG) === 'true';
-    const returnSuffix  = isCheckout ? '&returnTo=checkout' : '';
-    const encodedAddr   = encodeURIComponent(addr?.fullAddress || addr?.address || '');
-
-    window.location.href =
-        `/Customer/CustomerReviewAddress?addressId=${id}&fullAddress=${encodedAddr}${returnSuffix}`;
+function editAddress(id, isCheckout) {
+    const returnSuffix = isCheckout ? '&returnTo=checkout' : '';
+    window.location.href = `/Customer/CustomerReviewAddress?addressId=${id}${returnSuffix}`;
 }
-
 
 // ══════════════════════════════════════════════════════════
 // DELETE
 // ══════════════════════════════════════════════════════════
 function deleteAddress(id, cardEl) {
     AlertModal.show({
-        type    : 'danger',
-        title   : 'Delete Address',
-        message : 'Are you sure you want to delete this address? This cannot be undone.',
-        buttons : [
+        type: 'danger',
+        title: 'Delete Address',
+        message: 'Are you sure you want to delete this address? This cannot be undone.',
+        buttons: [
             { label: 'Cancel', variant: 'ghost' },
             {
-                label    : 'Delete',
-                variant  : 'danger',
-                callback : () => {
-                    const updated = getSavedAddresses().filter(a => a.id !== id);
-                    saveAddresses(updated);
+                label: 'Delete',
+                variant: 'danger',
+                callback: () => {
+                    const tokenElement = document.querySelector('input[name="__RequestVerificationToken"]');
+                    const token = tokenElement ? tokenElement.value : '';
 
-                    if (cardEl) {
-                        cardEl.style.opacity   = '0';
-                        cardEl.style.transform = 'scale(0.95)';
-                        cardEl.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
-                        setTimeout(() => {
-                            cardEl.remove();
-                            if (!updated.length) loadSavedAddresses();
-                        }, 200);
-                    }
+                    fetch('/Customer/DeleteAddress', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'RequestVerificationToken': token
+                        },
+                        body: JSON.stringify({ id: id })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            if (cardEl) {
+                                cardEl.style.opacity = '0';
+                                cardEl.style.transform = 'scale(0.95)';
+                                cardEl.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
+                                setTimeout(() => {
+                                    cardEl.remove();
+                                    const feed = document.getElementById('saved-addresses-feed');
+                                    if (feed && feed.children.length === 0) {
+                                        loadSavedAddresses(); // reload to show empty state
+                                    }
+                                }, 200);
+                            } else {
+                                loadSavedAddresses();
+                            }
+                        }
+                    })
+                    .catch(err => console.error('Error deleting address:', err));
                 }
             }
         ]
     });
 }
-
 
 // ══════════════════════════════════════════════════════════
 // INIT

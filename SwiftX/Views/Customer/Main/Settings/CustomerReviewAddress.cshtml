@@ -1,10 +1,11 @@
 @{
     ViewData["Title"] = "Review Address";
     Layout = "~/Views/Shared/_LayoutCustomerSubPage.cshtml";
+    var isFirstTime = Context.Request.Query.ContainsKey("firstTime");
+    var submitText = isFirstTime ? "Confirm & Continue" : "Save Address";
 }
 
 @section Styles {
-    <link href="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl-js.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/user/customerMain/CustomerReviewAddress.css" asp-append-version="true" />
 }
 
@@ -12,9 +13,12 @@
 <div class="ra-map" id="addressPickerMap">
     <div class="ra-map__controls">
 
-        <button type="button" id="back-btn" class="ra-back-btn" aria-label="Go back">
-            <i class="ph ph-arrow-left"></i>
-        </button>
+        @if (!isFirstTime)
+        {
+            <button type="button" id="back-btn" class="ra-back-btn" aria-label="Go back">
+                <i class="ph ph-arrow-left"></i>
+            </button>
+        }
 
         <div class="ra-search-wrap">
             <i class="ph ph-map-trifold ra-search-icon"></i>
@@ -34,6 +38,20 @@
         <h2 class="ra-form-title">Enter Address Details</h2>
 
         <form id="addressForm" novalidate>
+            @Html.AntiForgeryToken()
+
+            <div class="ra-label-selector">
+                <div class="ra-label-chip selected" data-label="Home">
+                    <i class="ph-fill ph-house"></i> Home
+                </div>
+                <div class="ra-label-chip" data-label="Work">
+                    <i class="ph-fill ph-briefcase"></i> Work
+                </div>
+                <div class="ra-label-chip" data-label="Other">
+                    <i class="ph-fill ph-map-pin"></i> Other
+                </div>
+                <input type="hidden" id="addressLabel" name="Label" value="Home" />
+            </div>
 
             <div class="ra-field">
                 <label for="address">Address</label>
@@ -61,18 +79,21 @@
                 <textarea id="landmark" name="Landmark"></textarea>
             </div>
 
-            <label class="ra-checkbox">
+            <label class="ra-checkbox" style="display: none;">
                 <input type="checkbox" id="remember" checked>
                 Save this address
             </label>
 
-            <button type="submit" class="ra-submit-btn">Save Address</button>
+            <button type="submit" class="ra-submit-btn">@submitText</button>
 
         </form>
     </div>
 </div>
 
 @section PageScripts {
-    <script src="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl-js.js"></script>
+    <script>
+        window.isFirstTimeFlow = @(isFirstTime.ToString().ToLower());
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=@ViewBag.GoogleMapsApiKey&libraries=places&callback=initMap"></script>
     <script src="~/js/user/customerMain/CustomerReviewAddress.js" asp-append-version="true"></script>
 }
