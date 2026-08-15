@@ -133,7 +133,7 @@ function updateCartBadge() {
 // ══════════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('fxmBackBtn')?.addEventListener('click', () => {
-        window.history.back();
+        window.location.href = '/Customer/FoodXBrowse';
     });
 
     document.getElementById('fxmCartBtn')?.addEventListener('click', () => {

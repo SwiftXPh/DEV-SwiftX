@@ -242,6 +242,11 @@ namespace SwiftX.Controllers
             return View(merchants);
         }
 
+        public IActionResult ManualMerchants()
+        {
+            return View("ManualMerchants");
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddMerchant(
