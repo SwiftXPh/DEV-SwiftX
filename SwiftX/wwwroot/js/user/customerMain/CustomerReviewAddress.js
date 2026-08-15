@@ -8,7 +8,7 @@ let labelChips;
 let labelInput;
 
 function initMap() {
-    const initialCoords = { lat: 14.3833, lng: 120.9333 }; // Philippines fallback
+    const initialCoords = { lat: 8.1571, lng: 125.1256 }; // Bukidnon, Philippines fallback
 
     map = new google.maps.Map(document.getElementById('addressPickerMap'), {
         center: initialCoords,

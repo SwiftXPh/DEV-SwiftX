@@ -94,6 +94,6 @@
     <script>
         window.isFirstTimeFlow = @(isFirstTime.ToString().ToLower());
     </script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=@ViewBag.GoogleMapsApiKey&libraries=places&callback=initMap"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=@ViewBag.GoogleMapsApiKey&libraries=places,marker&callback=initMap"></script>
     <script src="~/js/user/customerMain/CustomerReviewAddress.js" asp-append-version="true"></script>
 }
