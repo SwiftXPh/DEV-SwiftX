@@ -23,6 +23,7 @@ namespace SwiftX.Controllers
 
         [HttpPost]
         [EnableRateLimiting("login")]
+        [IgnoreAntiforgeryToken]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
             if (request == null || string.IsNullOrWhiteSpace(request.Username) || string.IsNullOrWhiteSpace(request.Password))
@@ -230,6 +231,7 @@ namespace SwiftX.Controllers
         // ══════════════════════════════════════════════════════════
 
         [HttpPost]
+        [IgnoreAntiforgeryToken]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
             if (request == null || !ModelState.IsValid)
@@ -270,7 +272,7 @@ namespace SwiftX.Controllers
 
                 if (!string.IsNullOrWhiteSpace(request.Birthdate) && DateTime.TryParse(request.Birthdate, out var dob))
                 {
-                    user.DateOfBirth = dob;
+                    user.DateOfBirth = DateTime.SpecifyKind(dob, DateTimeKind.Utc);
                 }
 
                 user.Password = _passwordHasher.HashPassword(user, request.Password);
@@ -321,5 +323,6 @@ namespace SwiftX.Controllers
         public string Gender { get; set; }
         public string Birthdate { get; set; }
         public string Password { get; set; }
+        public string? ConfirmPassword { get; set; }
     }
 }

@@ -88,7 +88,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 Email: email,
                 Gender: gender,
                 Birthdate: birthdate,
-                Password: password
+                Password: password,
+                ConfirmPassword: confirmPassword
             };
 
             const submitBtn = this.querySelector('button[type="submit"]');
@@ -102,17 +103,25 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             try {
-                const csrfToken = document.querySelector('input[name="__RequestVerificationToken"]')?.value || '';
                 const response = await fetch('/Auth/Register', {
                     method: 'POST',
                     headers: { 
-                        'Content-Type': 'application/json',
-                        'RequestVerificationToken': csrfToken
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(payload)
                 });
 
-                const result = await response.json();
+                let result;
+                const contentType = response.headers.get("content-type");
+                if (contentType && contentType.includes("application/json")) {
+                    result = await response.json();
+                } else {
+                    if (response.status === 400) {
+                        throw new Error("Your session has expired or the token is invalid. Please refresh the page and try again.");
+                    } else {
+                        throw new Error(`Server returned unexpected status: ${response.status}`);
+                    }
+                }
 
                 if (submitBtn) {
                     submitBtn.disabled = false;
@@ -133,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     btnLoader?.classList.add('hidden');
                 }
                 console.error('Registration error:', error);
-                alert('An error occurred. Please try again later.');
+                alert(error.message || 'An error occurred. Please try again later.');
             }
         });
     }
