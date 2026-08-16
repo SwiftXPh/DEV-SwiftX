@@ -209,8 +209,8 @@
    ========================================================== */
 .cust-topbar {
     background: linear-gradient(to top, var(--primary-color), #f15a10);
-    height: 220px;
-    padding: 20px 0 70px;
+    height: auto;
+    padding: 20px 0 24px;
     border-bottom-left-radius: 36px;
     border-bottom-right-radius: 36px;
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
@@ -579,8 +579,8 @@
    ========================================================== */
 @media (max-width: 768px) {
     .cust-topbar {
-        height: 180px;
-        padding: 16px 0 50px;
+        height: auto;
+        padding: 16px 0 20px;
         border-bottom-left-radius: 24px;
         border-bottom-right-radius: 24px;
     }
@@ -592,8 +592,8 @@
 
 @media (max-width: 425px) {
     .cust-topbar {
-        height: 150px;
-        padding: 14px 0 36px;
+        height: auto;
+        padding: 14px 0 18px;
         border-bottom-left-radius: 18px;
         border-bottom-right-radius: 18px;
     }
@@ -610,13 +610,13 @@
 
 @media (max-width: 375px) {
     .cust-topbar {
-        height: 138px;
+        height: auto;
     }
 }
 
 @media (max-width: 320px) {
     .cust-topbar {
-        height: 125px;
+        height: auto;
         border-bottom-left-radius: 14px;
         border-bottom-right-radius: 14px;
     }
