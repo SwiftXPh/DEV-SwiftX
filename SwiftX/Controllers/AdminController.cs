@@ -248,12 +248,24 @@ namespace SwiftX.Controllers
 
         public IActionResult ManualMerchants()
         {
-            return View("ManualMerchants");
+            var stores = _db.Stores
+                .Include(s => s.Merchant)
+                .OrderByDescending(s => s.CreatedAt)
+                .ToList();
+
+            ViewBag.ApprovedMerchants = _db.Merchants
+                .Where(m => m.Status == "Active")
+                .OrderBy(m => m.BusinessName)
+                .ToList();
+
+            ViewBag.GoogleMapsApiKey = _googleMaps.ApiKey;
+            return View("ManualMerchants", stores);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddMerchant(
+            int? MerchantId,
             string BusinessName,
             string BusinessLocation,
             string BusinessCategory,
@@ -264,11 +276,12 @@ namespace SwiftX.Controllers
             if (string.IsNullOrWhiteSpace(BusinessName) || string.IsNullOrWhiteSpace(BusinessLocation) || string.IsNullOrWhiteSpace(BusinessCategory))
             {
                 TempData["Error"] = "Please fill in all required fields.";
-                return RedirectToAction("Merchant");
+                return RedirectToAction("ManualMerchants");
             }
 
             var store = new Store
             {
+                MerchantId = MerchantId,
                 BusinessName = BusinessName,
                 BusinessAddress = BusinessLocation,
                 Category = BusinessCategory,
@@ -288,7 +301,7 @@ namespace SwiftX.Controllers
             await _db.SaveChangesAsync();
 
             TempData["Success"] = "Store successfully created! It is currently Unassigned.";
-            return RedirectToAction("Merchant");
+            return RedirectToAction("ManualMerchants");
         }
 
         [HttpGet]
@@ -345,9 +358,15 @@ namespace SwiftX.Controllers
             return BadRequest();
         }
 
-        public IActionResult MenuInfo()
+        public IActionResult MenuInfo(int id)
         {
-            return View();
+            var store = _db.Stores
+                .Include(s => s.Products)
+                .FirstOrDefault(s => s.Id == id);
+
+            if (store == null) return RedirectToAction("ManualMerchants");
+
+            return View(store);
         }
         public IActionResult MerchantApplications()
         {
@@ -511,6 +530,215 @@ namespace SwiftX.Controllers
 
             _db.SaveChanges();
             return Ok();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetStoreJson(int id)
+        {
+            var store = _db.Stores.Include(s => s.Merchant).FirstOrDefault(s => s.Id == id);
+            if (store == null) return NotFound();
+
+            string? logoUrl = null;
+            if (!string.IsNullOrEmpty(store.LogoPath))
+                logoUrl = await _storage.CreateSignedUrlAsync(_supabase.MerchantBucket, store.LogoPath);
+
+            string? coverUrl = null;
+            if (!string.IsNullOrEmpty(store.CoverImagePath))
+                coverUrl = await _storage.CreateSignedUrlAsync(_supabase.MerchantBucket, store.CoverImagePath);
+
+            return Json(new
+            {
+                id = store.Id,
+                storeId = $"STR-{store.Id:D3}",
+                merchantId = store.MerchantId,
+                merchantName = store.Merchant?.BusinessName ?? "Admin Managed",
+                businessName = store.BusinessName,
+                businessAddress = store.BusinessAddress,
+                category = store.Category ?? "—",
+                status = store.Status,
+                openingTime = store.OpeningTime ?? "—",
+                closingTime = store.ClosingTime ?? "—",
+                latitude = store.Latitude,
+                longitude = store.Longitude,
+                logoUrl = logoUrl,
+                coverUrl = coverUrl,
+                createdAt = store.CreatedAt.ToString("MMMM dd, yyyy"),
+                productCount = _db.Products.Count(p => p.StoreId == store.Id)
+            });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateStore(int Id, int? MerchantId, string BusinessName, string BusinessAddress, string? Category, string? OpeningTime, string? ClosingTime, double? Latitude, double? Longitude, IFormFile? LogoFile, IFormFile? CoverFile)
+        {
+            var store = _db.Stores.Find(Id);
+            if (store == null) return NotFound();
+
+            store.MerchantId = MerchantId;
+            store.BusinessName = BusinessName;
+            store.BusinessAddress = BusinessAddress;
+            store.Category = Category;
+            store.OpeningTime = OpeningTime;
+            store.ClosingTime = ClosingTime;
+            store.Latitude = Latitude;
+            store.Longitude = Longitude;
+
+            if (LogoFile != null && LogoFile.Length > 0)
+            {
+                if (!string.IsNullOrEmpty(store.LogoPath))
+                    try { await _storage.DeleteAsync(_supabase.MerchantBucket, store.LogoPath); } catch { }
+
+                var logoPath = $"stores/{store.Id}/logo/{Guid.NewGuid()}{Path.GetExtension(LogoFile.FileName)}";
+                store.LogoPath = await _storage.UploadAsync(LogoFile, _supabase.MerchantBucket, logoPath);
+            }
+
+            if (CoverFile != null && CoverFile.Length > 0)
+            {
+                if (!string.IsNullOrEmpty(store.CoverImagePath))
+                    try { await _storage.DeleteAsync(_supabase.MerchantBucket, store.CoverImagePath); } catch { }
+
+                var coverPath = $"stores/{store.Id}/cover/{Guid.NewGuid()}{Path.GetExtension(CoverFile.FileName)}";
+                store.CoverImagePath = await _storage.UploadAsync(CoverFile, _supabase.MerchantBucket, coverPath);
+            }
+
+            await _db.SaveChangesAsync();
+            TempData["Success"] = "Store updated successfully.";
+            return RedirectToAction("ManualMerchants");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteStore(int id)
+        {
+            var store = _db.Stores.Include(s => s.Products).FirstOrDefault(s => s.Id == id);
+            if (store == null) return NotFound();
+
+            foreach (var product in store.Products)
+            {
+                if (!string.IsNullOrEmpty(product.ImagePath))
+                    try { await _storage.DeleteAsync(_supabase.MerchantBucket, product.ImagePath); } catch { }
+            }
+
+            if (!string.IsNullOrEmpty(store.LogoPath))
+                try { await _storage.DeleteAsync(_supabase.MerchantBucket, store.LogoPath); } catch { }
+            if (!string.IsNullOrEmpty(store.CoverImagePath))
+                try { await _storage.DeleteAsync(_supabase.MerchantBucket, store.CoverImagePath); } catch { }
+
+            _db.Stores.Remove(store);
+            await _db.SaveChangesAsync();
+
+            TempData["Success"] = "Store deleted successfully.";
+            return RedirectToAction("ManualMerchants");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult ToggleStoreStatus(int id)
+        {
+            var store = _db.Stores.Find(id);
+            if (store == null) return NotFound();
+
+            store.Status = store.Status == "Active" ? "Inactive" : "Active";
+            _db.SaveChanges();
+
+            return RedirectToAction("ManualMerchants");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddProduct(int StoreId, string Name, string? Description, decimal Price, string? Category, IFormFile? Image)
+        {
+            var store = _db.Stores.Find(StoreId);
+            if (store == null) return NotFound();
+
+            var product = new Product
+            {
+                StoreId = StoreId,
+                Name = Name,
+                Description = Description,
+                Price = Price,
+                Category = Category,
+                IsAvailable = true
+            };
+
+            if (Image != null && Image.Length > 0)
+            {
+                var objectPath = $"stores/{StoreId}/products/{Guid.NewGuid()}{Path.GetExtension(Image.FileName)}";
+                product.ImagePath = await _storage.UploadAsync(Image, _supabase.MerchantBucket, objectPath);
+            }
+
+            _db.Products.Add(product);
+            await _db.SaveChangesAsync();
+
+            TempData["Success"] = "Product added successfully.";
+            return RedirectToAction("MenuInfo", new { id = StoreId });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateProduct(int Id, int StoreId, string Name, string? Description, decimal Price, string? Category, bool IsAvailable, IFormFile? Image)
+        {
+            var product = _db.Products.Find(Id);
+            if (product == null) return NotFound();
+
+            product.Name = Name;
+            product.Description = Description;
+            product.Price = Price;
+            product.Category = Category;
+            product.IsAvailable = IsAvailable;
+
+            if (Image != null && Image.Length > 0)
+            {
+                if (!string.IsNullOrEmpty(product.ImagePath))
+                    try { await _storage.DeleteAsync(_supabase.MerchantBucket, product.ImagePath); } catch { }
+
+                var objectPath = $"stores/{StoreId}/products/{Guid.NewGuid()}{Path.GetExtension(Image.FileName)}";
+                product.ImagePath = await _storage.UploadAsync(Image, _supabase.MerchantBucket, objectPath);
+            }
+
+            await _db.SaveChangesAsync();
+            TempData["Success"] = "Product updated successfully.";
+            return RedirectToAction("MenuInfo", new { id = StoreId });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteProduct(int id, int storeId)
+        {
+            var product = _db.Products.Find(id);
+            if (product == null) return NotFound();
+
+            if (!string.IsNullOrEmpty(product.ImagePath))
+                try { await _storage.DeleteAsync(_supabase.MerchantBucket, product.ImagePath); } catch { }
+
+            _db.Products.Remove(product);
+            await _db.SaveChangesAsync();
+
+            TempData["Success"] = "Product deleted successfully.";
+            return RedirectToAction("MenuInfo", new { id = storeId });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetProductJson(int id)
+        {
+            var product = _db.Products.Find(id);
+            if (product == null) return NotFound();
+
+            string? imageUrl = null;
+            if (!string.IsNullOrEmpty(product.ImagePath))
+                imageUrl = await _storage.CreateSignedUrlAsync(_supabase.MerchantBucket, product.ImagePath);
+
+            return Json(new
+            {
+                id = product.Id,
+                storeId = product.StoreId,
+                name = product.Name,
+                description = product.Description,
+                price = product.Price,
+                category = product.Category,
+                isAvailable = product.IsAvailable,
+                imageUrl = imageUrl
+            });
         }
 
     }

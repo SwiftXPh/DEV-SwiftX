@@ -46,6 +46,20 @@
                     </div>
 
                     <div class="emod-field emod-field--full">
+                        <label id="labelOwner" class="emod-field__label" for="merchantId">Store Owner</label>
+                        <select id="merchantId" name="MerchantId" class="admin-modal-input">
+                            <option value="">Admin Managed (No Merchant)</option>
+                            @if (ViewBag.ApprovedMerchants != null)
+                            {
+                                foreach (var merchant in (List<SwiftX.Models.Merchant>)ViewBag.ApprovedMerchants)
+                                {
+                                    <option value="@merchant.Id">@merchant.BusinessName</option>
+                                }
+                            }
+                        </select>
+                    </div>
+
+                    <div class="emod-field emod-field--full">
                         <label id="labelLogo" class="emod-field__label" for="businessLogo">Business Logo</label>
                         <div class="admin-modal-upload" id="businessLogoUpload">
                             <input type="file" id="businessLogo" name="BusinessLogo" class="admin-modal-upload__input" accept="image/*">

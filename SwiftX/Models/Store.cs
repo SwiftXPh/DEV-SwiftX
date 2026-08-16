@@ -4,8 +4,8 @@ namespace SwiftX.Models
     {
         public int Id { get; set; }
         
-        public int MerchantId { get; set; }
-        public Merchant Merchant { get; set; }
+        public int? MerchantId { get; set; }
+        public Merchant? Merchant { get; set; }
 
         public string BusinessName { get; set; }
         public string BusinessAddress { get; set; }

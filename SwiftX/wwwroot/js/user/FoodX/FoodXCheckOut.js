@@ -3,7 +3,7 @@
 // ==========================================================================
 
 // STORAGE KEYS & SYSTEM PARAMETERS
-const CART_STORAGE_KEY = 'swiftx_cart_data'; // 🎯 Matched perfectly with Restaurant Storage key!
+const CART_STORAGE_KEY = 'swiftx_cart_data';
 const ADDRESS_STORAGE_KEY = 'foodx_selected_address';
 const DELIVERY_FEE = 39.00;
 
@@ -11,17 +11,8 @@ const DELIVERY_FEE = 39.00;
 const urlParams = new URLSearchParams(window.location.search);
 const RESTAURANT_DISTANCE_KM = parseFloat(urlParams.get('distance')) || 20.4;
 
-// Master cross-sell menu bank synced directly from restaurant catalog properties
-const menuData = [
-    { id: 1, name: "2-pc. Chicken McDo", price: 191, cat: "Chicken", img: "https://mcdonalds.com.ph/cms-images/Chicken%20Do_Hero.jpg" },
-    { id: 2, name: "1-pc. Chicken w/ Rice", price: 99, cat: "Chicken", img: "https://mcdonalds.com.ph/cms-images/Chicken%20Do_Hero.jpg" },
-    { id: 3, name: "Big Mac Meal", price: 210, cat: "Burgers", img: "https://mcdonalds.com.ph/cms-images/Big%20Mac_Hero.jpg" },
-    { id: 4, name: "Cheeseburger Deluxe", price: 110, cat: "Burgers", img: "https://mcdonalds.com.ph/cms-images/Cheeseburger_Hero.jpg" },
-    { id: 5, name: "Hot Fudge Sundae", price: 55, cat: "Desserts", img: "https://mcdonalds.com.ph/cms-images/Sundae_Hero.jpg" },
-    { id: 6, name: "McFlurry Oreo", price: 65, cat: "Desserts", img: "https://mcdonalds.com.ph/cms-images/McFlurry_Hero.jpg" }
-];
-
-// Persistent state cache container for current checkout window
+// Dynamic cross-sell menu bank loaded from store API
+let crossSellMenuData = [];
 let activeRecommendations = [];
 
 /**
@@ -32,14 +23,46 @@ function loadCart() {
 }
 
 /**
+ * Fetch cross-sell menu items for the current store
+ */
+async function fetchCrossSellData() {
+    const cart = loadCart();
+    const items = Object.values(cart);
+    if (items.length === 0) return;
+
+    const storeId = items[0].storeId;
+    if (!storeId) return;
+
+    try {
+        const res = await fetch(`/Customer/GetStoreMenu?storeId=${storeId}`);
+        if (!res.ok) return;
+
+        const data = await res.json();
+        crossSellMenuData = (data.products || []).map(p => ({
+            id: p.id,
+            name: p.name,
+            price: parseFloat(p.price),
+            cat: p.category || 'Other',
+            img: p.img || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=200',
+            storeId: storeId
+        }));
+
+        setupInitialRecommendations();
+        renderItems();
+    } catch (err) {
+        console.error('Cross-sell fetch error:', err);
+    }
+}
+
+/**
  * Selects random items not currently present on user invoice rows
  */
 function setupInitialRecommendations() {
     const cart = loadCart();
-    const candidateItems = menuData.filter(item => !cart[item.id]);
+    const candidateItems = crossSellMenuData.filter(item => !cart[item.id]);
 
     if (candidateItems.length === 0) {
-        activeRecommendations = menuData.slice(0, 2);
+        activeRecommendations = crossSellMenuData.slice(0, 2);
         return;
     }
 
@@ -123,7 +146,7 @@ function renderItems() {
             list.innerHTML = `
                 <div class="fxco-empty-state">
                     <p>Your checkout cart has no items remaining</p>
-                    <a href="CustomerFoodXHome" class="fxco-empty-link">Browse Menu Catalog</a>
+                    <a href="/Customer/FoodXBrowse" class="fxco-empty-link">Browse Menu Catalog</a>
                 </div>
             `;
         }
@@ -230,11 +253,12 @@ function updateCrossSellQty(id, delta) {
     let cart = loadCart();
 
     if (!cart[id]) {
-        const itemMaster = menuData.find(i => i.id === id);
+        const itemMaster = crossSellMenuData.find(i => i.id === id);
+        if (!itemMaster) return;
         cart[id] = {
             ...itemMaster,
             qty: 0,
-            distance: parseFloat(RESTAURANT_DISTANCE_KM) // Propagates numeric map tracing cleanly
+            distance: parseFloat(RESTAURANT_DISTANCE_KM)
         };
     }
 
@@ -242,16 +266,16 @@ function updateCrossSellQty(id, delta) {
     if (cart[id].qty <= 0) delete cart[id];
 
     localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
-    renderItems(); // Refreshes both UI modules smoothly
+    renderItems();
 }
 
 /**
  * GLOBAL SYSTEM ENGINE INITIALIZATION BOOTLOADER
  */
-document.addEventListener('DOMContentLoaded', () => {
-    setupInitialRecommendations();   // Generate recommendation options once
-    renderItems();                 // Parse and map active food elements
-    updateCheckoutAddressDisplay(); // Evaluate location cache tracking states
+document.addEventListener('DOMContentLoaded', async () => {
+    renderItems();
+    updateCheckoutAddressDisplay();
+    await fetchCrossSellData();
 
     const reviewBtn = document.getElementById('review-btn');
     const changeDelivery = document.getElementById('change-delivery');
@@ -271,7 +295,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            window.location.href = 'foodXPayment';
+            window.location.href = 'FoodXPayment';
         };
     }
 

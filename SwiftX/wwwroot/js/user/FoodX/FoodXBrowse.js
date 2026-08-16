@@ -1,5 +1,5 @@
 // FoodXBrowse.js — v2.0.0
-// Restaurant browsing/listing page
+// Restaurant browsing/listing page (backed by database API)
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchQueryText        = document.getElementById('search-query-text');
     const cartBtn                = document.getElementById('fxbCartBtn');
 
+    let restaurants = [];
 
     // ══════════════════════════════════════════════════════════
     // CART BUTTON
@@ -24,38 +25,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // ══════════════════════════════════════════════════════════
-    // MOCK DATA
-    // TODO: replace with fetch from backend API
+    // FETCH STORES FROM API
     // ══════════════════════════════════════════════════════════
-    const MOCK_RESTAURANTS = [
-        {
-            id          : '1',
-            name        : 'jollibee',
-            displayName : 'Jollibee - Don Carlos',
-            type        : 'fast food, chicken, burgers, spaghetti',
-            distance    : '1.2 km',
-            url         : '/Customer/FoodXMenu?merchantId=1',
-            img         : 'https://images.unsplash.com/photo-1561758033-d89a9ad46330?q=80&w=600'
-        },
-        {
-            id          : '2',
-            name        : "mcdonald's mcdo",
-            displayName : "McDonald's - Bukidnon Highway",
-            type        : 'fast food, burgers, fries, chicken',
-            distance    : '2.5 km',
-            url         : '/Customer/FoodXMenu?merchantId=2',
-            img         : 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=600'
-        },
-        {
-            id          : '3',
-            name        : 'chowking',
-            displayName : 'Chowking - Poblacion',
-            type        : 'chinese, fast food, lauriat, chao fan, halo-halo',
-            distance    : '0.8 km',
-            url         : '/Customer/FoodXMenu?merchantId=3',
-            img         : 'https://images.unsplash.com/photo-1525755662778-989d0524087e?q=80&w=600'
+    async function fetchStores() {
+        try {
+            const res = await fetch('/Customer/GetStores');
+            if (!res.ok) throw new Error('Failed to fetch stores');
+            const data = await res.json();
+
+            restaurants = data.map(s => ({
+                id          : String(s.id),
+                name        : s.name.toLowerCase(),
+                displayName : s.name,
+                type        : (s.category || '').toLowerCase(),
+                category    : s.category || '',
+                address     : s.address || '',
+                url         : `/Customer/FoodXMenu?storeId=${s.id}`,
+                img         : s.coverUrl || s.logoUrl || 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=600'
+            }));
+
+            initDefaultFeeds();
+        } catch (err) {
+            console.error('Error fetching stores:', err);
+            if (defaultFeedsWrapper) {
+                defaultFeedsWrapper.innerHTML = `
+                    <div style="text-align:center;padding:3rem 1rem;opacity:0.6;">
+                        <i class="ph ph-warning-circle" style="font-size:2.5rem;"></i>
+                        <p style="margin-top:0.5rem;">Unable to load stores at the moment. Please try again later.</p>
+                    </div>
+                `;
+            }
         }
-    ];
+    }
 
 
     // ══════════════════════════════════════════════════════════
@@ -75,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <img src="${item.img}"
                      alt="${item.displayName}"
                      onerror="this.src='https://via.placeholder.com/400x140'">
-                ${item.distance ? `<div class="fxb-card__distance">${item.distance}</div>` : ''}
+                ${item.category ? `<div class="fxb-card__distance">${item.category}</div>` : ''}
             </div>
             <div class="fxb-card__info">
                 <h3></h3>
@@ -96,22 +97,34 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!defaultFeedsWrapper) return;
         defaultFeedsWrapper.innerHTML = '';
 
-        // Order Again
-        const orderSection  = document.createElement('div');
-        orderSection.className = 'fxb-section';
+        if (restaurants.length === 0) {
+            defaultFeedsWrapper.innerHTML = `
+                <div style="text-align:center;padding:3rem 1rem;opacity:0.6;">
+                    <i class="ph ph-storefront" style="font-size:2.5rem;"></i>
+                    <p style="margin-top:0.5rem;">No active restaurants available right now.</p>
+                </div>
+            `;
+            return;
+        }
 
-        const orderTitle    = document.createElement('h2');
-        orderTitle.className = 'fxb-section-title';
-        orderTitle.textContent = 'Order Again';
+        // Featured / Top Restaurants section if > 1
+        if (restaurants.length > 2) {
+            const orderSection  = document.createElement('div');
+            orderSection.className = 'fxb-section';
 
-        const orderRow      = document.createElement('div');
-        orderRow.className  = 'fxb-row';
+            const orderTitle    = document.createElement('h2');
+            orderTitle.className = 'fxb-section-title';
+            orderTitle.textContent = 'Popular Stores';
 
-        MOCK_RESTAURANTS.slice(0, 2).forEach(item => orderRow.appendChild(createCard(item)));
+            const orderRow      = document.createElement('div');
+            orderRow.className  = 'fxb-row';
 
-        orderSection.appendChild(orderTitle);
-        orderSection.appendChild(orderRow);
-        defaultFeedsWrapper.appendChild(orderSection);
+            restaurants.slice(0, 3).forEach(item => orderRow.appendChild(createCard(item)));
+
+            orderSection.appendChild(orderTitle);
+            orderSection.appendChild(orderRow);
+            defaultFeedsWrapper.appendChild(orderSection);
+        }
 
         // All Restaurants
         const restSection   = document.createElement('div');
@@ -119,12 +132,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const restTitle     = document.createElement('h2');
         restTitle.className = 'fxb-section-title';
-        restTitle.textContent = 'Restaurants';
+        restTitle.textContent = 'All Stores';
 
         const restGrid      = document.createElement('div');
         restGrid.className  = 'fxb-grid';
 
-        MOCK_RESTAURANTS.forEach(item => restGrid.appendChild(createCard(item)));
+        restaurants.forEach(item => restGrid.appendChild(createCard(item)));
 
         restSection.appendChild(restTitle);
         restSection.appendChild(restGrid);
@@ -147,8 +160,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             searchResultsFeed.innerHTML = '';
 
-            const matches = MOCK_RESTAURANTS.filter(r =>
-                r.name.includes(query) || r.type.includes(query)
+            const matches = restaurants.filter(r =>
+                r.name.includes(query) || r.type.includes(query) || r.displayName.toLowerCase().includes(query)
             );
 
             if (matches.length > 0) {
@@ -172,10 +185,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // ══════════════════════════════════════════════════════════
     // INIT
     // ══════════════════════════════════════════════════════════
-    try {
-        initDefaultFeeds();
-    } catch (err) {
-        console.error('FoodXBrowse init error:', err);
-    }
+    fetchStores();
 
 });

@@ -102,6 +102,101 @@ namespace SwiftX.Controllers
             return View("FoodX/FoodXTracking");
         }
 
+        // ══════════════════════════════════════════════════════════
+        // FOODX STORE & MENU API ENDPOINTS
+        // ══════════════════════════════════════════════════════════
+
+        [HttpGet]
+        public async Task<IActionResult> GetStores()
+        {
+            var stores = await _db.Stores
+                .Where(s => s.Status == "Active")
+                .OrderBy(s => s.BusinessName)
+                .ToListAsync();
+
+            var result = new List<object>();
+            foreach (var store in stores)
+            {
+                string? logoUrl = null;
+                if (!string.IsNullOrEmpty(store.LogoPath))
+                    logoUrl = await _storage.CreateSignedUrlAsync(_supabase.MerchantBucket, store.LogoPath);
+
+                string? coverUrl = null;
+                if (!string.IsNullOrEmpty(store.CoverImagePath))
+                    coverUrl = await _storage.CreateSignedUrlAsync(_supabase.MerchantBucket, store.CoverImagePath);
+
+                result.Add(new
+                {
+                    id = store.Id,
+                    name = store.BusinessName,
+                    address = store.BusinessAddress,
+                    category = store.Category ?? "",
+                    logoUrl = logoUrl,
+                    coverUrl = coverUrl,
+                    lat = store.Latitude,
+                    lng = store.Longitude
+                });
+            }
+
+            return Json(result);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetStoreMenu(int storeId)
+        {
+            var store = await _db.Stores
+                .Include(s => s.Products.Where(p => p.IsAvailable))
+                .FirstOrDefaultAsync(s => s.Id == storeId && s.Status == "Active");
+
+            if (store == null) return NotFound();
+
+            string? logoUrl = null;
+            if (!string.IsNullOrEmpty(store.LogoPath))
+                logoUrl = await _storage.CreateSignedUrlAsync(_supabase.MerchantBucket, store.LogoPath);
+
+            string? coverUrl = null;
+            if (!string.IsNullOrEmpty(store.CoverImagePath))
+                coverUrl = await _storage.CreateSignedUrlAsync(_supabase.MerchantBucket, store.CoverImagePath);
+
+            var products = new List<object>();
+            var categories = new HashSet<string>();
+
+            foreach (var p in store.Products)
+            {
+                string? imgUrl = null;
+                if (!string.IsNullOrEmpty(p.ImagePath))
+                    imgUrl = await _storage.CreateSignedUrlAsync(_supabase.MerchantBucket, p.ImagePath);
+
+                var cat = string.IsNullOrWhiteSpace(p.Category) ? "Meals" : p.Category.Trim();
+                categories.Add(cat);
+
+                products.Add(new
+                {
+                    id = p.Id,
+                    name = p.Name,
+                    description = p.Description,
+                    price = p.Price,
+                    category = cat,
+                    img = imgUrl
+                });
+            }
+
+            return Json(new
+            {
+                store = new
+                {
+                    id = store.Id,
+                    name = store.BusinessName,
+                    address = store.BusinessAddress,
+                    category = store.Category ?? "",
+                    logoUrl = logoUrl,
+                    coverUrl = coverUrl
+                },
+                products = products,
+                categories = categories.ToList()
+            });
+        }
+
 
 
         // ACCOUNT SETTINGS

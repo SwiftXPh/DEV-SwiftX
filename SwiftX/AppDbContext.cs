@@ -106,7 +106,7 @@ namespace SwiftX
                 .HasOne(s => s.Merchant)
                 .WithMany(m => m.Stores)
                 .HasForeignKey(s => s.MerchantId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.SetNull);
                 
             // Product → Store
             modelBuilder.Entity<Product>()

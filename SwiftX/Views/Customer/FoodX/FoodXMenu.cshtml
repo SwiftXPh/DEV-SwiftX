@@ -1,5 +1,5 @@
 @{
-    ViewData["Title"] = "Restaurant";
+    ViewData["Title"] = "Store Menu";
     Layout = "~/Views/Shared/_LayoutCustomerSubPage.cshtml";
 }
 
@@ -11,8 +11,9 @@
 
     @* ── Hero banner ── *@
     <div class="fxm-hero">
-        <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=800"
-             alt="Restaurant banner" class="fxm-hero__img">
+        <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=800"
+             alt="Restaurant banner" class="fxm-hero__img" id="fxm-banner-img"
+             onerror="this.src='https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=800'">
 
         <div class="fxm-hero__nav">
             <button type="button" class="fxm-icon-btn" id="fxmBackBtn" aria-label="Go back">
@@ -25,24 +26,21 @@
         </div>
 
         <div class="fxm-hero__logo">
-            <img src="https://via.placeholder.com/55" alt="Restaurant logo">
+            <img src="https://via.placeholder.com/55" alt="Store logo" id="fxm-logo-img"
+                 onerror="this.src='https://via.placeholder.com/55'">
         </div>
     </div>
 
     @* ── Store info ── *@
     <div class="fxm-store-info">
-        <h2 class="fxm-store-info__name">McDonald's - Bukidnon Highway</h2>
-        <p class="fxm-store-info__meta">Fast Food &bull; 2.5 km away</p>
+        <h2 class="fxm-store-info__name" id="fxm-store-name">Loading store...</h2>
+        <p class="fxm-store-info__meta" id="fxm-store-meta"></p>
     </div>
 
-    @* ── Category tabs ── *@
-    <div class="fxm-tabs" id="fxm-tabs">
-        <div class="fxm-tab active" onclick="switchTab('Chicken', this)">Chicken</div>
-        <div class="fxm-tab" onclick="switchTab('Burgers', this)">Burgers</div>
-        <div class="fxm-tab" onclick="switchTab('Desserts', this)">Desserts</div>
-    </div>
+    @* ── Category tabs — populated dynamically by JS ── *@
+    <div class="fxm-tabs" id="fxm-tabs"></div>
 
-    @* ── Menu list — populated by JS ── *@
+    @* ── Menu list — populated dynamically by JS ── *@
     <div class="fxm-menu" id="menu-list"></div>
 
 </div>
