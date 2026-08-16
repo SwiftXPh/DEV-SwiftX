@@ -150,6 +150,7 @@
     gap: 6px;
     flex: 1;
     min-width: 0;
+    width: 100%; /* <- prevents overflow on mobile stacked layout but on pc browsers it works fine */
 }
 
 .address-label {
