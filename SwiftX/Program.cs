@@ -150,8 +150,7 @@ using (var scope = app.Services.CreateScope())
     await dbContext.Database.MigrateAsync();
 }
 
-// Seed the admin account from configuration (AdminSeed:Username / AdminSeed:Password).
-await SeedAdmin.RunAsync(app.Services);
+// Admin is now authenticated exclusively via environment variables.
 
 // Must run before anything that inspects the scheme/host or client IP.
 app.UseForwardedHeaders();

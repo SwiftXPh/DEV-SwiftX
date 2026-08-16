@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using SwiftX.Models;
 using SwiftX.Services;
+using Microsoft.Extensions.Configuration;
 
 namespace SwiftX.Controllers
 {
@@ -72,13 +73,16 @@ namespace SwiftX.Controllers
         [AllowAnonymous]
         [EnableRateLimiting("login")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(string username, string password, string? returnUrl = null)
+        public async Task<IActionResult> Login(string username, string password, [FromServices] IConfiguration config, string? returnUrl = null)
         {
-            var user = await _db.Users.FirstOrDefaultAsync(u => u.Username == username && u.Role == "Admin");
+            var envUsername = config["AdminSeed:Username"];
+            var envPassword = config["AdminSeed:Password"];
 
-            // Verify against the hashed password; uniform failure message avoids leaking which part was wrong.
-            var ok = user != null &&
-                     _passwordHasher.VerifyHashedPassword(user, user.Password, password) != PasswordVerificationResult.Failed;
+            // Verify against environment variables. If they aren't set, login fails.
+            var ok = !string.IsNullOrWhiteSpace(envUsername) && 
+                     !string.IsNullOrWhiteSpace(envPassword) &&
+                     username == envUsername && 
+                     password == envPassword;
 
             if (!ok)
             {
@@ -88,8 +92,8 @@ namespace SwiftX.Controllers
 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, user!.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.NameIdentifier, "env-admin"),
+                new Claim(ClaimTypes.Name, username),
                 new Claim(ClaimTypes.Role, "Admin")
             };
             var identity = new ClaimsIdentity(claims, "AdminScheme");
