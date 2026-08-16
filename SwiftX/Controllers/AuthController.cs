@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using SwiftX.Models;
 using System.Security.Claims;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace SwiftX.Controllers
 {
@@ -26,9 +28,10 @@ namespace SwiftX.Controllers
         [IgnoreAntiforgeryToken]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
-            if (request == null || string.IsNullOrWhiteSpace(request.Username) || string.IsNullOrWhiteSpace(request.Password))
+            if (request == null || !ModelState.IsValid)
             {
-                return Json(new { success = false, message = "Username and password are required." });
+                var errorMsg = ModelState.Values.SelectMany(v => v.Errors).FirstOrDefault()?.ErrorMessage ?? "Invalid login data.";
+                return Json(new { success = false, message = errorMsg });
             }
 
             var user = await _db.Users.FirstOrDefaultAsync(u => u.Username == request.Username && u.Role == "Customer" && u.IsActive);
@@ -236,7 +239,8 @@ namespace SwiftX.Controllers
         {
             if (request == null || !ModelState.IsValid)
             {
-                return Json(new { success = false, message = "Invalid registration data." });
+                var errorMsg = ModelState.Values.SelectMany(v => v.Errors).FirstOrDefault()?.ErrorMessage ?? "Invalid registration data.";
+                return Json(new { success = false, message = errorMsg });
             }
 
             if (await _db.Users.AnyAsync(u => u.Username == request.Username))
@@ -310,19 +314,39 @@ namespace SwiftX.Controllers
 
     public class LoginRequest
     {
+        [Required(ErrorMessage = "Username is required.")]
         public string Username { get; set; }
+        
+        [Required(ErrorMessage = "Password is required.")]
         public string Password { get; set; }
     }
 
     public class RegisterRequest
     {
+        [Required(ErrorMessage = "Username is required.")]
         public string Username { get; set; }
+        
+        [Required(ErrorMessage = "Full Name is required.")]
         public string FullName { get; set; }
+        
+        [Required(ErrorMessage = "Phone Number is required.")]
+        [RegularExpression(@"^[0-9]{10}$", ErrorMessage = "Phone Number must be a valid 10-digit number.")]
         public string PhoneNumber { get; set; }
+        
+        [Required(ErrorMessage = "Email is required.")]
+        [EmailAddress(ErrorMessage = "Invalid Email Address.")]
         public string Email { get; set; }
+        
+        [Required(ErrorMessage = "Gender is required.")]
         public string Gender { get; set; }
-        public string Birthdate { get; set; }
+        
+        public string? Birthdate { get; set; }
+        
+        [Required(ErrorMessage = "Password is required.")]
         public string Password { get; set; }
+        
+        [Required(ErrorMessage = "Confirm Password is required.")]
+        [Compare("Password", ErrorMessage = "Passwords do not match.")]
         public string? ConfirmPassword { get; set; }
     }
 }

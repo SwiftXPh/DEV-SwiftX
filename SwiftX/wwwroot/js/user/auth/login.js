@@ -43,8 +43,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const username = usernameInput?.value.trim() ?? '';
         const password = passwordInput?.value ?? '';
 
-        if (!username || !password) {
-            alert('Please fill in all fields.');
+        if (loginForm && !loginForm.checkValidity()) {
+            loginForm.reportValidity();
             return;
         }
 

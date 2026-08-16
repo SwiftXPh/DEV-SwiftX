@@ -71,6 +71,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const password = document.getElementById('password')?.value ?? '';
             const confirmPassword = document.getElementById('confirmPassword')?.value ?? '';
 
+            if (!this.checkValidity()) {
+                this.reportValidity();
+                return;
+            }
+
             if (!/^[0-9]{10}$/.test(phoneNumber)) {
                 alert('Please enter a valid 10-digit phone number (e.g. 9XXXXXXXXX).');
                 return;
