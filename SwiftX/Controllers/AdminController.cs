@@ -20,13 +20,17 @@ namespace SwiftX.Controllers
         private readonly ISupabaseStorageService _storage;
         private readonly SupabaseOptions _supabase;
         private readonly IPasswordHasher<UserModel> _passwordHasher;
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly GoogleMapsOptions _googleMaps;
 
-        public AdminController(AppDbContext db, ISupabaseStorageService storage, IOptions<SupabaseOptions> supabase, IPasswordHasher<UserModel> passwordHasher)
+        public AdminController(AppDbContext db, ISupabaseStorageService storage, IOptions<SupabaseOptions> supabase, IPasswordHasher<UserModel> passwordHasher, IHttpClientFactory httpClientFactory, IOptions<GoogleMapsOptions> googleMaps)
         {
             _db = db;
             _storage = storage;
             _supabase = supabase.Value;
             _passwordHasher = passwordHasher;
+            _httpClientFactory = httpClientFactory;
+            _googleMaps = googleMaps.Value;
         }
 
         /// <summary>
@@ -232,7 +236,15 @@ namespace SwiftX.Controllers
                 .Include(m => m.User)
                 .Where(m => m.Status == "Active" || m.Status == "Inactive")
                 .ToList();
+            
+            ViewBag.GoogleMapsApiKey = _googleMaps.ApiKey;
+            
             return View(merchants);
+        }
+
+        public IActionResult ManualMerchants()
+        {
+            return View("ManualMerchants");
         }
 
         [HttpPost]
@@ -241,6 +253,8 @@ namespace SwiftX.Controllers
             string BusinessName,
             string BusinessLocation,
             string BusinessCategory,
+            double? Latitude,
+            double? Longitude,
             IFormFile? BusinessLogo)
         {
             if (string.IsNullOrWhiteSpace(BusinessName) || string.IsNullOrWhiteSpace(BusinessLocation) || string.IsNullOrWhiteSpace(BusinessCategory))
@@ -254,6 +268,8 @@ namespace SwiftX.Controllers
                 BusinessName = BusinessName,
                 BusinessAddress = BusinessLocation,
                 Category = BusinessCategory,
+                Latitude = Latitude,
+                Longitude = Longitude,
                 Status = "Unassigned"
             };
 
@@ -270,6 +286,61 @@ namespace SwiftX.Controllers
             TempData["Success"] = "Store successfully created! It is currently Unassigned.";
             return RedirectToAction("Merchant");
         }
+
+        [HttpGet]
+        public async Task<IActionResult> PlacesAutocomplete(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input) || string.IsNullOrWhiteSpace(_googleMaps.ApiKey))
+                return Json(new { suggestions = Array.Empty<object>() });
+
+            var client = _httpClientFactory.CreateClient("GoogleMaps");
+            var requestBody = new
+            {
+                input = input,
+                locationRestriction = new
+                {
+                    rectangle = new
+                    {
+                        low = new { latitude = 7.3912, longitude = 124.5126 },
+                        high = new { latitude = 8.5615, longitude = 125.4660 }
+                    }
+                }
+            };
+            
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://places.googleapis.com/v1/places:autocomplete");
+            request.Headers.Add("X-Goog-Api-Key", _googleMaps.ApiKey);
+            request.Content = new StringContent(System.Text.Json.JsonSerializer.Serialize(requestBody), System.Text.Encoding.UTF8, "application/json");
+
+            var response = await client.SendAsync(request);
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                return Content(content, "application/json");
+            }
+            
+            return Json(new { suggestions = Array.Empty<object>() });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> PlaceDetails(string placeId)
+        {
+            if (string.IsNullOrWhiteSpace(placeId) || string.IsNullOrWhiteSpace(_googleMaps.ApiKey))
+                return BadRequest();
+
+            var client = _httpClientFactory.CreateClient("GoogleMaps");
+            var request = new HttpRequestMessage(HttpMethod.Get, $"https://places.googleapis.com/v1/places/{placeId}?fields=formattedAddress,location");
+            request.Headers.Add("X-Goog-Api-Key", _googleMaps.ApiKey);
+
+            var response = await client.SendAsync(request);
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                return Content(content, "application/json");
+            }
+
+            return BadRequest();
+        }
+
         public IActionResult MenuInfo()
         {
             return View();
@@ -309,7 +380,7 @@ namespace SwiftX.Controllers
         [HttpGet]
         public IActionResult GetRiderJson(int id)
         {
-            var rider = _db.Riders.Include(r => r.User).FirstOrDefault(r => r.Id == id);
+            var rider = _db.Riders.Include(r => r.User).Include(r => r.Documents).FirstOrDefault(r => r.Id == id);
             if (rider == null) return NotFound();
 
             return Json(new
@@ -324,19 +395,19 @@ namespace SwiftX.Controllers
                 plateNumber = rider.PlateNumber ?? "—",
                 gcContact = rider.GCContact,
                 createdAt = rider.CreatedAt.ToString("MMMM dd, yyyy"),
-                licensePath = rider.LicensePath,
-                idPath = rider.IDPath,
-                orcrPath = rider.ORCRPath,
-                agreementPath = rider.AgreementPath,
-                frontVehiclePath = rider.FrontVehiclePath,
-                sideVehiclePath = rider.SideVehiclePath,
+                licensePath = rider.Documents.FirstOrDefault(d => d.DocumentType == "License")?.FilePath,
+                idPath = rider.Documents.FirstOrDefault(d => d.DocumentType == "ID")?.FilePath,
+                orcrPath = rider.Documents.FirstOrDefault(d => d.DocumentType == "ORCR")?.FilePath,
+                agreementPath = rider.Documents.FirstOrDefault(d => d.DocumentType == "Agreement")?.FilePath,
+                frontVehiclePath = rider.Documents.FirstOrDefault(d => d.DocumentType == "FrontVehicle")?.FilePath,
+                sideVehiclePath = rider.Documents.FirstOrDefault(d => d.DocumentType == "SideVehicle")?.FilePath,
                 // Document review statuses
-                licenseStatus = rider.LicenseStatus,
-                idStatus = rider.IDStatus,
-                orcrStatus = rider.ORCRStatus,
-                agreementStatus = rider.AgreementStatus,
-                frontVehicleStatus = rider.FrontVehicleStatus,
-                sideVehicleStatus = rider.SideVehicleStatus
+                licenseStatus = rider.Documents.FirstOrDefault(d => d.DocumentType == "License")?.Status,
+                idStatus = rider.Documents.FirstOrDefault(d => d.DocumentType == "ID")?.Status,
+                orcrStatus = rider.Documents.FirstOrDefault(d => d.DocumentType == "ORCR")?.Status,
+                agreementStatus = rider.Documents.FirstOrDefault(d => d.DocumentType == "Agreement")?.Status,
+                frontVehicleStatus = rider.Documents.FirstOrDefault(d => d.DocumentType == "FrontVehicle")?.Status,
+                sideVehicleStatus = rider.Documents.FirstOrDefault(d => d.DocumentType == "SideVehicle")?.Status
             });
         }
 
@@ -368,19 +439,23 @@ namespace SwiftX.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult UpdateDocStatus(int id, string docType, string status)
         {
-            var rider = _db.Riders.Find(id);
+            var rider = _db.Riders.Include(r => r.Documents).FirstOrDefault(r => r.Id == id);
             if (rider == null) return NotFound();
 
-            switch (docType)
+            string mappedDocType = docType switch
             {
-                case "license": rider.LicenseStatus = status; break;
-                case "id": rider.IDStatus = status; break;
-                case "orcr": rider.ORCRStatus = status; break;
-                case "agreement": rider.AgreementStatus = status; break;
-                case "front": rider.FrontVehicleStatus = status; break;
-                case "side": rider.SideVehicleStatus = status; break;
-                default: return BadRequest();
-            }
+                "license" => "License",
+                "id" => "ID",
+                "orcr" => "ORCR",
+                "agreement" => "Agreement",
+                "front" => "FrontVehicle",
+                "side" => "SideVehicle",
+                _ => null
+            };
+            if (mappedDocType == null) return BadRequest();
+
+            var doc = rider.Documents.FirstOrDefault(d => d.DocumentType == mappedDocType);
+            if (doc != null) { doc.Status = status; }
 
             _db.SaveChanges();
             return Ok();

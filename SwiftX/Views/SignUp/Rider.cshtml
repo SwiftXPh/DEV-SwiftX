@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewData["Title"] = "Sign Up";
     Layout = "~/Views/Shared/_LayoutUser.cshtml";
 }
@@ -60,7 +60,7 @@
                         <label class="__label block mb-1.5">*First Name</label>
                         <div class="input-icon-wrap">
                             <input type="text" class="signup-input" id="inp-firstname"
-                                   asp-for="User.FirstName" placeholder="First name" autocomplete="given-name" />
+                                   asp-for="FirstName" placeholder="First name" autocomplete="given-name" />
                             <span class="input-icon"><i class="ph ph-user"></i></span>
                         </div>
                         <span class="field-error" id="err-firstname"></span>
@@ -70,7 +70,7 @@
                         <label class="__label block mb-1.5 opacity-70">Middle Name <span class="__micro opacity-60">(optional)</span></label>
                         <div class="input-icon-wrap">
                             <input type="text" class="signup-input" id="inp-middlename"
-                                   asp-for="User.MiddleName" placeholder="Middle name" autocomplete="additional-name" />
+                                   asp-for="MiddleName" placeholder="Middle name" autocomplete="additional-name" />
                             <span class="input-icon"><i class="ph ph-user"></i></span>
                         </div>
                     </div>
@@ -79,7 +79,7 @@
                         <label class="__label block mb-1.5">*Last Name</label>
                         <div class="input-icon-wrap">
                             <input type="text" class="signup-input" id="inp-lastname"
-                                   asp-for="User.LastName" placeholder="Last name" autocomplete="family-name" />
+                                   asp-for="LastName" placeholder="Last name" autocomplete="family-name" />
                             <span class="input-icon"><i class="ph ph-user"></i></span>
                         </div>
                         <span class="field-error" id="err-lastname"></span>
@@ -89,7 +89,7 @@
                         <label class="__label block mb-1.5">*Address</label>
                         <div class="input-icon-wrap">
                             <input type="text" class="signup-input" id="inp-address"
-                                   asp-for="User.Address" placeholder="Complete address" autocomplete="street-address" />
+                                   asp-for="Address" placeholder="Complete address" autocomplete="street-address" />
                             <span class="input-icon"><i class="ph ph-map-pin"></i></span>
                         </div>
                         <span class="field-error" id="err-address"></span>
@@ -99,45 +99,18 @@
                         <label class="__label block mb-1.5">*Contact No.</label>
                         <div class="input-icon-wrap">
                             <input type="tel" class="signup-input" id="inp-contact"
-                                   asp-for="User.Contact" placeholder="09XX XXX XXXX" autocomplete="tel" />
+                                   asp-for="Contact" placeholder="09XX XXX XXXX" autocomplete="tel" />
                             <span class="input-icon"><i class="ph ph-phone"></i></span>
                         </div>
                         <span class="field-error" id="err-contact"></span>
                     </div>
 
-                    <div class="mb-2">
+                    <div class="mb-4">
                         <label class="__label block mb-1.5">*Date of Birth</label>
-                        <div class="grid grid-cols-3 gap-3">
-                            <div>
-                                <span class="block text-xs opacity-60 mb-1">Month</span>
-                                <select class="signup-select" id="inp-dob-month" asp-for="User.BirthMonth">
-                                    <option value="" disabled selected>—</option>
-                                    <option value="1">January</option>
-                                    <option value="2">February</option>
-                                    <option value="3">March</option>
-                                    <option value="4">April</option>
-                                    <option value="5">May</option>
-                                    <option value="6">June</option>
-                                    <option value="7">July</option>
-                                    <option value="8">August</option>
-                                    <option value="9">September</option>
-                                    <option value="10">October</option>
-                                    <option value="11">November</option>
-                                    <option value="12">December</option>
-                                </select>
-                            </div>
-                            <div>
-                                <span class="block text-xs opacity-60 mb-1">Day</span>
-                                <select class="signup-select" id="inp-dob-date" asp-for="User.BirthDate">
-                                    <option value="" disabled selected>—</option>
-                                </select>
-                            </div>
-                            <div>
-                                <span class="block text-xs opacity-60 mb-1">Year</span>
-                                <select class="signup-select" id="inp-dob-year" asp-for="User.BirthYear">
-                                    <option value="" disabled selected>—</option>
-                                </select>
-                            </div>
+                        <div class="input-icon-wrap">
+                            <input type="date" class="signup-input" id="inp-dob"
+                                   asp-for="Birthdate" />
+                            <span class="input-icon"><i class="ph ph-calendar"></i></span>
                         </div>
                         <span class="field-error" id="err-dob"></span>
                     </div>
@@ -300,7 +273,7 @@
                         <label class="__label block mb-1.5">*Username</label>
                         <div class="input-icon-wrap">
                             <input type="text" class="signup-input" id="inp-username"
-                                   asp-for="User.Username" placeholder="Username" autocomplete="username" onkeydown="if(event.key === ' ') return false;" />
+                                   asp-for="Username" placeholder="Username" autocomplete="username" onkeydown="if(event.key === ' ') return false;" />
                             <span class="input-icon"><i class="ph ph-at"></i></span>
                         </div>
                         <span class="field-error" id="err-username"></span>
@@ -310,7 +283,7 @@
                         <label class="__label block mb-1.5">*Email Address</label>
                         <div class="input-icon-wrap">
                             <input type="email" class="signup-input" id="inp-email"
-                                   asp-for="User.Email" placeholder="Email address" autocomplete="email" onkeydown="if(event.key === ' ') return false;"  />
+                                   asp-for="Email" placeholder="Email address" autocomplete="email" onkeydown="if(event.key === ' ') return false;"  />
                             <span class="input-icon"><i class="ph ph-envelope-simple"></i></span>
                         </div>
                         <span class="field-error" id="err-email"></span>
@@ -320,7 +293,7 @@
                         <label class="__label block mb-1.5">*Password</label>
                         <div class="password-wrapper input-icon-wrap">
                             <input type="password" class="signup-input" id="inp-password"
-                                   asp-for="User.Password" placeholder="Password" autocomplete="new-password" onkeydown="if(event.key === ' ') return false;" />
+                                   asp-for="Password" placeholder="Password" autocomplete="new-password" onkeydown="if(event.key === ' ') return false;" />
                             <span class="input-icon"><i class="ph ph-lock-simple"></i></span>
                             <button type="button" class="password-toggle" data-toggle-pw>
                                 <svg class="w-5 h-5 eye-open" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -369,4 +342,25 @@
 
 @section PageScripts {
     <script src="~/js/rider_signup.js"></script>
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                @if (ViewData.ModelState.TryGetValue("Username", out var uname) && uname.Errors.Count > 0)
+                {
+                    <text>
+                    var eU = document.getElementById('err-username');
+                    if(eU) { eU.textContent = '@Html.Raw(uname.Errors[0].ErrorMessage)'; eU.classList.add('visible'); document.getElementById('inp-username').style.borderColor = '#ef4444'; }
+                    </text>
+                }
+                @if (ViewData.ModelState.TryGetValue("Email", out var email) && email.Errors.Count > 0)
+                {
+                    <text>
+                    var eE = document.getElementById('err-email');
+                    if(eE) { eE.textContent = '@Html.Raw(email.Errors[0].ErrorMessage)'; eE.classList.add('visible'); document.getElementById('inp-email').style.borderColor = '#ef4444'; }
+                    </text>
+                }
+            });
+        </script>
+    }
 }

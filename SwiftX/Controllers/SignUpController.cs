@@ -43,6 +43,11 @@ namespace SwiftX.Controllers
         {
             // Reject invalid input (missing fields, bad email, disallowed/oversized files)
             // before touching the database or storage.
+            if (await _db.Users.AnyAsync(u => u.Username == rider.Username))
+                ModelState.AddModelError("Username", "Username is already taken.");
+            if (await _db.Users.AnyAsync(u => u.Email == rider.Email))
+                ModelState.AddModelError("Email", "Email is already registered.");
+
             ValidateUpload(rider.License, nameof(rider.License));
             ValidateUpload(rider.ID, nameof(rider.ID));
             ValidateUpload(rider.ORCR, nameof(rider.ORCR));
@@ -60,10 +65,24 @@ namespace SwiftX.Controllers
 
             try
             {
-                // 1. Save the user first to get the UserId (used for the storage folder)
-                var user = rider.User;
-                user.Role = "Rider";
-                user.Password = _passwordHasher.HashPassword(user, user.Password);
+                // 1. Build the UserModel from flat ViewModel properties
+                var user = new UserModel
+                {
+                    Username   = rider.Username,
+                    Email      = rider.Email,
+                    FirstName  = rider.FirstName,
+                    LastName   = rider.LastName,
+                    MiddleName = rider.MiddleName,
+                    Contact    = rider.Contact,
+                    Address    = rider.Address,
+                    Role       = "Rider"
+                };
+                
+                if (!string.IsNullOrWhiteSpace(rider.Birthdate) && DateTime.TryParse(rider.Birthdate, out var dob))
+                {
+                    user.DateOfBirth = dob;
+                }
+                user.Password = _passwordHasher.HashPassword(user, rider.Password);
                 _db.Users.Add(user);
                 await _db.SaveChangesAsync();
 
@@ -71,15 +90,16 @@ namespace SwiftX.Controllers
                 var riderEntity = new Rider
                 {
                     UserId = user.Id,
-                    LicensePath = await UploadDoc(rider.License, bucket, user.Id, uploaded),
-                    IDPath = await UploadDoc(rider.ID, bucket, user.Id, uploaded),
-                    ORCRPath = await UploadDoc(rider.ORCR, bucket, user.Id, uploaded),
-                    AgreementPath = await UploadDoc(rider.Agreement, bucket, user.Id, uploaded),
-                    FrontVehiclePath = await UploadDoc(rider.Front_Vehicle, bucket, user.Id, uploaded),
-                    SideVehiclePath = await UploadDoc(rider.Side_Vehicle, bucket, user.Id, uploaded),
                     GCContact = rider.GCContact,
                     PlateNumber = rider.PlateNumber
                 };
+
+                riderEntity.Documents.Add(new RiderDocument { DocumentType = "License", FilePath = await UploadDoc(rider.License, bucket, user.Id, uploaded) });
+                riderEntity.Documents.Add(new RiderDocument { DocumentType = "ID", FilePath = await UploadDoc(rider.ID, bucket, user.Id, uploaded) });
+                riderEntity.Documents.Add(new RiderDocument { DocumentType = "ORCR", FilePath = await UploadDoc(rider.ORCR, bucket, user.Id, uploaded) });
+                riderEntity.Documents.Add(new RiderDocument { DocumentType = "Agreement", FilePath = await UploadDoc(rider.Agreement, bucket, user.Id, uploaded) });
+                riderEntity.Documents.Add(new RiderDocument { DocumentType = "FrontVehicle", FilePath = await UploadDoc(rider.Front_Vehicle, bucket, user.Id, uploaded) });
+                riderEntity.Documents.Add(new RiderDocument { DocumentType = "SideVehicle", FilePath = await UploadDoc(rider.Side_Vehicle, bucket, user.Id, uploaded) });
 
                 // 3. Save rider entity and commit.
                 _db.Riders.Add(riderEntity);
@@ -102,6 +122,11 @@ namespace SwiftX.Controllers
         public async Task<IActionResult> SignUpMerchant(MerchantModel merchant)
         {
             // Reject invalid input before touching the database or storage.
+            if (await _db.Users.AnyAsync(u => u.Username == merchant.Username))
+                ModelState.AddModelError("Username", "Username is already taken.");
+            if (await _db.Users.AnyAsync(u => u.Email == merchant.Email))
+                ModelState.AddModelError("Email", "Email is already registered.");
+            
             ValidateUpload(merchant.BIRForm, nameof(merchant.BIRForm));
             ValidateUpload(merchant.DTICertificate, nameof(merchant.DTICertificate));
             ValidateUpload(merchant.BarangayClearance, nameof(merchant.BarangayClearance));
@@ -116,15 +141,18 @@ namespace SwiftX.Controllers
 
             try
             {
-                // 1. Save the user first to get the UserId (used for the storage folder)
-                var user = merchant.User;
-                // Populate User fields from merchant form data (form doesn't bind these directly)
-                user.FirstName = merchant.OwnerFirstName;
-                user.LastName = merchant.OwnerLastName;
-                user.Contact = merchant.BusinessContact;
-                user.Address = merchant.BusinessAddress;
-                user.Role = "Merchant";
-                user.Password = _passwordHasher.HashPassword(user, user.Password);
+                // 1. Build the UserModel from flat ViewModel properties
+                var user = new UserModel
+                {
+                    Username  = merchant.Username,
+                    Email     = merchant.Email,
+                    FirstName = merchant.OwnerFirstName,
+                    LastName  = merchant.OwnerLastName,
+                    Contact   = merchant.BusinessContact,
+                    Address   = merchant.BusinessAddress,
+                    Role      = "Merchant"
+                };
+                user.Password = _passwordHasher.HashPassword(user, merchant.Password);
                 _db.Users.Add(user);
                 await _db.SaveChangesAsync();
 
@@ -143,6 +171,13 @@ namespace SwiftX.Controllers
                     BarangayClearancePath = await UploadDoc(merchant.BarangayClearance, bucket, user.Id, uploaded),
                     GCContact = merchant.GCContact
                 };
+
+                var storeEntity = new Store
+                {
+                    BusinessName = merchant.BusinessName,
+                    BusinessAddress = merchant.BusinessAddress
+                };
+                merchantEntity.Stores.Add(storeEntity);
 
                 // 3. Save merchant entity and commit.
                 _db.Merchants.Add(merchantEntity);

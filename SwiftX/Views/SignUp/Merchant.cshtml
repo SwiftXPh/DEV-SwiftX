@@ -223,7 +223,7 @@
                         <label class="__label block mb-1.5">*Username</label>
                         <div class="input-icon-wrap">
                             <input type="text" class="signup-input" id="inp-username"
-                                   asp-for="User.Username" placeholder="Username" autocomplete="username" />
+                                   asp-for="Username" placeholder="Username" autocomplete="username" />
                             <span class="input-icon"><i class="ph ph-at"></i></span>
                         </div>
                         <span class="field-error" id="err-username"></span>
@@ -234,7 +234,7 @@
                         <label class="__label block mb-1.5">*Email Address</label>
                         <div class="input-icon-wrap">
                             <input type="email" class="signup-input" id="inp-email"
-                                   asp-for="User.Email" placeholder="Email address" autocomplete="email" />
+                                   asp-for="Email" placeholder="Email address" autocomplete="email" />
                             <span class="input-icon"><i class="ph ph-envelope-simple"></i></span>
                         </div>
                         <span class="field-error" id="err-email"></span>
@@ -245,7 +245,7 @@
                         <label class="__label block mb-1.5">*Password</label>
                         <div class="password-wrapper input-icon-wrap">
                             <input type="password" class="signup-input" id="inp-password"
-                                   asp-for="User.Password" placeholder="Password" autocomplete="new-password" />
+                                   asp-for="Password" placeholder="Password" autocomplete="new-password" />
                             <span class="input-icon"><i class="ph ph-lock-simple"></i></span>
                             <button type="button" class="password-toggle" data-toggle-pw>
                                 <svg class="w-5 h-5 eye-open" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -296,4 +296,25 @@
 
 @section PageScripts {
     <script src="~/js/merchant_signup.js"></script>
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                @if (ViewData.ModelState.TryGetValue("Username", out var uname) && uname.Errors.Count > 0)
+                {
+                    <text>
+                    var eU = document.getElementById('err-username');
+                    if(eU) { eU.textContent = '@Html.Raw(uname.Errors[0].ErrorMessage)'; eU.classList.add('visible'); document.getElementById('inp-username').style.borderColor = '#ef4444'; }
+                    </text>
+                }
+                @if (ViewData.ModelState.TryGetValue("Email", out var email) && email.Errors.Count > 0)
+                {
+                    <text>
+                    var eE = document.getElementById('err-email');
+                    if(eE) { eE.textContent = '@Html.Raw(email.Errors[0].ErrorMessage)'; eE.classList.add('visible'); document.getElementById('inp-email').style.borderColor = '#ef4444'; }
+                    </text>
+                }
+            });
+        </script>
+    }
 }

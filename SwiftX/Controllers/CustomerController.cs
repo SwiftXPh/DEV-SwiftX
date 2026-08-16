@@ -134,9 +134,7 @@ namespace SwiftX.Controllers
                 email = user.Email,
                 phone = user.Contact,
                 gender = user.Gender,
-                birthdate = (!string.IsNullOrEmpty(user.BirthYear) && !string.IsNullOrEmpty(user.BirthMonth) && !string.IsNullOrEmpty(user.BirthDate))
-                            ? $"{user.BirthYear}-{user.BirthMonth.PadLeft(2, '0')}-{user.BirthDate.PadLeft(2, '0')}"
-                            : null,
+                birthdate = user.DateOfBirth?.ToString("yyyy-MM-dd"),
                 profileImageUrl = !string.IsNullOrEmpty(user.ProfileImagePath) 
                     ? await _storage.CreateSignedUrlAsync(_supabase.CustomerBucket, user.ProfileImagePath)
                     : null,
@@ -169,9 +167,7 @@ namespace SwiftX.Controllers
             
             if (!string.IsNullOrWhiteSpace(request.Birthdate) && DateTime.TryParse(request.Birthdate, out var dob))
             {
-                user.BirthYear = dob.Year.ToString();
-                user.BirthMonth = dob.Month.ToString();
-                user.BirthDate = dob.Day.ToString();
+                user.DateOfBirth = dob;
             }
 
             await _db.SaveChangesAsync();

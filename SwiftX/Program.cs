@@ -44,6 +44,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.Configure<SupabaseOptions>(builder.Configuration.GetSection("Supabase"));
 builder.Services.AddHttpClient<ISupabaseStorageService, SupabaseStorageService>();
 
+// Google Maps Options
+builder.Services.Configure<GoogleMapsOptions>(builder.Configuration.GetSection("GoogleMaps"));
+builder.Services.AddHttpClient("GoogleMaps");
+
 // Password hashing (PBKDF2 via the framework's PasswordHasher — no extra package).
 builder.Services.AddSingleton<IPasswordHasher<UserModel>, PasswordHasher<UserModel>>();
 

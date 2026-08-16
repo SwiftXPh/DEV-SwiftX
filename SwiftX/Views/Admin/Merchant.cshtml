@@ -51,13 +51,15 @@
                 <p style="font-size:11px;color:rgba(255,255,255,0.3);margin-top:3px;">@totalMerchants total &middot; @activeMerchants active &middot; @inactiveMerchants inactive</p>
             </div>
             <div class="admin-table-actions">
-<button class="admin-filter-btn" onclick="openModal('merchant-add-modal')">
-    + Add Merchant
-</button>
+
+                <button class="admin-filter-btn" onclick="location.href='@Url.Action("ManualMerchants", "Admin")'">
+                    View Manual Merchants
+                </button>
                 <div class="admin-search">
                     <i class="ph ph-magnifying-glass"></i>
                     <input type="text" id="merchant-search" placeholder="Search merchants..." />
                 </div>
+
                 <div class="admin-filter-bar" id="merchant-filter-bar">
                     <button class="admin-filter-btn active" data-filter="all">All</button>
                     <button class="admin-filter-btn" data-filter="active">Active</button>
@@ -156,6 +158,8 @@
 
 @section Scripts { 
     <script src="~/js/adminMerchant.js" asp-append-version="true"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=@ViewBag.GoogleMapsApiKey&callback=initLocationMap" async defer></script>
+    <script src="~/js/placesAutocomplete.js" asp-append-version="true"></script>
     <script>
         $(document).ready(function () {
             var merchantsTable = $('#merchants_table').DataTable({

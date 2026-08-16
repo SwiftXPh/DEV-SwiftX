@@ -1,0 +1,251 @@
+@{
+    ViewData["Title"] = "Manual Merchants";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+
+    // Static placeholder data lists/counts ready for backend binding later
+    var totalMerchants = 4;
+    var activeMerchants = 3;
+    var inactiveMerchants = 1;
+}
+
+<!-- STAT CARDS -->
+<div class="admin-stat-grid" style="margin-bottom:22px;">
+    <div class="admin-stat-card">
+        <div class="admin-stat-header">
+            <div class="admin-stat-icon"><i class="ph ph-check-circle"></i></div>
+        </div>
+        <p class="admin-stat-value">@activeMerchants</p>
+        <p class="admin-stat-label">Active Manual Merchants</p>
+    </div>
+    <div class="admin-stat-card">
+        <div class="admin-stat-header"><div class="admin-stat-icon"><i class="ph ph-storefront"></i></div></div>
+        <p class="admin-stat-value">@totalMerchants</p>
+        <p class="admin-stat-label">Total Manual Merchants</p>
+    </div>
+    <div class="admin-stat-card">
+        <div class="admin-stat-header">
+            <div class="admin-stat-icon"><i class="ph ph-money"></i></div>
+            <span class="admin-stat-badge admin-stat-badge--up"><i class="ph ph-arrow-up"></i> 11%</span>
+        </div>
+        <p class="admin-stat-value">&#8369;86,400</p>
+        <p class="admin-stat-label">Settlements Due</p>
+    </div>
+    <div class="admin-stat-card">
+        <div class="admin-stat-header">
+            <div class="admin-stat-icon"><i class="ph ph-chart-line-up"></i></div>
+            <span class="admin-stat-badge admin-stat-badge--up"><i class="ph ph-arrow-up"></i> 14%</span>
+        </div>
+        <p class="admin-stat-value">&#8369;310,500</p>
+        <p class="admin-stat-label">GMV (This Month)</p>
+    </div>
+</div>
+
+<!-- MAIN GRID: TABLE + SIDEBAR -->
+<div class="riders-layout">
+
+    <!-- TABLE CARD -->
+    <div class="admin-table-card" style="margin-bottom:0;">
+        <div class="admin-table-header">
+            <div>
+                <h2 class="admin-table-title">Manual Merchant Management</h2>
+                <p style="font-size:11px;color:rgba(255,255,255,0.3);margin-top:3px;">@totalMerchants total &middot; @activeMerchants active &middot; @inactiveMerchants inactive</p>
+            </div>
+            <div class="admin-table-actions">
+                <button class="admin-filter-btn" onclick="location.href='@Url.Action("Merchant", "Admin")'">
+                    View Partner Merchants
+                </button>
+                <button class="admin-filter-btn" onclick="openModal('merchant-add-modal')">
+                    + Add Store
+                </button>
+                <div class="admin-search">
+                    <i class="ph ph-magnifying-glass"></i>
+                    <input type="text" id="merchant-search" placeholder="Search manual merchants..." />
+                </div>
+                <div class="admin-filter-bar" id="merchant-filter-bar">
+                    <button class="admin-filter-btn active" data-filter="all">All</button>
+                    <button class="admin-filter-btn" data-filter="active">Active</button>
+                    <button class="admin-filter-btn" data-filter="inactive">Inactive</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin-table-wrap">
+            <table class="admin-table" id="merchants_table">
+                <thead>
+                    <tr>
+                        <th>Merchant</th>
+                        <th>Status</th>
+                        <th>Phone</th>
+                        <th>Category</th>
+                        <th>Active Orders</th>
+                        <th style="width:120px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Static Row 1: Active -->
+                    <tr>
+                        <td>
+                            <div class="td-merchant">
+                                <div class="td-merchant__avatar"><i class="ph ph-storefront"></i></div>
+                                <a asp-controller="Admin" asp-action="MenuInfo" class="td-merchant__btn" data-merchant-id="MER-001">
+                                    <p class="td-merchant__name">Bukidnon Brew Cafe</p>
+                                    <p class="td-merchant__id">MER-001</p>
+                                </a>
+                            </div>
+                        </td>
+                        <td><span class="admin-badge admin-badge--active"><span class="admin-badge-dot"></span>Active</span></td>
+                        <td>09171234567</td>
+                        <td><span class="td-category">Coffee & Pastries</span></td>
+                        <td><span class="td-orders td-orders--zero">—</span></td>
+                        <td>
+                            <div class="td-actions">
+                                <button class="admin-action-btn" title="View Merchant" onclick="openModal('merchant-detail-modal')"><i class="ph ph-eye"></i></button>
+                                <button class="admin-action-btn" title="Edit Merchant" onclick="openModal('merchant-edit-modal')"><i class="ph ph-pencil-simple"></i></button>
+                                <button class="admin-action-btn admin-action-btn--danger-soft" title="Deactivate"><i class="ph ph-prohibit"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- Static Row 2: Active -->
+                    <tr>
+                        <td>
+                            <div class="td-merchant">
+                                <div class="td-merchant__avatar"><i class="ph ph-storefront"></i></div>
+                                <a asp-controller="Admin" asp-action="MenuInfo" class="td-merchant__btn" data-merchant-id="MER-002">
+                                    <p class="td-merchant__name">Pineapple Express Grille</p>
+                                    <p class="td-merchant__id">MER-002</p>
+                                </a>
+                            </div>
+                        </td>
+                        <td><span class="admin-badge admin-badge--active"><span class="admin-badge-dot"></span>Active</span></td>
+                        <td>09189876543</td>
+                        <td><span class="td-category">Fast Food</span></td>
+                        <td><span class="td-orders td-orders--zero">—</span></td>
+                        <td>
+                            <div class="td-actions">
+                                <button class="admin-action-btn" title="View Merchant" onclick="openModal('merchant-detail-modal')"><i class="ph ph-eye"></i></button>
+                                <button class="admin-action-btn" title="Edit Merchant" onclick="openModal('merchant-edit-modal')"><i class="ph ph-pencil-simple"></i></button>
+                                <button class="admin-action-btn admin-action-btn--danger-soft" title="Deactivate"><i class="ph ph-prohibit"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- Static Row 3: Active -->
+                    <tr>
+                        <td>
+                            <div class="td-merchant">
+                                <div class="td-merchant__avatar"><i class="ph ph-storefront"></i></div>
+                                <a asp-controller="Admin" asp-action="MenuInfo" class="td-merchant__btn" data-merchant-id="MER-003">
+                                    <p class="td-merchant__name">Greenhouse Salad Bar</p>
+                                    <p class="td-merchant__id">MER-003</p>
+                                </a>
+                            </div>
+                        </td>
+                        <td><span class="admin-badge admin-badge--active"><span class="admin-badge-dot"></span>Active</span></td>
+                        <td>09195554433</td>
+                        <td><span class="td-category">Healthy Organic</span></td>
+                        <td><span class="td-orders td-orders--zero">—</span></td>
+                        <td>
+                            <div class="td-actions">
+                                <button class="admin-action-btn" title="View Merchant" onclick="openModal('merchant-detail-modal')"><i class="ph ph-eye"></i></button>
+                                <button class="admin-action-btn" title="Edit Merchant" onclick="openModal('merchant-edit-modal')"><i class="ph ph-pencil-simple"></i></button>
+                                <button class="admin-action-btn admin-action-btn--danger-soft" title="Deactivate"><i class="ph ph-prohibit"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- Static Row 4: Inactive -->
+                    <tr>
+                        <td>
+                            <div class="td-merchant">
+                                <div class="td-merchant__avatar td-merchant__avatar--dim"><i class="ph ph-storefront"></i></div>
+                                <a asp-controller="Admin" asp-action="MenuInfo" class="td-merchant__btn" data-merchant-id="MER-004" style="color:rgba(255,255,255,0.35);">
+                                    <p class="td-merchant__name">Old Town Bakery</p>
+                                    <p class="td-merchant__id">MER-004</p>
+                                </a>
+                            </div>
+                        </td>
+                        <td><span class="admin-badge admin-badge--inactive"><span class="admin-badge-dot"></span>Inactive</span></td>
+                        <td style="opacity:.4;">09201112233</td>
+                        <td>
+                            <span class="td-category td-category--dim">Bakery</span>
+                        </td>
+                        <td><span class="td-orders td-orders--zero">—</span></td>
+                        <td>
+                            <div class="td-actions">
+                                <button class="admin-action-btn" title="View Merchant" onclick="openModal('merchant-detail-modal')"><i class="ph ph-eye"></i></button>
+                                <button class="admin-action-btn admin-action-btn--success" title="Reactivate"><i class="ph ph-arrow-counter-clockwise"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="admin-pagination" id="merchants-dt-footer"></div>
+    </div>
+
+    <!-- OPS SIDEBAR -->
+    <div class="ops-sidebar">
+        <div class="ops-panel">
+            <div class="ops-panel__head">Merchant Operations</div>
+            <div class="ops-panel__body">
+                <button class="ops-btn" onclick="openModal('settlement-modal')">
+                    <div class="ops-btn__icon"><i class="ph ph-currency-circle-dollar"></i></div>
+                    <div><p class="ops-btn__label">Process Settlements</p><p class="ops-btn__meta">Manage payouts</p></div>
+                    <i class="ph ph-arrow-right ops-btn__arrow"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <script src="~/js/adminMerchant.js" asp-append-version="true"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initLocationMap" async defer></script>
+    <script src="~/js/placesAutocomplete.js" asp-append-version="true"></script>
+    <script>
+        $(document).ready(function () {
+        var merchantsTable = $('#merchants_table').DataTable({
+        pageLength: 10,
+        ordering: true,
+        searching: true,
+        lengthChange: false,
+        dom: 't<"admin-pagination"<"dataTables_info"i><"admin-pagination-btns"p>>',
+        columnDefs: [
+        { orderable: false, targets: [4, 5] }
+        ],
+        language: {
+        paginate: {
+        previous: '<i class="ph ph-caret-left"></i>',
+        next: '<i class="ph ph-caret-right"></i>'
+        },
+        info: 'Showing _START_–_END_ of _TOTAL_ manual merchants',
+        emptyTable: '<div style="text-align:center;padding:2rem;opacity:0.5;"><i class="ph ph-storefront" style="font-size:2rem;"></i><p style="margin-top:0.5rem;">No manual merchants found in the database.</p></div>'
+        },
+        drawCallback: function () {
+        $(this.api().table().container())
+        .find('.dataTables_paginate .paginate_button')
+        .addClass('admin-page-btn')
+        .filter('.current').addClass('active');
+        }
+        });
+
+        $('#merchant-search').on('input', function () {
+        merchantsTable.search(this.value).draw();
+        });
+
+        $('#merchant-filter-bar').on('click', '.admin-filter-btn', function () {
+        $('#merchant-filter-bar .admin-filter-btn').removeClass('active');
+        $(this).addClass('active');
+        var f = $(this).data('filter');
+        merchantsTable.column(1).search(f === 'all' ? '' : '^' + f.charAt(0).toUpperCase() + f.slice(1) + '$', true, false).draw();
+        });
+        });
+    </script>
+}
+
+@await Html.PartialAsync("_ModalDocPreview")
+@await Html.PartialAsync("_ModalMerchantDetail")
+@await Html.PartialAsync("_ModalMerchantEdit")
+@await Html.PartialAsync("_ModalMerchantAdd")
