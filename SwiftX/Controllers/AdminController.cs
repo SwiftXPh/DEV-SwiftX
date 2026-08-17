@@ -120,6 +120,9 @@ namespace SwiftX.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
+            var username = User.FindFirstValue(ClaimTypes.Name);
+            _auditLogger.LogAuthEvent("ADMIN_LOGOUT", null, username, HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown", true);
+            
             await HttpContext.SignOutAsync("AdminScheme");
             return RedirectToAction(nameof(Index));
         }

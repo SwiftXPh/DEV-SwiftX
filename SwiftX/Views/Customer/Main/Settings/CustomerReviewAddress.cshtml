@@ -9,10 +9,12 @@
     <link rel="stylesheet" href="~/css/user/customerMain/CustomerReviewAddress.css" asp-append-version="true" />
 }
 
-@* ── Map canvas ── *@
-<div class="ra-map" id="addressPickerMap">
-    <div class="ra-map__controls">
+<div class="ra-page-wrapper">
+    @* ── Map canvas (Full screen) ── *@
+    <div class="ra-map" id="addressPickerMap"></div>
 
+    @* ── Floating Top Controls ── *@
+    <div class="ra-map__controls">
         @if (!isFirstTime)
         {
             <button type="button" id="back-btn" class="ra-back-btn" aria-label="Go back">
@@ -21,72 +23,108 @@
         }
 
         <div class="ra-search-wrap">
-            <i class="ph ph-map-trifold ra-search-icon"></i>
+            <i class="ph ph-magnifying-glass ra-search-icon"></i>
             <input type="text" id="selectedAddressBar"
                    class="ra-search-input"
-                   placeholder="Type an address or drag the map pin..."
+                   placeholder="Search street, building, or area..."
                    data-lng="" data-lat="" />
         </div>
-
     </div>
-</div>
 
-@* ── Form ── *@
-<div class="ra-form-section">
-    <div class="ra-container">
+    @* ── Floating Bottom Location Confirmation Card ── *@
+    <div class="ra-floating-confirm" id="floatingConfirmCard">
+        <div class="ra-floating-info">
+            <div class="ra-floating-pin-icon">
+                <i class="ph-fill ph-map-pin"></i>
+            </div>
+            <div class="ra-floating-text-wrap">
+                <span class="ra-floating-label">Pinned Location</span>
+                <p class="ra-floating-address" id="floatingAddressText">Fetching address...</p>
+            </div>
+        </div>
+        <button type="button" class="ra-confirm-loc-btn" id="btnOpenAddressModal">
+            <span>Confirm Location</span>
+            <i class="ph-bold ph-arrow-right"></i>
+        </button>
+    </div>
 
-        <h2 class="ra-form-title">Enter Address Details</h2>
+    @* ── Address Details Slide-up Bottom Sheet Modal ── *@
+    <div class="ra-modal-overlay" id="addressModalOverlay" style="display: none;">
+        <div class="ra-bottom-sheet" id="addressBottomSheet">
+            <div class="ra-sheet-handle"></div>
 
-        <form id="addressForm" novalidate>
-            @Html.AntiForgeryToken()
-
-            <div class="ra-label-selector">
-                <div class="ra-label-chip selected" data-label="Home">
-                    <i class="ph-fill ph-house"></i> Home
+            <div class="ra-sheet-header">
+                <div class="ra-sheet-header-left">
+                    <h3 class="ra-sheet-title">Enter Address Details</h3>
+                    <p class="ra-sheet-subtitle">Add unit, contact, and landmark details for accurate delivery</p>
                 </div>
-                <div class="ra-label-chip" data-label="Work">
-                    <i class="ph-fill ph-briefcase"></i> Work
-                </div>
-                <div class="ra-label-chip" data-label="Other">
-                    <i class="ph-fill ph-map-pin"></i> Other
-                </div>
-                <input type="hidden" id="addressLabel" name="Label" value="Home" />
+                <button type="button" class="ra-sheet-close-btn" id="btnCloseAddressModal" aria-label="Close">
+                    <i class="ph ph-x"></i>
+                </button>
             </div>
 
-            <div class="ra-field">
-                <label for="address">Address</label>
-                <input type="text" id="address" name="Address" required>
+            <div class="ra-sheet-body">
+                <form id="addressForm" novalidate>
+                    @Html.AntiForgeryToken()
+
+                    <div class="ra-label-selector">
+                        <div class="ra-label-chip selected" data-label="Home">
+                            <i class="ph-fill ph-house"></i>
+                            <span>Home</span>
+                        </div>
+                        <div class="ra-label-chip" data-label="Work">
+                            <i class="ph-fill ph-briefcase"></i>
+                            <span>Work</span>
+                        </div>
+                        <div class="ra-label-chip" data-label="Other">
+                            <i class="ph-fill ph-map-pin"></i>
+                            <span>Other</span>
+                        </div>
+                        <input type="hidden" id="addressLabel" name="Label" value="Home" />
+                    </div>
+
+                    <div class="ra-field">
+                        <label for="address">Selected Location / Street</label>
+                        <div class="ra-input-with-icon">
+                            <i class="ph-fill ph-map-pin ra-input-icon"></i>
+                            <input type="text" id="address" name="Address" required readonly />
+                        </div>
+                    </div>
+
+                    <div class="ra-field-row">
+                        <div class="ra-field ra-field-flex">
+                            <label for="floor">Floor / Unit / Building (Optional)</label>
+                            <input type="text" id="floor" name="Floor" placeholder="e.g. Unit 4B, 3rd Floor" />
+                        </div>
+                    </div>
+
+                    <div class="ra-field">
+                        <label for="contact">Contact Name</label>
+                        <input type="text" id="contact" name="Contact" placeholder="e.g. Juan Dela Cruz" required />
+                    </div>
+
+                    <div class="ra-field">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="Phone"
+                               placeholder="e.g. 09292096887" required />
+                    </div>
+
+                    <div class="ra-field">
+                        <label for="landmark">Landmark / Note for Rider (Optional)</label>
+                        <textarea id="landmark" name="Landmark" placeholder="e.g. Near yellow gate, call when arrived"></textarea>
+                    </div>
+
+                    <label class="ra-checkbox" style="display: none;">
+                        <input type="checkbox" id="remember" checked />
+                        Save this address
+                    </label>
+
+                    <div class="ra-sheet-footer-actions">
+                        <button type="submit" class="ra-submit-btn" id="submitAddressBtn">@submitText</button>
+                    </div>
+                </form>
             </div>
-
-            <div class="ra-field">
-                <label for="floor">Floor / Unit</label>
-                <input type="text" id="floor" name="Floor">
-            </div>
-
-            <div class="ra-field">
-                <label for="phone">Phone Number</label>
-                <input type="tel" id="phone" name="Phone"
-                       placeholder="e.g. 09292096887" required>
-            </div>
-
-            <div class="ra-field">
-                <label for="contact">Contact Name</label>
-                <input type="text" id="contact" name="Contact" required>
-            </div>
-
-            <div class="ra-field">
-                <label for="landmark">Landmark / Notes</label>
-                <textarea id="landmark" name="Landmark"></textarea>
-            </div>
-
-            <label class="ra-checkbox" style="display: none;">
-                <input type="checkbox" id="remember" checked>
-                Save this address
-            </label>
-
-            <button type="submit" class="ra-submit-btn">@submitText</button>
-
-        </form>
+        </div>
     </div>
 </div>
 

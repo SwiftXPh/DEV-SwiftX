@@ -12,7 +12,6 @@ using SwiftX.Services;
 
 namespace SwiftX.Controllers
 {
-    [AllowAnonymous]
     public class AuthController : Controller
     {
         private readonly AppDbContext _db;
@@ -27,6 +26,7 @@ namespace SwiftX.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         [EnableRateLimiting("login")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
@@ -101,6 +101,7 @@ namespace SwiftX.Controllers
         /// Initiates the Google OAuth challenge — redirects the browser to Google's consent screen.
         /// </summary>
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult GoogleLogin()
         {
             var properties = new AuthenticationProperties
@@ -115,6 +116,7 @@ namespace SwiftX.Controllers
         /// issues the CustomerScheme cookie, and redirects to the customer home page.
         /// </summary>
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GoogleCallback()
         {
             // The Google middleware already wrote a temporary cookie via SignInScheme.
@@ -236,6 +238,7 @@ namespace SwiftX.Controllers
         // ══════════════════════════════════════════════════════════
 
         [HttpPost]
+        [AllowAnonymous]
         [EnableRateLimiting("login")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
@@ -309,9 +312,15 @@ namespace SwiftX.Controllers
         }
 
         [HttpPost]
+        [Authorize(AuthenticationSchemes = "CustomerScheme")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var username = User.FindFirstValue(ClaimTypes.Name);
+            
+            _auditLogger.LogAuthEvent("LOGOUT", userId, username, HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown", true);
+            
             await HttpContext.SignOutAsync("CustomerScheme");
             return RedirectToAction("UserLogin", "Customer");
         }

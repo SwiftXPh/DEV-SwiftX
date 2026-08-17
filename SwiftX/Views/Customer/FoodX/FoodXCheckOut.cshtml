@@ -1,4 +1,4 @@
-﻿@* For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860*@
+@* For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860*@
 @{
     ViewData["Title"] = "FoodX CheckOut";
     Layout = "~/Views/Shared/_LayoutCustomerSubPage.cshtml";
@@ -27,26 +27,24 @@
             <span class="fxco-section-title">Delivery Address</span>
         </div>
 
-        <a asp-controller="Customer" asp-action="CustomerSavedAddresses" style="text-decoration: none; color: inherit; display: block;">
-            <div class="fxco-address-box" id="address-box">
-                <div class="fxco-address-icon-side">
-                    <i class="ph ph-map-pin-area" id="address-icon"></i>
-                </div>
+        <div class="fxco-address-box fxco-clickable" id="address-box" role="button" tabindex="0" title="Click to change delivery address">
+            <div class="fxco-address-icon-side">
+                <i class="ph ph-map-pin-area" id="address-icon"></i>
+            </div>
 
-                <div class="fxco-address-content-side">
-                    <div class="fxco-address-label" id="checkout-address-label">No Address Selected</div>
-                    <div class="fxco-address-text" id="checkout-address-text">Tap to select or add your delivery location context</div>
+            <div class="fxco-address-content-side">
+                <div class="fxco-address-label" id="checkout-address-label">No Address Selected</div>
+                <div class="fxco-address-text" id="checkout-address-text">Tap to select or add your delivery location context</div>
 
-                    <div class="fxco-address-sub" id="checkout-address-sub" style="display: none;">
-                        <span id="checkout-address-unit"></span> • <span id="checkout-address-contact"></span>
-                    </div>
-                </div>
-
-                <div class="fxco-address-arrow-side">
-                    <i class="ph ph-caret-right"></i>
+                <div class="fxco-address-sub" id="checkout-address-sub" style="display: none;">
+                    <span id="checkout-address-unit"></span> • <span id="checkout-address-contact"></span>
                 </div>
             </div>
-        </a>
+
+            <div class="fxco-address-arrow-side">
+                <i class="ph ph-caret-right"></i>
+            </div>
+        </div>
 
         <div class="fxco-section-title">Order Summary</div><br>
         <div class="fxco-restaurant-name">Mcdonald's-Valencia</div><br>
@@ -71,6 +69,40 @@
                 <span id="grand-total-val" class="fxco-total-price">₱ 0.00</span>
             </div>
             <a asp-controller="Customer" asp-action="FoodXPayment" class="fxco-review-btn" id="review-btn">Review Payment and Order</a>
+        </div>
+    </div>
+
+    <!-- Address Selection Bottom Sheet Modal -->
+    <div class="fxco-modal-overlay" id="address-modal-overlay" style="display: none;">
+        <div class="fxco-bottom-sheet" id="address-bottom-sheet">
+            <div class="fxco-sheet-handle"></div>
+            <div class="fxco-sheet-header">
+                <div class="fxco-sheet-header-left">
+                    <h3 class="fxco-sheet-title">Select Delivery Address</h3>
+                    <p class="fxco-sheet-subtitle">Choose where you'd like your order delivered</p>
+                </div>
+                <button type="button" class="fxco-sheet-close-btn" id="close-address-modal" aria-label="Close">
+                    <i class="ph ph-x"></i>
+                </button>
+            </div>
+
+            <div class="fxco-sheet-body">
+                <div class="fxco-address-list" id="address-list-container">
+                    <!-- Populated dynamically via JS -->
+                </div>
+
+                <div class="fxco-sheet-empty-state" id="address-empty-state" style="display: none;">
+                    <i class="ph ph-map-pin-line"></i>
+                    <p>No saved addresses found</p>
+                    <span>Add a delivery address to complete your order.</span>
+                </div>
+            </div>
+
+            <div class="fxco-sheet-footer">
+                <a asp-controller="Customer" asp-action="CustomerReviewAddress" class="fxco-add-new-address-btn">
+                    <i class="ph ph-plus"></i> Add New Address
+                </a>
+            </div>
         </div>
     </div>
 </div>

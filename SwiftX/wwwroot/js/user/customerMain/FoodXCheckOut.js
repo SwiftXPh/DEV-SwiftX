@@ -4,6 +4,7 @@
 
 // STORAGE KEYS & SYSTEM PARAMETERS
 const CART_STORAGE_KEY = 'swiftx_cart_data'; // 🎯 Matched perfectly with Restaurant Storage key!
+const ADDRESS_STORAGE_KEY = 'foodx_selected_address';
 const DELIVERY_FEE = 39.00;
 
 // Dynamic url distance setup mapping
@@ -50,7 +51,24 @@ function setupInitialRecommendations() {
 /**
  * 🎯 SYNC SELECTED ADDRESS INFRASTRUCTURE 
  */
-function updateCheckoutAddressDisplay() {
+async function updateCheckoutAddressDisplay() {
+    let savedAddressData = localStorage.getItem(ADDRESS_STORAGE_KEY);
+
+    if (!savedAddressData) {
+        try {
+            const res = await fetch('/Customer/GetDefaultAddress');
+            if (res.ok) {
+                const defaultAddress = await res.json();
+                if (defaultAddress && defaultAddress.id) {
+                    localStorage.setItem(ADDRESS_STORAGE_KEY, JSON.stringify(defaultAddress));
+                    savedAddressData = JSON.stringify(defaultAddress);
+                }
+            }
+        } catch (err) {
+            console.error("Failed to auto-fetch default address:", err);
+        }
+    }
+
     const labelNode = document.getElementById('checkout-address-label');
     const textNode = document.getElementById('checkout-address-text');
     const subNode = document.getElementById('checkout-address-sub');
@@ -58,53 +76,184 @@ function updateCheckoutAddressDisplay() {
     const contactNode = document.getElementById('checkout-address-contact');
     const iconNode = document.getElementById('address-icon');
 
-    fetch('/Customer/GetDefaultAddress')
-        .then(res => {
-            if (res.status === 401) return null;
-            return res.json();
-        })
-        .then(address => {
-            if (address && address.id) {
-                window.currentCheckoutAddress = address;
+    if (savedAddressData) {
+        try {
+            const address = JSON.parse(savedAddressData);
 
-                if (labelNode) labelNode.innerText = address.label || 'Saved Location';
+            if (labelNode) labelNode.innerText = address.label || 'Saved Location';
 
-                if (iconNode) {
-                    const labelLower = (address.label || "").toLowerCase();
-                    iconNode.className = "ph ph-map-pin-area";
-                    if (labelLower.includes("home")) iconNode.className = "ph ph-house";
-                    else if (labelLower.includes("work") || labelLower.includes("office")) iconNode.className = "ph ph-briefcase";
-                }
-
-                if (textNode) textNode.innerText = address.fullAddress || '';
-
-                if (subNode && unitNode && contactNode) {
-                    const hasUnit = !!address.unit;
-                    const hasContact = !!address.name || !!address.phone;
-
-                    if (hasUnit || hasContact) {
-                        unitNode.innerText = address.unit ? `Floor/Unit: ${address.unit}` : '';
-                        contactNode.innerText = address.name ? `${address.name} (${address.phone || ''})` : (address.phone || '');
-
-                        if (!hasUnit) unitNode.innerText = '';
-                        if (!hasContact) contactNode.innerText = '';
-
-                        subNode.style.display = 'block';
-                    } else {
-                        subNode.style.display = 'none';
-                    }
-                }
-            } else {
-                window.currentCheckoutAddress = null;
-                if (labelNode) labelNode.innerText = 'No Address Selected';
-                if (textNode) textNode.innerText = 'Tap to select or add your delivery location context';
-                if (subNode) subNode.style.display = 'none';
-                if (iconNode) iconNode.className = "ph ph-map-pin-area";
+            if (iconNode) {
+                const labelLower = (address.label || "").toLowerCase();
+                iconNode.className = "ph ph-map-pin-area";
+                if (labelLower.includes("home")) iconNode.className = "ph ph-house";
+                else if (labelLower.includes("work") || labelLower.includes("office")) iconNode.className = "ph ph-briefcase";
             }
-        })
-        .catch(e => {
-            console.error("Failed to fetch default address:", e);
-        });
+
+            if (textNode) textNode.innerText = address.fullAddress || '';
+
+            if (subNode && unitNode && contactNode) {
+                const hasUnit = !!address.unit;
+                const hasContact = !!address.name || !!address.phone;
+
+                if (hasUnit || hasContact) {
+                    unitNode.innerText = address.unit ? `Floor/Unit: ${address.unit}` : '';
+                    contactNode.innerText = address.name ? `${address.name} (${address.phone || ''})` : (address.phone || '');
+
+                    if (!hasUnit) unitNode.innerText = '';
+                    if (!hasContact) contactNode.innerText = '';
+
+                    subNode.style.display = 'block';
+                } else {
+                    subNode.style.display = 'none';
+                }
+            }
+        } catch (e) {
+            console.error("Failed to parse cached address state parameters:", e);
+        }
+    } else {
+        if (labelNode) labelNode.innerText = 'No Address Selected';
+        if (textNode) textNode.innerText = 'Tap to select or add your delivery location context';
+        if (subNode) subNode.style.display = 'none';
+        if (iconNode) iconNode.className = "ph ph-map-pin-area";
+    }
+}
+
+/**
+ * 🏠 ADDRESS MODAL ENGINE & SELECTION HANDLER
+ */
+let isAddressModalOpen = false;
+
+function openAddressModal() {
+    const overlay = document.getElementById('address-modal-overlay');
+    if (!overlay) return;
+
+    isAddressModalOpen = true;
+    overlay.style.display = 'flex';
+    setTimeout(() => {
+        overlay.classList.add('active');
+    }, 10);
+
+    loadSavedAddresses();
+}
+
+function closeAddressModal() {
+    const overlay = document.getElementById('address-modal-overlay');
+    if (!overlay) return;
+
+    isAddressModalOpen = false;
+    overlay.classList.remove('active');
+    setTimeout(() => {
+        if (!isAddressModalOpen) {
+            overlay.style.display = 'none';
+        }
+    }, 300);
+}
+
+async function loadSavedAddresses() {
+    const listContainer = document.getElementById('address-list-container');
+    const emptyState = document.getElementById('address-empty-state');
+    if (!listContainer) return;
+
+    listContainer.innerHTML = `
+        <div class="fxco-sheet-skeleton"></div>
+        <div class="fxco-sheet-skeleton"></div>
+    `;
+    if (emptyState) emptyState.style.display = 'none';
+
+    try {
+        const res = await fetch('/Customer/GetAddresses');
+        if (!res.ok) throw new Error("Failed to load addresses");
+        const addresses = await res.json();
+
+        renderAddressModalList(addresses);
+    } catch (err) {
+        console.error("Error loading addresses for modal:", err);
+        listContainer.innerHTML = `<div style="text-align: center; color: #ff6b6b; padding: 20px;">Failed to load addresses. Please try again.</div>`;
+    }
+}
+
+function renderAddressModalList(addresses) {
+    const listContainer = document.getElementById('address-list-container');
+    const emptyState = document.getElementById('address-empty-state');
+    if (!listContainer) return;
+
+    if (!addresses || addresses.length === 0) {
+        listContainer.innerHTML = '';
+        if (emptyState) emptyState.style.display = 'block';
+        return;
+    }
+
+    if (emptyState) emptyState.style.display = 'none';
+
+    let currentSelectedId = null;
+    try {
+        const saved = localStorage.getItem(ADDRESS_STORAGE_KEY);
+        if (saved) {
+            currentSelectedId = JSON.parse(saved).id;
+        }
+    } catch (e) {}
+
+    listContainer.innerHTML = '';
+
+    addresses.forEach(addr => {
+        const isSelected = currentSelectedId ? addr.id === currentSelectedId : !!addr.isDefault;
+
+        const labelLower = (addr.label || "").toLowerCase();
+        let iconClass = "ph ph-map-pin-area";
+        if (labelLower.includes("home")) iconClass = "ph ph-house";
+        else if (labelLower.includes("work") || labelLower.includes("office")) iconClass = "ph ph-briefcase";
+
+        const card = document.createElement('div');
+        card.className = `fxco-sheet-address-card ${isSelected ? 'selected' : ''}`;
+        card.setAttribute('data-id', addr.id);
+
+        const metaDetails = [
+            addr.unit ? `Unit/Floor: ${addr.unit}` : '',
+            addr.name ? `${addr.name} (${addr.phone || ''})` : (addr.phone || '')
+        ].filter(Boolean).join(' • ');
+
+        card.innerHTML = `
+            <div class="fxco-sheet-card-icon">
+                <i class="${iconClass}"></i>
+            </div>
+            <div class="fxco-sheet-card-info">
+                <div class="fxco-sheet-card-header">
+                    <span class="fxco-sheet-card-label">${addr.label || 'Saved Location'}</span>
+                    ${addr.isDefault ? `<span class="fxco-sheet-default-badge">Default</span>` : ''}
+                </div>
+                <div class="fxco-sheet-card-address">${addr.fullAddress || ''}</div>
+                ${metaDetails ? `<div class="fxco-sheet-card-meta">${metaDetails}</div>` : ''}
+            </div>
+            <div class="fxco-sheet-check-indicator">
+                <i class="ph-bold ph-check"></i>
+            </div>
+        `;
+
+        card.onclick = () => {
+            selectDeliveryAddress(addr);
+        };
+
+        listContainer.appendChild(card);
+    });
+}
+
+function selectDeliveryAddress(address) {
+    localStorage.setItem(ADDRESS_STORAGE_KEY, JSON.stringify(address));
+
+    const cards = document.querySelectorAll('.fxco-sheet-address-card');
+    cards.forEach(c => {
+        if (parseInt(c.getAttribute('data-id')) === address.id) {
+            c.classList.add('selected');
+        } else {
+            c.classList.remove('selected');
+        }
+    });
+
+    updateCheckoutAddressDisplay();
+
+    setTimeout(() => {
+        closeAddressModal();
+    }, 180);
 }
 
 /**
@@ -257,13 +406,50 @@ document.addEventListener('DOMContentLoaded', () => {
     renderItems();                 // Parse and map active food elements
     updateCheckoutAddressDisplay(); // Evaluate location cache tracking states
 
+    // Setup Address Selection Modal Triggers
+    const addressBox = document.getElementById('address-box');
+    const closeAddressModalBtn = document.getElementById('close-address-modal');
+    const addressModalOverlay = document.getElementById('address-modal-overlay');
+
+    if (addressBox) {
+        addressBox.onclick = () => {
+            openAddressModal();
+        };
+        addressBox.onkeydown = (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                openAddressModal();
+            }
+        };
+    }
+
+    if (closeAddressModalBtn) {
+        closeAddressModalBtn.onclick = () => {
+            closeAddressModal();
+        };
+    }
+
+    if (addressModalOverlay) {
+        addressModalOverlay.onclick = (e) => {
+            if (e.target === addressModalOverlay) {
+                closeAddressModal();
+            }
+        };
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && isAddressModalOpen) {
+            closeAddressModal();
+        }
+    });
+
     const reviewBtn = document.getElementById('review-btn');
     const changeDelivery = document.getElementById('change-delivery');
 
     if (reviewBtn) {
         reviewBtn.onclick = () => {
             const cart = loadCart();
-            const hasAddress = window.currentCheckoutAddress != null;
+            const hasAddress = localStorage.getItem(ADDRESS_STORAGE_KEY);
 
             if (Object.keys(cart).length === 0) {
                 alert("Your checkout cart is completely empty!");
