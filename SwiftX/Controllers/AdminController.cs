@@ -1,5 +1,6 @@
 
 using System.Security.Claims;
+using System.Security.Cryptography;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -23,8 +24,9 @@ namespace SwiftX.Controllers
         private readonly IPasswordHasher<UserModel> _passwordHasher;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly GoogleMapsOptions _googleMaps;
+        private readonly IAuditLogger _auditLogger;
 
-        public AdminController(AppDbContext db, ISupabaseStorageService storage, IOptions<SupabaseOptions> supabase, IPasswordHasher<UserModel> passwordHasher, IHttpClientFactory httpClientFactory, IOptions<GoogleMapsOptions> googleMaps)
+        public AdminController(AppDbContext db, ISupabaseStorageService storage, IOptions<SupabaseOptions> supabase, IPasswordHasher<UserModel> passwordHasher, IHttpClientFactory httpClientFactory, IOptions<GoogleMapsOptions> googleMaps, IAuditLogger auditLogger)
         {
             _db = db;
             _storage = storage;
@@ -32,6 +34,7 @@ namespace SwiftX.Controllers
             _passwordHasher = passwordHasher;
             _httpClientFactory = httpClientFactory;
             _googleMaps = googleMaps.Value;
+            _auditLogger = auditLogger;
         }
 
         /// <summary>
@@ -81,11 +84,18 @@ namespace SwiftX.Controllers
             // Verify against environment variables. If they aren't set, login fails.
             var ok = !string.IsNullOrWhiteSpace(envUsername) && 
                      !string.IsNullOrWhiteSpace(envPassword) &&
-                     username == envUsername && 
-                     password == envPassword;
+                     !string.IsNullOrWhiteSpace(username) &&
+                     !string.IsNullOrWhiteSpace(password) &&
+                     CryptographicOperations.FixedTimeEquals(
+                         System.Text.Encoding.UTF8.GetBytes(username),
+                         System.Text.Encoding.UTF8.GetBytes(envUsername)) &&
+                     CryptographicOperations.FixedTimeEquals(
+                         System.Text.Encoding.UTF8.GetBytes(password),
+                         System.Text.Encoding.UTF8.GetBytes(envPassword));
 
             if (!ok)
             {
+                _auditLogger.LogAuthEvent("ADMIN_LOGIN", null, username, HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown", false);
                 ViewBag.LoginError = "Invalid username or password.";
                 return View(nameof(Index));
             }
@@ -98,6 +108,8 @@ namespace SwiftX.Controllers
             };
             var identity = new ClaimsIdentity(claims, "AdminScheme");
             await HttpContext.SignInAsync("AdminScheme", new ClaimsPrincipal(identity));
+
+            _auditLogger.LogAuthEvent("ADMIN_LOGIN", null, username, HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown", true);
 
             if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
                 return Redirect(returnUrl);
@@ -217,6 +229,7 @@ namespace SwiftX.Controllers
             {
                 rider.Status = "Active";
                 _db.SaveChanges();
+                _auditLogger.LogAdminAction("APPROVE_RIDER", User.Identity?.Name ?? "unknown", "Rider", id);
             }
             return RedirectToAction("RiderApplications");
         }
@@ -230,6 +243,7 @@ namespace SwiftX.Controllers
             {
                 rider.Status = "Rejected";
                 _db.SaveChanges();
+                _auditLogger.LogAdminAction("REJECT_RIDER", User.Identity?.Name ?? "unknown", "Rider", id);
             }
             return RedirectToAction("RiderApplications");
         }
@@ -299,6 +313,8 @@ namespace SwiftX.Controllers
 
             _db.Stores.Add(store);
             await _db.SaveChangesAsync();
+
+            _auditLogger.LogAdminAction("ADD_STORE", User.Identity?.Name ?? "unknown", "Store", store.Id);
 
             TempData["Success"] = "Store successfully created! It is currently Unassigned.";
             return RedirectToAction("ManualMerchants");
@@ -383,6 +399,7 @@ namespace SwiftX.Controllers
             {
                 merchant.Status = "Active";
                 _db.SaveChanges();
+                _auditLogger.LogAdminAction("APPROVE_MERCHANT", User.Identity?.Name ?? "unknown", "Merchant", id);
             }
             return RedirectToAction("MerchantApplications");
         }
@@ -396,6 +413,7 @@ namespace SwiftX.Controllers
             {
                 merchant.Status = "Rejected";
                 _db.SaveChanges();
+                _auditLogger.LogAdminAction("REJECT_MERCHANT", User.Identity?.Name ?? "unknown", "Merchant", id);
             }
             return RedirectToAction("MerchantApplications");
         }
@@ -454,6 +472,7 @@ namespace SwiftX.Controllers
                 rider.Status = Status;
 
                 _db.SaveChanges();
+                _auditLogger.LogAdminAction("UPDATE_RIDER", User.Identity?.Name ?? "unknown", "Rider", Id);
             }
             return RedirectToAction("Rider");
         }
@@ -602,6 +621,7 @@ namespace SwiftX.Controllers
             }
 
             await _db.SaveChangesAsync();
+            _auditLogger.LogAdminAction("UPDATE_STORE", User.Identity?.Name ?? "unknown", "Store", Id);
             TempData["Success"] = "Store updated successfully.";
             return RedirectToAction("ManualMerchants");
         }
@@ -626,6 +646,8 @@ namespace SwiftX.Controllers
 
             _db.Stores.Remove(store);
             await _db.SaveChangesAsync();
+
+            _auditLogger.LogAdminAction("DELETE_STORE", User.Identity?.Name ?? "unknown", "Store", id);
 
             TempData["Success"] = "Store deleted successfully.";
             return RedirectToAction("ManualMerchants");

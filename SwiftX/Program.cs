@@ -22,6 +22,28 @@ builder.Services.AddControllersWithViews(options =>
     options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
 });
 
+// Restrict cross-origin requests to known domains.
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        if (builder.Environment.IsDevelopment())
+        {
+            policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+        }
+        else
+        {
+            // Replace with your actual production domain(s)
+            var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
+                                 ?? Array.Empty<string>();
+            policy.WithOrigins(allowedOrigins)
+                  .AllowCredentials()
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        }
+    });
+});
+
 builder.Services.AddAntiforgery(options => 
 {
     options.HeaderName = "RequestVerificationToken";
@@ -50,6 +72,9 @@ builder.Services.AddHttpClient("GoogleMaps");
 
 // Password hashing (PBKDF2 via the framework's PasswordHasher — no extra package).
 builder.Services.AddSingleton<IPasswordHasher<UserModel>, PasswordHasher<UserModel>>();
+
+// Audit Logging Service
+builder.Services.AddSingleton<IAuditLogger, AuditLogger>();
 
 builder.Services.AddAuthentication()
     .AddCookie("AdminScheme", options =>
@@ -155,6 +180,18 @@ using (var scope = app.Services.CreateScope())
 // Must run before anything that inspects the scheme/host or client IP.
 app.UseForwardedHeaders();
 
+// Security headers — defense-in-depth against XSS, clickjacking, MIME sniffing.
+app.Use(async (context, next) =>
+{
+    var headers = context.Response.Headers;
+    headers.Append("X-Content-Type-Options", "nosniff");
+    headers.Append("X-Frame-Options", "DENY");
+    headers.Append("Referrer-Policy", "strict-origin-when-cross-origin");
+    headers.Append("Permissions-Policy", "camera=(), microphone=(), geolocation=(self)");
+    headers.Append("X-XSS-Protection", "0"); // Disabled per modern best practice (CSP replaces it)
+    await next();
+});
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -174,6 +211,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseCors();
 
 app.UseSession();
 

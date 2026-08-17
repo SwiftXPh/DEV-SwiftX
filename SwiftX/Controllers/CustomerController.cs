@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using SwiftX.Models;
 using SwiftX.Services;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 
 namespace SwiftX.Controllers
@@ -18,14 +19,19 @@ namespace SwiftX.Controllers
         private readonly ISupabaseStorageService _storage;
         private readonly SupabaseOptions _supabase;
         private readonly GoogleMapsOptions _googleMaps;
+        private readonly IAuditLogger _auditLogger;
 
-        public CustomerController(AppDbContext db, IPasswordHasher<UserModel> passwordHasher, ISupabaseStorageService storage, IOptions<SupabaseOptions> supabase, IOptions<GoogleMapsOptions> googleMaps)
+        private static readonly string[] AllowedAvatarTypes = { "image/jpeg", "image/png", "image/webp" };
+        private const long MaxAvatarBytes = 2 * 1024 * 1024; // 2 MB
+
+        public CustomerController(AppDbContext db, IPasswordHasher<UserModel> passwordHasher, ISupabaseStorageService storage, IOptions<SupabaseOptions> supabase, IOptions<GoogleMapsOptions> googleMaps, IAuditLogger auditLogger)
         {
             _db = db;
             _passwordHasher = passwordHasher;
             _storage = storage;
             _supabase = supabase.Value;
             _googleMaps = googleMaps.Value;
+            _auditLogger = auditLogger;
         }
 
         // AUTH LEVEL (Allow Anonymous)
@@ -425,6 +431,14 @@ namespace SwiftX.Controllers
             var user = await _db.Users.FindAsync(userId);
             if (user == null) return NotFound();
 
+            // Prevent username hijacking — ensure the new username isn't taken
+            if (!string.IsNullOrWhiteSpace(request.Username) &&
+                request.Username != user.Username &&
+                await _db.Users.AnyAsync(u => u.Username == request.Username && u.Id != userId))
+            {
+                return BadRequest(new { message = "Username is already taken." });
+            }
+
             user.Username = request.Username;
             
             if (!string.IsNullOrWhiteSpace(request.FullName))
@@ -438,7 +452,7 @@ namespace SwiftX.Controllers
             
             if (!string.IsNullOrWhiteSpace(request.Birthdate) && DateTime.TryParse(request.Birthdate, out var dob))
             {
-                user.DateOfBirth = dob;
+                user.DateOfBirth = DateTime.SpecifyKind(dob, DateTimeKind.Utc);
             }
 
             await _db.SaveChangesAsync();
@@ -450,6 +464,12 @@ namespace SwiftX.Controllers
         public async Task<IActionResult> UploadProfileImage(IFormFile file)
         {
             if (file == null || file.Length == 0) return BadRequest(new { success = false, message = "No file uploaded." });
+
+            if (file.Length > MaxAvatarBytes)
+                return BadRequest(new { success = false, message = "File exceeds the 2 MB limit." });
+
+            if (!AllowedAvatarTypes.Contains(file.ContentType))
+                return BadRequest(new { success = false, message = "Only JPG, PNG, or WEBP images are allowed." });
 
             var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userIdStr) || !int.TryParse(userIdStr, out var userId)) return Unauthorized();
@@ -533,6 +553,9 @@ namespace SwiftX.Controllers
                 return BadRequest(new { message = "Incorrect current password." });
             }
 
+            if (string.IsNullOrWhiteSpace(request.NewPassword) || request.NewPassword.Length < 8)
+                return BadRequest(new { message = "Password must be at least 8 characters." });
+
             user.Password = _passwordHasher.HashPassword(user, request.NewPassword);
             await _db.SaveChangesAsync();
             return Json(new { success = true });
@@ -575,6 +598,8 @@ namespace SwiftX.Controllers
 
             user.IsActive = false; // Soft delete
             await _db.SaveChangesAsync();
+            
+            _auditLogger.LogAccountChange("SOFT_DELETE", userId);
 
             await HttpContext.SignOutAsync("CustomerScheme");
             
@@ -599,6 +624,9 @@ namespace SwiftX.Controllers
     public class UpdatePasswordRequest
     {
         public string CurrentPassword { get; set; }
+        [MinLength(8, ErrorMessage = "Password must be at least 8 characters.")]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$",
+            ErrorMessage = "Password must contain at least one uppercase letter, one lowercase letter, and one digit.")]
         public string NewPassword { get; set; }
     }
 

@@ -111,7 +111,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const response = await fetch('/Auth/Register', {
                     method: 'POST',
                     headers: { 
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value ?? ''
                     },
                     body: JSON.stringify(payload)
                 });

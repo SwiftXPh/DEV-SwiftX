@@ -8,6 +8,7 @@ using SwiftX.Models;
 using System.Security.Claims;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using SwiftX.Services;
 
 namespace SwiftX.Controllers
 {
@@ -16,16 +17,18 @@ namespace SwiftX.Controllers
     {
         private readonly AppDbContext _db;
         private readonly IPasswordHasher<UserModel> _passwordHasher;
+        private readonly IAuditLogger _auditLogger;
 
-        public AuthController(AppDbContext db, IPasswordHasher<UserModel> passwordHasher)
+        public AuthController(AppDbContext db, IPasswordHasher<UserModel> passwordHasher, IAuditLogger auditLogger)
         {
             _db = db;
             _passwordHasher = passwordHasher;
+            _auditLogger = auditLogger;
         }
 
         [HttpPost]
         [EnableRateLimiting("login")]
-        [IgnoreAntiforgeryToken]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
             if (request == null || !ModelState.IsValid)
@@ -34,7 +37,7 @@ namespace SwiftX.Controllers
                 return Json(new { success = false, message = errorMsg });
             }
 
-            var user = await _db.Users.FirstOrDefaultAsync(u => u.Username == request.Username && u.Role == "Customer" && u.IsActive);
+            var user = await _db.Users.FirstOrDefaultAsync(u => u.Username == request.Username && u.Role == "Customer");
 
             if (user != null)
             {
@@ -51,19 +54,16 @@ namespace SwiftX.Controllers
                 return Json(new { success = false, message = "This account uses Google sign-in. Please use the 'Continue with Google' button." });
             }
 
-            var ok = user != null &&
-                     _passwordHasher.VerifyHashedPassword(user, user.Password!, request.Password) != PasswordVerificationResult.Failed;
-
-            if (!ok)
+            if (user == null || !user.IsActive || _passwordHasher.VerifyHashedPassword(user, user.Password!, request.Password) == PasswordVerificationResult.Failed)
             {
+                _auditLogger.LogAuthEvent("LOGIN", user?.Id.ToString() ?? "N/A", request.Username, HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown", false);
+                
                 if (user != null && !string.IsNullOrEmpty(user.Password))
                 {
                     user.FailedLoginAttempts++;
                     if (user.FailedLoginAttempts >= 5)
                     {
                         user.LockoutEnd = DateTime.UtcNow.AddMinutes(15);
-                        await _db.SaveChangesAsync();
-                        return Json(new { success = false, message = "Account temporarily locked due to too many failed attempts. Try again in 15 minutes." });
                     }
                     await _db.SaveChangesAsync();
                 }
@@ -71,16 +71,13 @@ namespace SwiftX.Controllers
             }
             
             // Successful login, reset lockout
-            if (user != null)
-            {
-                user.FailedLoginAttempts = 0;
-                user.LockoutEnd = null;
-                await _db.SaveChangesAsync();
-            }
+            user.FailedLoginAttempts = 0;
+            user.LockoutEnd = null;
+            await _db.SaveChangesAsync();
 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, user!.Id.ToString()),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Username),
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Role, "Customer"),
@@ -88,7 +85,10 @@ namespace SwiftX.Controllers
                 new Claim(ClaimTypes.Surname, user.LastName ?? "")
             };
             var identity = new ClaimsIdentity(claims, "CustomerScheme");
-            await HttpContext.SignInAsync("CustomerScheme", new ClaimsPrincipal(identity));
+            var authProperties = new AuthenticationProperties { IsPersistent = true };
+            await HttpContext.SignInAsync("CustomerScheme", new ClaimsPrincipal(identity), authProperties);
+            
+            _auditLogger.LogAuthEvent("LOGIN", user.Id.ToString(), request.Username, HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown", true);
 
             return Json(new { success = true, redirectUrl = "/Customer/CustomerHome" });
         }
@@ -187,6 +187,8 @@ namespace SwiftX.Controllers
                     await _db.SaveChangesAsync();
 
                     await transaction.CommitAsync();
+                    
+                    _auditLogger.LogAuthEvent("REGISTER_GOOGLE", user.Id.ToString(), username, HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown", true);
                 }
                 catch
                 {
@@ -234,7 +236,8 @@ namespace SwiftX.Controllers
         // ══════════════════════════════════════════════════════════
 
         [HttpPost]
-        [IgnoreAntiforgeryToken]
+        [EnableRateLimiting("login")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
             if (request == null || !ModelState.IsValid)
@@ -294,6 +297,8 @@ namespace SwiftX.Controllers
                 
                 await transaction.CommitAsync();
 
+                _auditLogger.LogAuthEvent("REGISTER", user.Id.ToString(), request.Username, HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown", true);
+
                 return Json(new { success = true, redirectUrl = "/Customer/UserLogin" });
             }
             catch (Exception ex)
@@ -304,7 +309,7 @@ namespace SwiftX.Controllers
         }
 
         [HttpPost]
-        [IgnoreAntiforgeryToken]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync("CustomerScheme");
@@ -343,6 +348,9 @@ namespace SwiftX.Controllers
         public string? Birthdate { get; set; }
         
         [Required(ErrorMessage = "Password is required.")]
+        [MinLength(8, ErrorMessage = "Password must be at least 8 characters.")]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$",
+            ErrorMessage = "Password must contain at least one uppercase letter, one lowercase letter, and one digit.")]
         public string Password { get; set; }
         
         [Required(ErrorMessage = "Confirm Password is required.")]

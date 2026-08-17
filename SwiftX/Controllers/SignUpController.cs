@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using SwiftX.Models;
@@ -8,6 +9,7 @@ using SwiftX.Services;
 
 namespace SwiftX.Controllers
 {
+    [AllowAnonymous]
     public class SignUpController : Controller
     {
         // Accepted document types and size cap for uploaded files.

@@ -61,7 +61,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('/Auth/Login', {
                 method: 'POST',
                 headers: { 
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value ?? ''
                 },
                 body: JSON.stringify({ Username: username, Password: password })
             });
