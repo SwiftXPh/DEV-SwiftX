@@ -354,29 +354,37 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .then(data => {
                 if (data.success) {
+                    const doRedirect = () => {
+                        if (window.isFirstTimeFlow) {
+                            window.location.href = '/Customer/CustomerHome';
+                        } else {
+                            const returnTo = urlParams.get('returnTo');
+                            if (returnTo === 'checkout') {
+                                window.location.href = '/Customer/FoodXCheckOut';
+                            } else {
+                                window.location.href = '/Customer/CustomerSavedAddresses';
+                            }
+                        }
+                    };
+
                     AlertModal.show({
                         type: 'success',
                         title: 'Address Saved',
                         message: 'Your address has been saved successfully.',
+                        onClose: doRedirect,
                         buttons: [
                             {
                                 label: 'OK',
                                 variant: 'success',
-                                callback: () => {
-                                    if (window.isFirstTimeFlow) {
-                                        window.location.href = '/Customer/CustomerHome';
-                                    } else {
-                                        const returnTo = urlParams.get('returnTo');
-                                        if (returnTo === 'checkout') {
-                                            window.location.href = '/Customer/FoodXCheckOut';
-                                        } else {
-                                            window.location.href = '/Customer/CustomerSavedAddresses';
-                                        }
-                                    }
-                                }
+                                callback: () => AlertModal.close()
                             }
                         ]
                     });
+                    
+                    // Auto-redirect after 1.5 seconds
+                    setTimeout(() => {
+                        AlertModal.close();
+                    }, 1500);
                 } else {
                     throw new Error('Failed to save');
                 }

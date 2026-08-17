@@ -1,4 +1,4 @@
-﻿var AlertModal = (function () {
+var AlertModal = (function () {
     'use strict';
 
     // ── Default icons per type ────────────────────────────────
@@ -12,6 +12,8 @@
     // ── Element refs ──────────────────────────────────────────
     function el(id) { return document.getElementById(id); }
 
+    var currentOnClose = null;
+
     // ── Close ─────────────────────────────────────────────────
     function close() {
         var overlay = el('alert-modal-overlay');
@@ -20,11 +22,18 @@
         // Clean up injected buttons so stale callbacks don't linger
         var footer = el('alert-modal-footer');
         if (footer) footer.innerHTML = '';
+        
+        if (typeof currentOnClose === 'function') {
+            var cb = currentOnClose;
+            currentOnClose = null;
+            cb();
+        }
     }
 
     // ── Show ──────────────────────────────────────────────────
     function show(opts) {
         opts = opts || {};
+        currentOnClose = opts.onClose || null;
 
         var type = opts.type || 'warning';
         var title = opts.title || '';
