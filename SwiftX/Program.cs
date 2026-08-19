@@ -200,14 +200,13 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Error/Error5xx");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+    // Render's TLS-terminating proxy handles HTTPS.
+    // HSTS and HTTPS Redirection inside the container will cause internal health checks to fail.
 }
 
 // Render nice branded pages for 4xx/5xx status codes (404, 403, etc.).
 app.UseStatusCodePagesWithReExecute("/Error/Status", "?code={0}");
 
-app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
