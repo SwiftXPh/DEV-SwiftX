@@ -28,6 +28,8 @@ ENV ASPNETCORE_ENVIRONMENT=Production
 # Disable config-file reloading — Render Free has a low inotify limit (128) and
 # ASP.NET's FileSystemWatcher exhausts it on startup. Config comes from env vars.
 ENV DOTNET_HOSTBUILDER__RELOADCONFIGONCHANGE=false
+# Force any remaining .NET file watchers to use polling instead of native inotify
+ENV DOTNET_USE_POLLING_FILE_WATCHER=1
 # Render/Railway inject PORT at runtime; Program.cs binds 0.0.0.0:$PORT.
 COPY --from=build /app/publish .
 ENTRYPOINT ["dotnet", "SwiftX.dll"]
