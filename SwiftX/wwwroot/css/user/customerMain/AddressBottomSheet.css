@@ -314,3 +314,141 @@
         border-radius: 20px 20px 0 0;
     }
 }
+
+/* ==========================================
+   MEDIA QUERIES (Mobile Breakpoints)
+   ========================================== */
+
+/* 1. Mobile Large (Up to 425px) */
+@media screen and (max-width: 425px) {
+    .cust-delivery-bar {
+        margin: 10px 3% 0;
+        padding: 8px 12px;
+    }
+
+    .cust-delivery-bar__address {
+        max-width: 180px;
+        font-size: 13px;
+    }
+
+    .address-bottom-sheet {
+        padding: 16px;
+        max-height: 90vh;
+    }
+
+    .abs-card {
+        padding: 12px;
+    }
+
+    .abs-card__icon {
+        font-size: 20px;
+        margin-right: 10px;
+    }
+
+    .abs-card__label {
+        font-size: 14px;
+    }
+
+    .abs-card__address-text {
+        font-size: 12px;
+    }
+
+    .abs-card__actions {
+        gap: 4px;
+        margin-left: 6px;
+    }
+
+    .abs-action-btn {
+        padding: 4px;
+        font-size: 16px;
+    }
+}
+
+/* 2. Mobile Medium (Up to 375px) */
+@media screen and (max-width: 375px) {
+    .cust-delivery-bar {
+        margin: 8px 2% 0;
+        padding: 8px 10px;
+        border-radius: 10px;
+    }
+
+    .cust-delivery-bar__icon {
+        font-size: 18px;
+        margin-right: 8px;
+    }
+
+    .cust-delivery-bar__address {
+        max-width: 150px;
+        font-size: 12px;
+    }
+
+    .cust-delivery-bar__label {
+        font-size: 10px;
+    }
+
+    .address-bottom-sheet__header h3 {
+        font-size: 16px;
+    }
+
+    .abs-card__header {
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+
+    .abs-card__default-badge {
+        font-size: 9px;
+        padding: 1px 4px;
+    }
+
+    .address-bottom-sheet__add-btn {
+        padding: 12px;
+        font-size: 14px;
+    }
+}
+
+/* 3. Mobile Small (Up to 325px) */
+@media screen and (max-width: 325px) {
+    .cust-delivery-bar {
+        padding: 6px 8px;
+    }
+
+    .cust-delivery-bar__address {
+        max-width: 120px;
+        font-size: 11px;
+    }
+
+    .cust-delivery-bar__chevron {
+        font-size: 14px;
+        margin-left: 6px;
+    }
+
+    .address-bottom-sheet {
+        padding: 12px;
+    }
+
+    .abs-card {
+        padding: 10px 8px;
+    }
+
+    .abs-card__icon {
+        font-size: 18px;
+        margin-right: 8px;
+    }
+
+    .abs-card__label {
+        font-size: 13px;
+    }
+
+    .abs-card__address-text {
+        font-size: 11px;
+    }
+
+    .abs-card__details {
+        font-size: 11px;
+    }
+
+    .address-bottom-sheet__add-btn {
+        padding: 10px;
+        font-size: 13px;
+    }
+}
